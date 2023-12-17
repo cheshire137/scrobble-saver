@@ -1,6 +1,7 @@
 server_port: 8080 # keep in sync with ui/.env VITE_BACKEND_PORT
 frontend_port: 4000 # keep in sync with ui/.env PORT
 database: lastly-likes.db
+secret: "some secret string you come up with"
 lastfm:
   api_key: 123abc
   shared_secret: 987zyx

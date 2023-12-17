@@ -15,6 +15,7 @@ type Config struct {
 	ServerPort   int          `yaml:"server_port"`
 	FrontendPort int          `yaml:"frontend_port"`
 	DatabasePath string       `yaml:"database"`
+	Secret       string       `yaml:"secret"`
 	Lastfm       LastfmConfig `yaml:"lastfm"`
 }
 

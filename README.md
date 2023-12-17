@@ -12,7 +12,7 @@ Backend:
 cp config.yml.example config.yml
 ```
 
-Add your Last.fm API key and secret to config.yml.
+Add your Last.fm API key and secret to config.yml. Come up with a new secret, such as from [randomkeygen.com](https://randomkeygen.com/) for "secret" in config.yml.
 
 ```sh
 go run cmd/server/main.go
