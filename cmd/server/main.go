@@ -16,7 +16,7 @@ import (
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
-const ConfigFilePath = "config.yaml"
+const ConfigFilePath = "config.yml"
 
 func main() {
 	config, err := config.NewConfig(ConfigFilePath)
