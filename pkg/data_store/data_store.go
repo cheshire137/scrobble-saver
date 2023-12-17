@@ -18,14 +18,6 @@ func (ds *DataStore) CreateTables() error {
 	return nil
 }
 
-func (ds *DataStore) createLastfmUsersTable() error {
-	query := `CREATE TABLE IF NOT EXISTS lastfm_users (
-		name TEXT PRIMARY KEY NOT NULL,
-		session_key TEXT NOT NULL,
-	)`
-	return ds.createTable(query)
-}
-
 func (ds *DataStore) createTable(query string) error {
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
