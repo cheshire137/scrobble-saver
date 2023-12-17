@@ -1,0 +1,5 @@
+port: 8080
+database: lastly-likes.db
+lastfm:
+  api_key: 123abc
+  shared_secret: 987zyx
