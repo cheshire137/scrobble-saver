@@ -2,6 +2,9 @@ import { createHashRouter, RouterProvider, createRoutesFromElements, Route } fro
 import AppLayout from './components/AppLayout'
 import LastfmLoginPage from './components/LastfmLoginPage'
 import LastfmAuthPage from './components/LastfmAuthPage'
+import LocalStorage from './models/LocalStorage'
+
+const lastfmUsernameKey = 'lastfmUsername'
 
 const PageRoutes = () => {
   const router = createHashRouter(createRoutesFromElements(
@@ -11,7 +14,9 @@ const PageRoutes = () => {
         path="/lastfm/:username"
         element={<LastfmAuthPage />}
         loader={async ({ params }) => {
-          return params.username
+          const username = params.username
+          LocalStorage.set(lastfmUsernameKey, username)
+          return username
         }}
       >
       </Route>
