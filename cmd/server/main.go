@@ -33,6 +33,7 @@ func main() {
 	util.LogSuccess("Loaded %s database", config.DatabasePath)
 	defer db.Close()
 
+	dataStore := data_store.NewDataStore(db)
 	mux := http.NewServeMux()
 
 	server := &http.Server{
