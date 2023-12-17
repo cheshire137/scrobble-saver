@@ -12,6 +12,10 @@ cp config.yml.example config.yml
 
 Add your Last.fm API key and secret to config.yml.
 
+```sh
+go run cmd/server/main.go
+```
+
 Frontend:
 
 ```sh
