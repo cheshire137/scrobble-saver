@@ -13,6 +13,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/cheshire137/lastly-likes/pkg/config"
+	"github.com/cheshire137/lastly-likes/pkg/data_store"
+	"github.com/cheshire137/lastly-likes/pkg/server"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
@@ -35,6 +37,9 @@ func main() {
 
 	dataStore := data_store.NewDataStore(db)
 	mux := http.NewServeMux()
+	env := server.NewEnv(dataStore, config)
+
+	mux.Handle("/auth/lastfm", http.HandlerFunc(env.LastfmAuthHandler))
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", config.ServerPort),
