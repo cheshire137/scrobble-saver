@@ -36,6 +36,12 @@ func main() {
 	defer db.Close()
 
 	dataStore := data_store.NewDataStore(db)
+	err = dataStore.CreateTables()
+	if err != nil {
+		util.LogError("Failed to create tables:", err)
+		return
+	}
+
 	mux := http.NewServeMux()
 	env := server.NewEnv(dataStore, config)
 
