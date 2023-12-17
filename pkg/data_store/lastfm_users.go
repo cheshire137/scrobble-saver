@@ -15,7 +15,6 @@ func (ds *DataStore) UpsertLastfmUser(lastfmUser *LastfmUser) error {
 		return err
 	}
 	encodedSessionKey, err := util.Encrypt(lastfmUser.SessionKey, ds.secret)
-	util.LogInfo("%s => %s", lastfmUser.SessionKey, encodedSessionKey)
 	if err != nil {
 		return err
 	}
