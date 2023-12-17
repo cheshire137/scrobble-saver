@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/mattn/go-sqlite3"
+
 	"github.com/cheshire137/lastly-likes/pkg/config"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
