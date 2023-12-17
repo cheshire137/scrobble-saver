@@ -1,13 +1,16 @@
 package data_store
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type DataStore struct {
-	db *sql.DB
+	db     *sql.DB
+	secret string
 }
 
-func NewDataStore(db *sql.DB) *DataStore {
-	return &DataStore{db: db}
+func NewDataStore(db *sql.DB, secret string) *DataStore {
+	return &DataStore{db: db, secret: secret}
 }
 
 func (ds *DataStore) CreateTables() error {

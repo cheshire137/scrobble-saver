@@ -35,7 +35,7 @@ func main() {
 	util.LogSuccess("Loaded %s database", config.DatabasePath)
 	defer db.Close()
 
-	dataStore := data_store.NewDataStore(db)
+	dataStore := data_store.NewDataStore(db, config.Secret)
 	err = dataStore.CreateTables()
 	if err != nil {
 		util.LogError("Failed to create tables:", err)
