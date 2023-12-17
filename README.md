@@ -1,8 +1,10 @@
 # Lastly Likes
 
+Uses the [Last.fm API](https://www.last.fm/api) and the Spotify API to like on Spotify your top tracks and loves on Last.fm.
+
 ## How to develop
 
-Create a Last.fm API app.
+Create a [Last.fm API app](https://www.last.fm/api/account/create).
 
 Backend:
 
@@ -20,6 +22,7 @@ Frontend:
 
 ```sh
 cd ui
+cp .env.example .env
 npm install
 npm run dev
 ```

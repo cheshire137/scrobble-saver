@@ -1,4 +1,4 @@
-port: 8080
+port: 8080 # keep in sync with ui/.env VITE_BACKEND_PORT
 database: lastly-likes.db
 lastfm:
   api_key: 123abc
