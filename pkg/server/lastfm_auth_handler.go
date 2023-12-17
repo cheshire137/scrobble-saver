@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/cheshire137/lastly-likes/pkg/data_store"
@@ -21,8 +22,8 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	api := lastfm.NewApi(e.config)
 	sessionResp := api.GetSession(token)
 
-	w.Header().Set("Content-Type", "application/json")
 	if sessionResp == nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Last.fm"})
 		return
@@ -34,11 +35,13 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	err := e.ds.UpsertLastfmUser(&lastfmUser)
 	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		message := "Failed to create your account: " + err.Error()
 		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
 		return
 	}
 
-	json.NewEncoder(w).Encode(lastfmUser)
+	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/lastfm/%s", e.config.FrontendPort, lastfmUser.Name),
+		http.StatusSeeOther)
 }
