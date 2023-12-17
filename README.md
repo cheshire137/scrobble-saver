@@ -23,6 +23,11 @@ Frontend:
 ```sh
 cd ui
 cp .env.example .env
+```
+
+Add your Last.fm API key to .env.
+
+```sh
 npm install
 npm run dev
 ```
