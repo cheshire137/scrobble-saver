@@ -10,29 +10,35 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/cheshire137/lastly-likes/pkg/config"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
-const Port = 8080
-const DatabaseFile = "lastly-likes.db"
+const ConfigFilePath = "config.yaml"
 
 func main() {
-	db, err := sql.Open("sqlite3", DatabaseFile)
+	config, err := config.NewConfig(ConfigFilePath)
+	if err != nil {
+		util.LogError("Failed to load configuration:", err)
+		return
+	}
+
+	db, err := sql.Open("sqlite3", config.DatabasePath)
 	if err != nil {
 		util.LogError("Failed to open database:", err)
 		return
 	}
-	util.LogSuccess("Loaded %s database", DatabaseFile)
+	util.LogSuccess("Loaded %s database", config.DatabasePath)
 	defer db.Close()
 
 	mux := http.NewServeMux()
 
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", Port),
+		Addr:    fmt.Sprintf(":%d", config.ServerPort),
 		Handler: mux,
 	}
 
-	util.LogInfo("Starting server at http://localhost:%d", Port)
+	util.LogInfo("Starting server at http://localhost:%d", config.ServerPort)
 	go func(srv *http.Server) {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			util.LogError("Could not start server:", err)
