@@ -24,11 +24,13 @@ function useGetLastfmTopTracks(user: string, period?: string, page?: number, lim
       const lastfmTopTracksStorageKeys = LocalStorage.get(lastfmTopTracksStorageKeysKey) || []
       const now = new Date().getTime()
       for (const key of lastfmTopTracksStorageKeys) {
-        const { timestamp } = LocalStorage.get(key)
-        const diffInMinutes = (now - timestamp) / 60000
-        if (diffInMinutes > 30) {
-          console.log('pruning old Last.fm top tracks cache', key)
-          LocalStorage.delete(key)
+        const value = LocalStorage.get(key)
+        if (value && value.timestamp) {
+          const diffInMinutes = (now - value.timestamp) / 60000
+          if (diffInMinutes > 30) {
+            console.log('pruning old Last.fm top tracks cache', key)
+            LocalStorage.delete(key)
+          }
         }
       }
     }
