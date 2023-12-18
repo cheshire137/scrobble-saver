@@ -1,31 +1,16 @@
-import { useContext, useState } from 'react'
-import { ActionList, ActionMenu } from '@primer/react'
+import { useContext } from 'react'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
-
-const topTrackPeriods = ['overall', '7day', '1month', '3month', '6month', '12month']
+import LastfmTrackDisplay from './LastfmTrackDisplay'
+import LastfmTopTrackPeriodMenu from './LastfmTopTrackPeriodMenu'
 
 const LastfmTopTracks = () => {
-  const [period, setPeriod] = useState(topTrackPeriods[0])
   const { results } = useContext(LastfmTopTracksContext)
-  console.log('results from context:', results)
+
+  if (!results) return <LastfmTopTrackPeriodMenu />
 
   return <div>
-    <ActionMenu>
-      <ActionMenu.Button>
-        Period: {period}
-      </ActionMenu.Button>
-      <ActionMenu.Overlay width="small">
-        <ActionList selectionVariant="single">
-          {topTrackPeriods.map(otherPeriod =>
-            <ActionList.Item
-              selected={period === otherPeriod}
-              key={otherPeriod}
-              onClick={() => setPeriod(otherPeriod)}
-            >{otherPeriod}</ActionList.Item>
-          )}
-        </ActionList>
-      </ActionMenu.Overlay>
-    </ActionMenu>
+    <LastfmTopTrackPeriodMenu />
+    {results.tracks.map(track => <LastfmTrackDisplay key={track.url} track={track} />)}
   </div>
 }
 
