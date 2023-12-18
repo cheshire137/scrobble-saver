@@ -23,8 +23,15 @@ const PageRoutes = () => {
           LocalStorage.set(lastfmUsernameKey, username)
           return username
         }}
-      >
-      </Route>
+      />
+      <Route
+        path="/logout"
+        element={<Navigate replace to="/" />}
+        loader={async () => {
+          LocalStorage.delete(lastfmUsernameKey)
+          return null
+        }}
+      />
     </Route>
   ))
   return <RouterProvider router={router} />
