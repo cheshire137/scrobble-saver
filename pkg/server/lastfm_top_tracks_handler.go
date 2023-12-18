@@ -24,7 +24,7 @@ func (e *Env) LastfmTopTracksHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		page = 1
 	}
-	api := lastfm.NewApi(e.config)
+	api := lastfm.NewApi(e.config, e.ds)
 	topTracksResp, err := api.GetTopTracks(user, period, limit, page)
 
 	if err != nil {

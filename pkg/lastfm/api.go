@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/cheshire137/lastly-likes/pkg/config"
+	"github.com/cheshire137/lastly-likes/pkg/data_store"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
@@ -19,10 +20,11 @@ const ApiUrl = "http://ws.audioscrobbler.com/2.0"
 
 type Api struct {
 	config *config.Config
+	ds     *data_store.DataStore
 }
 
-func NewApi(config *config.Config) *Api {
-	return &Api{config: config}
+func NewApi(config *config.Config, ds *data_store.DataStore) *Api {
+	return &Api{config: config, ds: ds}
 }
 
 func (a *Api) getParamsStr(params url.Values) string {
