@@ -14,10 +14,9 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	e.enableCors(&w)
 	util.LogRequest(r)
 	token := r.URL.Query().Get("token")
-
 	api := lastfm.NewApi(e.config)
-	sessionResp, err := api.GetSession(token)
 
+	sessionResp, err := api.GetSession(token)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
