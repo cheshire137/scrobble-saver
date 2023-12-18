@@ -18,15 +18,15 @@ type GetSessionResponse struct {
 }
 
 // https://www.last.fm/api/show/auth.getSession
-func (a *Api) GetSession(token string) *GetSessionResponse {
+func (a *Api) GetSession(token string) (*GetSessionResponse, error) {
 	method := "auth.getSession"
 	params := url.Values{}
 	params.Add("token", token)
-	var sessionResponse GetSessionResponse
-	err := a.get(method, params, true, &sessionResponse)
+	var response GetSessionResponse
+	err := a.get(method, params, true, &response)
 	if err != nil {
 		util.LogError("Failed to get session:", err)
-		return nil
+		return nil, err
 	}
-	return &sessionResponse
+	return &response, nil
 }
