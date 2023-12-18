@@ -7,15 +7,17 @@ type LastfmCachedRequest struct {
 	Body      string
 	Method    string
 	Params    string
+	Username  string
 }
 
-func NewLastfmCachedRequest(body, method, params string) *LastfmCachedRequest {
+func NewLastfmCachedRequest(body, method, params, username string) *LastfmCachedRequest {
 	timestamp := time.Now().Format(time.RFC3339)
-	return &LastfmCachedRequest{Timestamp: timestamp, Body: body, Method: method, Params: params}
+	return &LastfmCachedRequest{Timestamp: timestamp, Body: body, Method: method, Params: params, Username: username}
 }
 
 func (ds *DataStore) InsertLastfmCachedRequest(lastfmCachedRequest *LastfmCachedRequest) error {
-	query := `INSERT INTO lastfm_cached_requests (timestamp, body, method, params) VALUES (?, ?, ?, ?)`
+	query := `INSERT INTO lastfm_cached_requests (timestamp, body, method, params, username) VALUES (?, ?, ?, ?, ?)
+		ON CONFLICT (method, params, username) DO UPDATE SET timestamp = excluded.timestamp, body = excluded.body`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
 		return err
@@ -34,7 +36,8 @@ func (ds *DataStore) createLastfmCachedRequestsTable() error {
 		body TEXT NOT NULL,
 		method TEXT NOT NULL,
 		params TEXT NOT NULL,
-		PRIMARY KEY (timestamp, method, params)
+		username TEXT NOT NULL,
+		PRIMARY KEY (method, params, username)
 	)`
 	return ds.createTable(query)
 }
