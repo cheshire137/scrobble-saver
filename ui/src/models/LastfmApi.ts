@@ -1,3 +1,5 @@
+import LastfmTopTracks from './LastfmTopTracks'
+
 class LastfmApi {
   static apiUrl() {
     const env = import.meta.env
@@ -12,8 +14,7 @@ class LastfmApi {
     if (page) params.append('page', page.toString())
     if (limit) params.append('limit', limit.toString())
     const result = await this.get(`/top-tracks?${params.toString()}`)
-    console.log('result', result)
-    return result
+    return new LastfmTopTracks(result)
   }
 
   static async get(path: string) {
