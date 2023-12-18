@@ -14,7 +14,7 @@ export type LastfmTopTracksContextProps = {
 
 export const LastfmTopTracksContext = createContext<LastfmTopTracksContextProps>({
   user: '',
-  period: 'overall',
+  period: '6month',
   page: 1,
   limit: 20,
   update: () => {},

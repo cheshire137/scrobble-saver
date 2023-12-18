@@ -13,7 +13,7 @@ const lastfmTopTracksStorageKeysKey = 'lastfm-top-tracks-keys'
 
 function useGetLastfmTopTracks(user: string, period?: string, page?: number, limit?: number): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
-  period ||= 'overall'
+  period ||= '6month'
   page ||= 1
   limit ||= 20
 
