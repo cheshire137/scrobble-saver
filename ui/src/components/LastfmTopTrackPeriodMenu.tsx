@@ -2,7 +2,14 @@ import { useContext } from 'react'
 import { ActionList, ActionMenu } from '@primer/react'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
 
-const topTrackPeriods = ['overall', '7day', '1month', '3month', '6month', '12month']
+const topTrackPeriods = [
+  { value: 'overall', label: 'All time' },
+  { value: '7day', label: 'Last week' },
+  { value: '1month', label: 'Last month' },
+  { value: '3month', label: 'Last 3 months' },
+  { value: '6month', label: 'Last 6 months' },
+  { value: '12month', label: 'Last year' },
+]
 
 const LastfmTopTrackPeriodMenu = () => {
   const { page, limit, period, update } = useContext(LastfmTopTracksContext)
@@ -15,10 +22,10 @@ const LastfmTopTrackPeriodMenu = () => {
       <ActionList selectionVariant="single">
         {topTrackPeriods.map(otherPeriod =>
           <ActionList.Item
-            selected={period === otherPeriod}
-            key={otherPeriod}
-            onClick={() => update(page, otherPeriod, limit)}
-          >{otherPeriod}</ActionList.Item>
+            selected={period === otherPeriod.value}
+            key={otherPeriod.value}
+            onClick={() => update(page, otherPeriod.value, limit)}
+          >{otherPeriod.label}</ActionList.Item>
         )}
       </ActionList>
     </ActionMenu.Overlay>
