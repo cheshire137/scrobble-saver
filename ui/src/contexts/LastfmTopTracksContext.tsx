@@ -1,14 +1,13 @@
 import { createContext, PropsWithChildren, useMemo } from 'react'
 import useGetLastfmTopTracks from '../hooks/use-get-lastfm-top-tracks'
 import { Flash } from '@primer/react'
+import LastfmTopTracks from '../models/LastfmTopTracks'
 
 export type LastfmTopTracksContextProps = {
-  results: any[]
+  results?: LastfmTopTracks
 }
 
-export const LastfmTopTracksContext = createContext<LastfmTopTracksContextProps>({
-  results: [],
-})
+export const LastfmTopTracksContext = createContext<LastfmTopTracksContextProps>({})
 
 interface Props extends PropsWithChildren {
   user: string,
@@ -19,9 +18,7 @@ interface Props extends PropsWithChildren {
 
 export const LastfmTopTracksContextProvider = ({ user, page, period, limit, children }: Props) => {
   const { results, fetching, error } = useGetLastfmTopTracks(user, period, page, limit)
-  const contextProps = useMemo(() => ({
-    results: results || [],
-  } satisfies LastfmTopTracksContextProps), [results])
+  const contextProps = useMemo(() => ({ results } satisfies LastfmTopTracksContextProps), [results])
 
   if (fetching) return <p>Loading Last.fm top tracks...</p>
   if (error) return <Flash variant="danger">Error loading Last.fm top tracks: {error}</Flash>
