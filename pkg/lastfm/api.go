@@ -42,8 +42,7 @@ func (a *Api) getParamsStr(params url.Values) string {
 }
 
 // https://www.last.fm/api/webauth
-func (a *Api) getSignature(params url.Values) string {
-	keyValuePairsStr := a.getParamsStr(params)
+func (a *Api) getSignature(keyValuePairsStr string) string {
 	signature := keyValuePairsStr + a.config.Lastfm.Secret
 	md5Hash := md5.Sum([]byte(signature))
 	return fmt.Sprintf("%x", md5Hash)
@@ -52,8 +51,9 @@ func (a *Api) getSignature(params url.Values) string {
 func (a *Api) get(method string, params url.Values, signed bool, v any) error {
 	params.Add("api_key", a.config.Lastfm.ApiKey)
 	params.Add("method", method)
+	keyValuePairsStr := a.getParamsStr(params)
 	if signed {
-		params.Add("api_sig", a.getSignature(params))
+		params.Add("api_sig", a.getSignature(keyValuePairsStr))
 	}
 	url := fmt.Sprintf("%s?%s", ApiUrl, params.Encode())
 	util.LogInfo("GET %s", url)
