@@ -2,12 +2,16 @@ package lastfm
 
 import (
 	"crypto/md5"
+	"encoding/xml"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"sort"
 	"strings"
 
 	"github.com/cheshire137/lastly-likes/pkg/config"
+	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
 // https://www.last.fm/api/intro
@@ -37,4 +41,32 @@ func (a *Api) getSignature(params url.Values) string {
 	signature := keyValuePairsStr + a.config.Lastfm.Secret
 	md5Hash := md5.Sum([]byte(signature))
 	return fmt.Sprintf("%x", md5Hash)
+}
+
+func (a *Api) get(method string, params url.Values, v any) error {
+	params.Add("api_key", a.config.Lastfm.ApiKey)
+	params.Add("method", method)
+	params.Add("api_sig", a.getSignature(params))
+	url := fmt.Sprintf("%s?%s", ApiUrl, params.Encode())
+	resp, err := http.Get(url)
+	if err != nil {
+		util.LogError("Failed to get %s:", method, err)
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		util.LogError("Non-200 response for %s:", method, resp.Status)
+		return fmt.Errorf("%s %s", resp.Status, method)
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		util.LogError("Failed to read %s response body:", method, err)
+		return err
+	}
+	err = xml.Unmarshal(data, &v)
+	if err != nil {
+		util.LogError("Failed to unmarshal %s response:", method, err)
+		return err
+	}
+	return nil
 }
