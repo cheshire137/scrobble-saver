@@ -41,13 +41,15 @@ function useGetLastfmTopTracks(user: string, period?: string, page?: number, lim
           const { results, timestamp } = localStorageResults
           const diffInMinutes = (now - timestamp) / 60000
           if (diffInMinutes <= 30) {
-            console.log('cached Last.fm top tracks are only', Math.round(diffInMinutes), 'minute(s) old, using cache')
+            console.log('cached Last.fm top tracks are only', Math.round(diffInMinutes),
+              'minute(s) old, using cache; period:', period, '/ page:', page, '/ limit:', limit)
             setResults({ results, fetching: false })
             return
           }
         }
         const lastfmTopTracksStorageKeys = LocalStorage.get(lastfmTopTracksStorageKeysKey) || []
-        console.log('no recent Last.fm top tracks cache, fetching')
+        console.log('no recent Last.fm top tracks cache, fetching: period:', period, '/ page:', page, '/ limit:',
+          limit)
         const results = await LastfmApi.getTopTracks(user, period, page, limit)
         if (results) {
           LocalStorage.set(lastfmTopTracksStorageKeysKey, [...lastfmTopTracksStorageKeys, localStorageKey])
