@@ -30,6 +30,35 @@ func (ds *DataStore) InsertLastfmCachedRequest(lastfmCachedRequest *LastfmCached
 	return nil
 }
 
+func (ds *DataStore) TotalOldLastfmCachedRequests() (int, error) {
+	cutoffTimestamp := getCutoffTimestamp()
+	query := `SELECT COUNT(*) FROM lastfm_cached_requests WHERE timestamp < ?`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return 0, err
+	}
+	var count int
+	err = stmt.QueryRow(cutoffTimestamp).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func (ds *DataStore) PruneOldLastfmCachedRequests() error {
+	cutoffTimestamp := getCutoffTimestamp()
+	query := `DELETE FROM lastfm_cached_requests WHERE timestamp < ?`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(cutoffTimestamp)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (ds *DataStore) createLastfmCachedRequestsTable() error {
 	query := `CREATE TABLE IF NOT EXISTS lastfm_cached_requests (
 		timestamp TEXT NOT NULL,
@@ -40,4 +69,8 @@ func (ds *DataStore) createLastfmCachedRequestsTable() error {
 		PRIMARY KEY (method, params, username)
 	)`
 	return ds.createTable(query)
+}
+
+func getCutoffTimestamp() string {
+	return time.Now().Add(-time.Hour).Format(time.RFC3339)
 }
