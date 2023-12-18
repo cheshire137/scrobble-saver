@@ -8,10 +8,10 @@ interface Props {
 const LastfmTrackDisplay = ({ track }: Props) => {
   return <div>
     <Heading as="h3">
-      <Link href={track.url}>#{track.rank} {track.name}</Link>
+      <Link href={track.url} target="_blank">#{track.rank} {track.name}</Link>
     </Heading>
     <p>
-      by {track.artist.name}
+      by <Link href={track.artist.url} target="_blank">{track.artist.name}</Link>
     </p>
   </div>
 }
