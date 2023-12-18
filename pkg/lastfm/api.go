@@ -25,8 +25,7 @@ func NewApi(config *config.Config) *Api {
 	return &Api{config: config}
 }
 
-// https://www.last.fm/api/webauth
-func (a *Api) getSignature(params url.Values) string {
+func (a *Api) getParamsStr(params url.Values) string {
 	keys := make([]string, len(params))
 	for key := range params {
 		keys = append(keys, key)
@@ -37,7 +36,12 @@ func (a *Api) getSignature(params url.Values) string {
 		value := params.Get(key)
 		keyValuePairs = append(keyValuePairs, key+value)
 	}
-	keyValuePairsStr := strings.Join(keyValuePairs, "")
+	return strings.Join(keyValuePairs, "")
+}
+
+// https://www.last.fm/api/webauth
+func (a *Api) getSignature(params url.Values) string {
+	keyValuePairsStr := a.getParamsStr(params)
 	signature := keyValuePairsStr + a.config.Lastfm.Secret
 	md5Hash := md5.Sum([]byte(signature))
 	return fmt.Sprintf("%x", md5Hash)
