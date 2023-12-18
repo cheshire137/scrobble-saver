@@ -10,10 +10,6 @@ import (
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
-type ErrorResponse struct {
-	Error string `json:"error"`
-}
-
 func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	e.enableCors(&w)
 	util.LogRequest(r)
