@@ -47,7 +47,7 @@ func main() {
 
 	mux.Handle("/", http.HandlerFunc(env.RedirectToFrontendHandler))
 	mux.Handle("/auth/lastfm", http.HandlerFunc(env.LastfmAuthHandler))
-	mux.Handle("/auth/lastfm/top-tracks", http.HandlerFunc(env.LastfmTopTracksHandler))
+	mux.Handle("/api/lastfm/top-tracks", http.HandlerFunc(env.LastfmTopTracksHandler))
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", config.ServerPort),
