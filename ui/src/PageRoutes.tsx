@@ -2,9 +2,7 @@ import { createHashRouter, Navigate, RouterProvider, createRoutesFromElements, R
 import AppLayout from './components/AppLayout'
 import LastfmLoginPage from './components/LastfmLoginPage'
 import LastfmAuthPage from './components/LastfmAuthPage'
-import LocalStorage from './models/LocalStorage'
-
-const lastfmUsernameKey = 'lastfmUsername'
+import LocalStorage, { lastfmUsernameKey } from './models/LocalStorage'
 
 const PageRoutes = () => {
   const knownUsername = LocalStorage.get(lastfmUsernameKey)

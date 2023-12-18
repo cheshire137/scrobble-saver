@@ -1,5 +1,7 @@
 const localStorageKey = 'lastly-likes'
 
+export const lastfmUsernameKey = 'lastfmUsername'
+
 class LocalStorage {
   static getJSON() {
     if (typeof window === 'undefined') {
