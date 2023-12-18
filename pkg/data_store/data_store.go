@@ -18,6 +18,10 @@ func (ds *DataStore) CreateTables() error {
 	if err != nil {
 		return err
 	}
+	err = ds.createLastfmCachedRequestsTable()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
