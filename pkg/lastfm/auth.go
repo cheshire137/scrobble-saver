@@ -23,7 +23,7 @@ func (a *Api) GetSession(token string) *GetSessionResponse {
 	params := url.Values{}
 	params.Add("token", token)
 	var sessionResponse GetSessionResponse
-	err := a.get(method, params, &sessionResponse)
+	err := a.get(method, params, true, &sessionResponse)
 	if err != nil {
 		util.LogError("Failed to get session:", err)
 		return nil

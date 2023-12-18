@@ -43,10 +43,12 @@ func (a *Api) getSignature(params url.Values) string {
 	return fmt.Sprintf("%x", md5Hash)
 }
 
-func (a *Api) get(method string, params url.Values, v any) error {
+func (a *Api) get(method string, params url.Values, signed bool, v any) error {
 	params.Add("api_key", a.config.Lastfm.ApiKey)
 	params.Add("method", method)
-	params.Add("api_sig", a.getSignature(params))
+	if signed {
+		params.Add("api_sig", a.getSignature(params))
+	}
 	url := fmt.Sprintf("%s?%s", ApiUrl, params.Encode())
 	resp, err := http.Get(url)
 	if err != nil {
