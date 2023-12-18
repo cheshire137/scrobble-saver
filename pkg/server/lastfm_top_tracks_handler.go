@@ -36,5 +36,5 @@ func (e *Env) LastfmTopTracksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(topTracksResp)
+	json.NewEncoder(w).Encode(topTracksResp.TopTracks)
 }
