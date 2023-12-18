@@ -9,11 +9,30 @@ interface Results {
   error?: string;
 }
 
+const lastfmTopTracksStorageKeysKey = 'lastfm-top-tracks-keys'
+
 function useGetLastfmTopTracks(user: string, period?: string, page?: number, limit?: number): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
-  const localStorageKey = `lastfm-top-tracks-${user}-${period}-${page}-${limit}`
+  period ||= 'overall'
+  page ||= 1
+  limit ||= 20
 
   useEffect(() => {
+    const localStorageKey = `lastfm-top-tracks-${user}-${period}-${page}-${limit}`
+
+    function pruneLocalStorage() {
+      const lastfmTopTracksStorageKeys = LocalStorage.get(lastfmTopTracksStorageKeysKey) || []
+      const now = new Date().getTime()
+      for (const key of lastfmTopTracksStorageKeys) {
+        const { timestamp } = LocalStorage.get(key)
+        const diffInMinutes = (now - timestamp) / 60000
+        if (diffInMinutes > 30) {
+          console.log('pruning old Last.fm top tracks cache', key)
+          LocalStorage.delete(key)
+        }
+      }
+    }
+
     async function fetchLastfmTopTracks() {
       try {
         const localStorageResults = LocalStorage.get(localStorageKey)
@@ -27,9 +46,13 @@ function useGetLastfmTopTracks(user: string, period?: string, page?: number, lim
             return
           }
         }
+        const lastfmTopTracksStorageKeys = LocalStorage.get(lastfmTopTracksStorageKeysKey) || []
         console.log('no recent Last.fm top tracks cache, fetching')
         const results = await LastfmApi.getTopTracks(user, period, page, limit)
-        if (results) LocalStorage.set(localStorageKey, { results, timestamp: now })
+        if (results) {
+          LocalStorage.set(lastfmTopTracksStorageKeysKey, [...lastfmTopTracksStorageKeys, localStorageKey])
+          LocalStorage.set(localStorageKey, { results, timestamp: now })
+        }
         setResults({ results, fetching: false })
       } catch (err: any) {
         console.error('failed to fetch Last.fm top tracks', err)
@@ -37,6 +60,7 @@ function useGetLastfmTopTracks(user: string, period?: string, page?: number, lim
       }
     }
 
+    pruneLocalStorage()
     fetchLastfmTopTracks()
   }, [page, limit, period, user])
 
