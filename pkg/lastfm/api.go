@@ -50,6 +50,7 @@ func (a *Api) get(method string, params url.Values, signed bool, v any) error {
 		params.Add("api_sig", a.getSignature(params))
 	}
 	url := fmt.Sprintf("%s?%s", ApiUrl, params.Encode())
+	util.LogInfo("GET %s", url)
 	resp, err := http.Get(url)
 	if err != nil {
 		util.LogError("Failed to get %s:", method, err)
