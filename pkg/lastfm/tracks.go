@@ -9,18 +9,30 @@ import (
 )
 
 type GetTopTracksResponse struct {
-	XMLName  xml.Name `xml:"toptracks"`
-	Username string   `xml:"user,attr"`
-	Period   string   `xml:"type,attr"`
-	Tracks   []struct {
-		Rank      string `xml:"rank,attr"`
-		Name      string `xml:"name"`
-		PlayCount int    `xml:"playcount"`
-		Artist    struct {
-			Name string `xml:"name"`
-			Url  string `xml:"url"`
-		} `xml:"artist"`
-	} `xml:"track"`
+	XMLName   xml.Name `xml:"lfm"`
+	Status    string   `xml:"status,attr"`
+	TopTracks struct {
+		Username   string `xml:"user,attr"`
+		Page       int    `xml:"page,attr"`
+		Limit      int    `xml:"perPage,attr"`
+		TotalPages int    `xml:"totalPages,attr"`
+		Total      int    `xml:"total,attr"`
+		Tracks     []struct {
+			Rank      string `xml:"rank,attr"`
+			Name      string `xml:"name"`
+			Duration  int    `xml:"duration"`
+			PlayCount int    `xml:"playcount"`
+			Url       string `xml:"url"`
+			Artist    struct {
+				Name string `xml:"name"`
+				Url  string `xml:"url"`
+			} `xml:"artist"`
+			Images []struct {
+				Size string `xml:"size,attr"`
+				Url  string `xml:",chardata"`
+			} `xml:"image"`
+		} `xml:"track"`
+	} `xml:"toptracks"`
 }
 
 // https://www.last.fm/api/show/user.getTopTracks
