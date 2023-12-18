@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { useLoaderData } from 'react-router-dom'
 import { PageContext } from '../contexts/PageContext'
 import { LastfmTopTracksContextProvider } from '../contexts/LastfmTopTracksContext'
@@ -9,11 +9,10 @@ const LastfmAuthPage = () => {
   const { setPageTitle } = useContext(PageContext)
 
   useEffect(() => {
-    setPageTitle(`Last.fm ${username}`)
+    setPageTitle(`Signed in as ${username}`)
   }, [setPageTitle, username])
 
   return <LastfmTopTracksContextProvider user={username}>
-    Signed in as {username}
     <LastfmTopTracks />
   </LastfmTopTracksContextProvider>
 }
