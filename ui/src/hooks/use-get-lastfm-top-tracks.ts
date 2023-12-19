@@ -9,7 +9,8 @@ interface Results {
 }
 
 function useGetLastfmTopTracks(user: string, period?: string, page?: number, limit?: number): Results {
-  const [results, setResults] = useState<Results>({ fetching: true })
+  const canFetch = user.trim().length > 0
+  const [results, setResults] = useState<Results>({ fetching: canFetch })
   period ||= '6month'
   page ||= 1
   limit ||= 20
@@ -25,8 +26,8 @@ function useGetLastfmTopTracks(user: string, period?: string, page?: number, lim
       }
     }
 
-    fetchLastfmTopTracks()
-  }, [page, limit, period, user])
+    if (canFetch) fetchLastfmTopTracks()
+  }, [page, limit, period, user, canFetch])
 
   return results
 }
