@@ -45,4 +45,5 @@ func (e *Env) RedirectToFrontendHandler(w http.ResponseWriter, r *http.Request) 
 func (e *Env) enableCors(w *http.ResponseWriter) {
 	allowedUrl := fmt.Sprintf("http://localhost:%d", e.config.FrontendPort)
 	(*w).Header().Set("Access-Control-Allow-Origin", allowedUrl)
+	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
 }

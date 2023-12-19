@@ -7,13 +7,12 @@ class Api {
 
   public static async me() {
     const data = await this.get('/me')
-    console.log('me', data)
     return { isSignedIntoLastfm: data.isSignedIntoLastfm, isSignedIntoSpotify: data.isSignedIntoSpotify,
       spotifyUserId: data.spotifyUserId, lastfmUsername: data.lastfmUsername }
   }
 
   static async get(path: string) {
-    const response = await fetch(`${this.apiUrl()}${path}`)
+    const response = await fetch(`${this.apiUrl()}${path}`, { credentials: 'include' })
     const json = await response.json()
     if (response.status >= 200 && response.status < 300) return json
     let errorMessage = response.statusText
