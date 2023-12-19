@@ -44,7 +44,6 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
 		return
 	}
-	util.LogInfo("Spotify user", userResp)
 
 	spotifyUser := data_store.SpotifyUser{
 		Id:           userResp.Id,
