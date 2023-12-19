@@ -2,6 +2,7 @@ package lastfm
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -92,4 +93,14 @@ func (a *Api) cacheResponse(response any, method string, params string, user str
 	}
 
 	util.LogInfo("Cached Last.fm %s response for %s", method, user)
+}
+
+func (a *Api) loadCachedResponse(method, paramsForCache, user string, response any) (bool, error) {
+	cachedResponseBody := a.ds.LoadCachedLastfmResponse(method, paramsForCache, user)
+	if cachedResponseBody != "" {
+		util.LogInfo("Using cached response for method=%s, user=%s, params=%s", method, user, paramsForCache)
+		err := json.Unmarshal([]byte(cachedResponseBody), &response)
+		return true, err // cache hit
+	}
+	return false, nil // cache miss
 }
