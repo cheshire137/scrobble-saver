@@ -10,7 +10,11 @@ const SpotifyAuthPage = () => {
   const { user: lastfmUser } = useContext(LastfmUserContext)
 
   useEffect(() => {
-    setPageTitle(`Signed in as ${spotifyUserId} on Spotify, ${lastfmUser} on Last.fm`)
+    if (lastfmUser === spotifyUserId) {
+      setPageTitle(`Signed in as ${spotifyUserId} on Spotify and Last.fm`)
+    } else {
+      setPageTitle(`Signed in as ${spotifyUserId} on Spotify, ${lastfmUser} on Last.fm`)
+    }
   }, [setPageTitle, spotifyUserId, lastfmUser])
 
   return <Box>
