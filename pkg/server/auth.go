@@ -13,8 +13,10 @@ const spotifyUserIdKey = "spotifyUserId"
 const lastfmUsernameKey = "lastfmUsername"
 
 type MeResponse struct {
-	SpotifyUserId  string `json:"spotifyUserId"`
-	LastfmUsername string `json:"lastfmUsername"`
+	SpotifyUserId       string `json:"spotifyUserId"`
+	LastfmUsername      string `json:"lastfmUsername"`
+	IsSignedIntoLastfm  bool   `json:"isSignedIntoLastfm"`
+	IsSignedIntoSpotify bool   `json:"isSignedIntoSpotify"`
 }
 
 func (e *Env) MeHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,16 +27,13 @@ func (e *Env) MeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	fmt.Println(session.Values)
 	spotifyUserId, isSignedIntoSpotify := session.Values[spotifyUserIdKey].(string)
-	if !isSignedIntoSpotify {
-		spotifyUserId = ""
-	}
 	lastfmUsername, isSignedIntoLastfm := session.Values[lastfmUsernameKey].(string)
-	if !isSignedIntoLastfm {
-		lastfmUsername = ""
-	}
+	response := MeResponse{SpotifyUserId: spotifyUserId, LastfmUsername: lastfmUsername,
+		IsSignedIntoLastfm: isSignedIntoLastfm, IsSignedIntoSpotify: isSignedIntoSpotify}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(MeResponse{SpotifyUserId: spotifyUserId, LastfmUsername: lastfmUsername})
+	json.NewEncoder(w).Encode(response)
 }
 
 func (e *Env) LogoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,6 +44,7 @@ func (e *Env) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	session.Values[spotifyUserIdKey] = nil
 	session.Values[lastfmUsernameKey] = nil
+	util.LogInfo("Clearing session values for %s and %s", spotifyUserIdKey, lastfmUsernameKey)
 	session.Save(r, w)
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d", e.config.FrontendPort), http.StatusSeeOther)
 }
