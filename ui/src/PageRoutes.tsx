@@ -6,8 +6,8 @@ import SpotifyAuthPage from './components/SpotifyAuthPage'
 import LocalStorage, { lastfmUsernameKey, spotifyUserIdKey } from './models/LocalStorage'
 
 const PageRoutes = () => {
-  const lastfmUsername = LocalStorage.get(lastfmUsernameKey) ?? ''
-  const spotifyUserId = LocalStorage.get(spotifyUserIdKey) ?? ''
+  let lastfmUsername = LocalStorage.get(lastfmUsernameKey) ?? ''
+  let spotifyUserId = LocalStorage.get(spotifyUserIdKey) ?? ''
   const isSignedInWithLastfm = lastfmUsername.trim().length > 0
   const isSignedInWithSpotify = spotifyUserId.trim().length > 0
   const lastfmPath = `/lastfm/${encodeURIComponent(lastfmUsername)}`
@@ -24,7 +24,7 @@ const PageRoutes = () => {
         path="/lastfm/:username"
         element={isSignedInWithSpotify ? <Navigate replace to={lastfmSpotifyPath} /> : <LastfmAuthPage />}
         loader={async ({ params }) => {
-          const lastfmUsername = params.username
+          lastfmUsername = params.username
           LocalStorage.set(lastfmUsernameKey, lastfmUsername)
           return lastfmUsername
         }}
@@ -33,7 +33,7 @@ const PageRoutes = () => {
         path="/spotify/:id"
         element={isSignedInWithLastfm ? <Navigate replace to={lastfmSpotifyPath} /> : <Navigate replace to="/" />}
         loader={async ({ params }) => {
-          const spotifyUserId = params.id
+          spotifyUserId = params.id
           LocalStorage.set(spotifyUserIdKey, spotifyUserId)
           return spotifyUserId
         }}
@@ -42,7 +42,8 @@ const PageRoutes = () => {
         path="/lastfm/:username/spotify/:id"
         element={<SpotifyAuthPage />}
         loader={async ({ params }) => {
-          const { username: lastfmUsername, id: spotifyUserId } = params
+          lastfmUsername = params.username
+          spotifyUserId = params.id
           LocalStorage.set(lastfmUsernameKey, lastfmUsername)
           LocalStorage.set(spotifyUserIdKey, spotifyUserId)
           return spotifyUserId
@@ -54,11 +55,14 @@ const PageRoutes = () => {
         loader={async () => {
           LocalStorage.delete(lastfmUsernameKey)
           LocalStorage.delete(spotifyUserIdKey)
+          lastfmUsername = ''
+          spotifyUserId = ''
           return null
         }}
       />
     </Route>
   ))
+
   return <RouterProvider router={router} />
 }
 
