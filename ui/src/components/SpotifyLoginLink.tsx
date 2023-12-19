@@ -14,14 +14,11 @@ function getSpotifyAuthUrl() {
   }
   const backendPort = env.VITE_BACKEND_PORT || 8080
   const redirectUri = `http://localhost:${backendPort}/auth/spotify`
-  const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-  LocalStorage.set(spotifyStateKey, state)
   const params = new URLSearchParams()
   params.append('scope', spotifyScopes)
   params.append('response_type', 'code')
   params.append('client_id', clientId)
   params.append('redirect_uri', redirectUri)
-  params.append('state', state)
   return `https://accounts.spotify.com/authorize?${params.toString()}`
 }
 
