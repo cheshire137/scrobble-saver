@@ -16,7 +16,7 @@ const LastfmTopTrackPeriodMenu = () => {
 
   return <ActionMenu>
     <ActionMenu.Button sx={{ mb: 3 }}>
-      Period: {period}
+      Period: {topTrackPeriods.find(p => p.value === period)?.label ?? period}
     </ActionMenu.Button>
     <ActionMenu.Overlay width="small">
       <ActionList selectionVariant="single">
