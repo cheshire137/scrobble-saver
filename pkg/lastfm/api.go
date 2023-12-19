@@ -72,17 +72,22 @@ func (a *Api) get(method string, params url.Values, signed bool, v any) error {
 		util.LogError("Failed to read %s response body:", method, err)
 		return err
 	}
-
-	lastfmCachedRequest := data_store.NewLastfmCachedRequest(string(data), method, keyValuePairsStr)
-	err = a.ds.InsertLastfmCachedRequest(lastfmCachedRequest)
-	if err != nil {
-		util.LogError("Could not cache Last.fm %s response:", method, err)
-	}
-
 	err = xml.Unmarshal(data, &v)
 	if err != nil {
 		util.LogError("Failed to unmarshal %s response:", method, err)
 		return err
 	}
 	return nil
+}
+
+func (a *Api) cacheResponse(response any, method string, params string, user string) {
+	lastfmCachedResponse, err := data_store.NewLastfmCachedResponse(response, method, params, user)
+	if err != nil {
+		util.LogError("Could not serialize Last.fm %s response for caching:", method, err)
+	}
+
+	err = a.ds.InsertLastfmCachedResponse(lastfmCachedResponse)
+	if err != nil {
+		util.LogError("Could not cache Last.fm %s response:", method, err)
+	}
 }

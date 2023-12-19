@@ -42,21 +42,7 @@ func main() {
 		return
 	}
 
-	totalOldLastfmCachedRequests, err := dataStore.TotalOldLastfmCachedRequests()
-	if err == nil {
-		if totalOldLastfmCachedRequests > 0 {
-			util.LogInfo("Deleting %d expired Last.fm cached request(s)...", totalOldLastfmCachedRequests)
-			err = dataStore.PruneOldLastfmCachedRequests()
-			if err != nil {
-				util.LogError("Failed to prune expired cached Last.fm requests:", err)
-			}
-		} else {
-			util.LogInfo("No cached Last.fm requests have expired yet")
-		}
-	} else {
-		util.LogError("Error calculating how many cached Last.fm requests have expired:", err)
-	}
-
+	dataStore.PruneExpiredLastfmCachedResponsesIfNecessary()
 	mux := http.NewServeMux()
 	env := server.NewEnv(dataStore, config)
 

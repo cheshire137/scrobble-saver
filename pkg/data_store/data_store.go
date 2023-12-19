@@ -18,7 +18,7 @@ func (ds *DataStore) CreateTables() error {
 	if err != nil {
 		return err
 	}
-	err = ds.createLastfmCachedRequestsTable()
+	err = ds.createLastfmCachedResponsesTable()
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,7 @@
 package lastfm
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"net/url"
 	"strconv"
@@ -52,11 +53,26 @@ func (a *Api) GetTopTracks(user string, period string, limit int, page int) (*Ge
 	params.Add("period", period)
 	params.Add("limit", strconv.Itoa(limit))
 	params.Add("page", strconv.Itoa(page))
+	paramsForCache := a.getParamsStr(params)
 	var response GetTopTracksResponse
+
+	cachedResponseBody := a.ds.LoadCachedLastfmResponse(method, paramsForCache, user)
+	if cachedResponseBody != "" {
+		util.LogInfo("Using cached response for user's top tracks: %s / %s / %s", method, paramsForCache, user)
+		err := json.Unmarshal([]byte(cachedResponseBody), &response)
+		if err != nil {
+			util.LogError("Failed to unmarshal cached top tracks response:", err)
+			return nil, err
+		}
+		return &response, nil
+	}
+
 	err := a.get(method, params, false, &response)
 	if err != nil {
 		util.LogError("Failed to get user's top tracks:", err)
 		return nil, err
 	}
+	a.cacheResponse(response, method, paramsForCache, user)
+
 	return &response, nil
 }
