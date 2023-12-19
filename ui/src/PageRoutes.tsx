@@ -28,23 +28,22 @@ const PageRoutes = () => {
           LocalStorage.set(lastfmUsernameKey, lastfmUsername)
           return lastfmUsername
         }}
-      >
-        <Route
-          path="/lastfm/:username/spotify/:id"
-          element={<SpotifyAuthPage />}
-          loader={async ({ params }) => {
-            const { username: lastfmUsername, id: spotifyUserId } = params
-            LocalStorage.set(lastfmUsernameKey, lastfmUsername)
-            LocalStorage.set(spotifyUserIdKey, spotifyUserId)
-            return spotifyUserId
-          }}
-        />
-      </Route>
+      />
       <Route
         path="/spotify/:id"
         element={isSignedInWithLastfm ? <Navigate replace to={lastfmSpotifyPath} /> : <Navigate replace to="/" />}
         loader={async ({ params }) => {
           const spotifyUserId = params.id
+          LocalStorage.set(spotifyUserIdKey, spotifyUserId)
+          return spotifyUserId
+        }}
+      />
+      <Route
+        path="/lastfm/:username/spotify/:id"
+        element={<SpotifyAuthPage />}
+        loader={async ({ params }) => {
+          const { username: lastfmUsername, id: spotifyUserId } = params
+          LocalStorage.set(lastfmUsernameKey, lastfmUsername)
           LocalStorage.set(spotifyUserIdKey, spotifyUserId)
           return spotifyUserId
         }}
