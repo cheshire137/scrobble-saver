@@ -23,7 +23,21 @@ func NewEnv(ds *data_store.DataStore, config *config.Config) *Env {
 
 func (e *Env) RedirectToFrontendHandler(w http.ResponseWriter, r *http.Request) {
 	util.LogRequest(r)
-	frontendUrl := fmt.Sprintf("http://localhost:%d", e.config.FrontendPort)
+	session, err := e.store.Get(r, cookieName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	lastfmUsername, isSignedIntoLastfm := session.Values[lastfmUsernameKey].(string)
+	path := ""
+	if isSignedIntoLastfm {
+		path = fmt.Sprintf("/#/lastfm/%s", lastfmUsername)
+		spotifyUserId, isSignedIntoSpotify := session.Values[spotifyUserIdKey].(string)
+		if isSignedIntoSpotify {
+			path = fmt.Sprintf("%s/spotify/%s", path, spotifyUserId)
+		}
+	}
+	frontendUrl := fmt.Sprintf("http://localhost:%d%s", e.config.FrontendPort, path)
 	util.LogInfo("Redirecting to frontend: %s", frontendUrl)
 	http.Redirect(w, r, frontendUrl, http.StatusSeeOther)
 }

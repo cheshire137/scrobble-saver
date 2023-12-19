@@ -46,7 +46,7 @@ func main() {
 	mux := http.NewServeMux()
 	env := server.NewEnv(dataStore, config)
 
-	// mux.Handle("/", http.HandlerFunc(env.RedirectToFrontendHandler))
+	mux.Handle("/", http.HandlerFunc(env.RedirectToFrontendHandler))
 	mux.Handle("/auth/lastfm", http.HandlerFunc(env.LastfmAuthHandler))
 	mux.Handle("/auth/spotify", http.HandlerFunc(env.SpotifyAuthHandler))
 	mux.Handle("/api/me", http.HandlerFunc(env.MeHandler))

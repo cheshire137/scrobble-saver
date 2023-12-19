@@ -27,7 +27,6 @@ func (e *Env) MeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(session.Values)
 	spotifyUserId, isSignedIntoSpotify := session.Values[spotifyUserIdKey].(string)
 	lastfmUsername, isSignedIntoLastfm := session.Values[lastfmUsernameKey].(string)
 	response := MeResponse{SpotifyUserId: spotifyUserId, LastfmUsername: lastfmUsername,
