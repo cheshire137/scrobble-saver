@@ -22,6 +22,10 @@ func (ds *DataStore) CreateTables() error {
 	if err != nil {
 		return err
 	}
+	err = ds.createSpotifyUsersTable()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
