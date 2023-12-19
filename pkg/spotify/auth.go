@@ -50,9 +50,14 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, error) {
 }
 
 func (a *Api) get(path string, params url.Values, v any) error {
-	url := fmt.Sprintf("%s%s?%s", ApiUrl, path, params.Encode())
-	util.LogInfo("GET %s", url)
-	resp, err := http.Get(url)
+	req, err := http.NewRequest(http.MethodGet, ApiUrl+path, strings.NewReader(params.Encode()))
+	if err != nil {
+		return err
+	}
+	util.LogRequest(req)
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.accessToken))
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		util.LogError("Failed to get %s:", path, err)
 		return err
