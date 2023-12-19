@@ -1,19 +1,16 @@
 import { useContext, useEffect } from 'react'
-import { useLoaderData } from 'react-router-dom'
 import { PageContext } from '../contexts/PageContext'
-import { LastfmUserContext } from '../contexts/LastfmUserContext'
+import { AuthContext } from '../contexts/AuthContext'
 import LastfmTopTracks from './LastfmTopTracks'
 import SpotifyLoginLink from './SpotifyLoginLink'
 
 const LastfmAuthPage = () => {
-  const username = useLoaderData() as string
   const { setPageTitle } = useContext(PageContext)
-  const { setUser: setLastfmUser } = useContext(LastfmUserContext)
+  const { lastfmUsername } = useContext(AuthContext)
 
   useEffect(() => {
-    setPageTitle(`Signed in as ${username} on Last.fm`)
-    setLastfmUser(username)
-  }, [setPageTitle, username, setLastfmUser])
+    setPageTitle(`Signed in as ${lastfmUsername} on Last.fm`)
+  }, [setPageTitle, lastfmUsername])
 
   return <>
     <SpotifyLoginLink />
