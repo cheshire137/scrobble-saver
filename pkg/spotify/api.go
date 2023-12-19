@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"sort"
 	"strings"
 
 	"github.com/cheshire137/lastly-likes/pkg/config"
@@ -19,6 +20,7 @@ type Api struct {
 	config      *config.Config
 	ds          *data_store.DataStore
 	accessToken string
+	userId      string
 }
 
 func NewApi(config *config.Config, ds *data_store.DataStore) *Api {
@@ -62,4 +64,32 @@ func (a *Api) handleResponse(resp *http.Response, path string, v any) error {
 		return err
 	}
 	return nil
+}
+
+func (a *Api) getParamsStr(params url.Values) string {
+	keys := make([]string, len(params))
+	for key := range params {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	keyValuePairs := make([]string, len(params))
+	for _, key := range keys {
+		value := params.Get(key)
+		keyValuePairs = append(keyValuePairs, key+value)
+	}
+	return strings.Join(keyValuePairs, "")
+}
+
+func (a *Api) cacheResponse(response any, path string, params string, userId string) {
+	spotifyCachedResponse, err := data_store.NewSpotifyCachedResponse(response, path, params, userId)
+	if err != nil {
+		util.LogError("Could not serialize Spotify %s response for caching:", path, err)
+	}
+
+	err = a.ds.InsertSpotifyCachedResponse(spotifyCachedResponse)
+	if err != nil {
+		util.LogError("Could not cache Spotify %s response:", path, err)
+	}
+
+	util.LogInfo("Cached Spotify %s response for %s", path, userId)
 }

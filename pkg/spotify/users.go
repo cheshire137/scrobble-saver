@@ -23,11 +23,15 @@ type GetCurrentUserResponse struct {
 // https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile
 func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
 	path := "/me"
+	params := url.Values{}
+	paramsForCache := a.getParamsStr(params)
 	var response GetCurrentUserResponse
-	err := a.get(path, url.Values{}, &response)
+	err := a.get(path, params, &response)
 	if err != nil {
 		util.LogError("Failed to get current Spotify user:", err)
 		return nil, err
 	}
+	userId := response.Id
+	a.cacheResponse(response, path, paramsForCache, userId)
 	return &response, nil
 }
