@@ -10,7 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/cheshire137/lastly-likes/pkg/config"
@@ -44,7 +43,6 @@ func main() {
 	}
 
 	dataStore.PruneExpiredLastfmCachedResponsesIfNecessary()
-	store := sessions.NewCookieStore([]byte(config.Secret))
 	mux := http.NewServeMux()
 	env := server.NewEnv(dataStore, config)
 
@@ -52,6 +50,7 @@ func main() {
 	mux.Handle("/auth/lastfm", http.HandlerFunc(env.LastfmAuthHandler))
 	mux.Handle("/auth/spotify", http.HandlerFunc(env.SpotifyAuthHandler))
 	mux.Handle("/api/lastfm/top-tracks", http.HandlerFunc(env.LastfmTopTracksHandler))
+	mux.Handle("/logout", http.HandlerFunc(env.LogoutHandler))
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", config.ServerPort),

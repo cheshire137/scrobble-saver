@@ -7,7 +7,6 @@ import LocalStorage, { lastfmUsernameKey } from '../models/LocalStorage'
 const AppLayout = () => {
   const { pageTitle } = useContext(PageContext)
   const knownUsername = LocalStorage.get(lastfmUsernameKey)
-  const logoutHref = useHref('/logout')
 
   return <PageLayout>
     <PageLayout.Header>
@@ -22,7 +21,7 @@ const AppLayout = () => {
           >{pageTitle}</Heading>}
         </Header.Item>
         {knownUsername && knownUsername.trim().length > 0 && <Header.Item>
-          <Header.Link href={logoutHref}>Log out</Header.Link>
+          <Header.Link href="/logout">Log out</Header.Link>
         </Header.Item>}
       </Header>
     </PageLayout.Header>
