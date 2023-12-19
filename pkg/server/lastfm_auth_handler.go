@@ -43,7 +43,9 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	util.LogInfo("Setting session value for key %s to %s", lastfmUsernameKey, lastfmUser.Name)
 	session.Values[lastfmUsernameKey] = lastfmUser.Name
+	session.Save(r, w)
 
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/lastfm/%s", e.config.FrontendPort, lastfmUser.Name),
 		http.StatusSeeOther)
