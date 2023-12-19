@@ -3,7 +3,7 @@ package spotify
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -61,7 +61,7 @@ func (a *Api) get(path string, params url.Values, v any) error {
 
 func (a *Api) handleResponse(resp *http.Response, path string, v any) error {
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		util.LogError("Failed to read %s response body:", path, err)
 		return err

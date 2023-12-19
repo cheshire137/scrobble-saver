@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"sort"
@@ -67,7 +67,7 @@ func (a *Api) get(method string, params url.Values, signed bool, v any) error {
 		util.LogError("Non-200 response for %s:", method, resp.Status)
 		return fmt.Errorf("%s %s", resp.Status, method)
 	}
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		util.LogError("Failed to read %s response body:", method, err)
 		return err
