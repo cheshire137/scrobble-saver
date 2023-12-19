@@ -3,7 +3,7 @@ package data_store
 import "github.com/cheshire137/lastly-likes/pkg/util"
 
 type SpotifyUser struct {
-	Email        string
+	Id           string
 	AccessToken  string
 	RefreshToken string
 	Scopes       string
@@ -11,9 +11,9 @@ type SpotifyUser struct {
 }
 
 func (ds *DataStore) UpsertSpotifyUser(spotifyUser *SpotifyUser) error {
-	query := `INSERT INTO spotify_users (email, access_token, refresh_token, scopes, expires_in)
+	query := `INSERT INTO spotify_users (id, access_token, refresh_token, scopes, expires_in)
 		VALUES (?, ?, ?, ?, ?)
-		ON CONFLICT (email) DO UPDATE SET access_token = excluded.access_token, refresh_token = excluded.refresh_token,
+		ON CONFLICT (id) DO UPDATE SET access_token = excluded.access_token, refresh_token = excluded.refresh_token,
 		scopes = excluded.scopes, expires_in = excluded.expires_in`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
@@ -27,7 +27,7 @@ func (ds *DataStore) UpsertSpotifyUser(spotifyUser *SpotifyUser) error {
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(spotifyUser.Email, encryptedAccessToken, encryptedRefreshToken, spotifyUser.Scopes,
+	_, err = stmt.Exec(spotifyUser.Id, encryptedAccessToken, encryptedRefreshToken, spotifyUser.Scopes,
 		spotifyUser.ExpiresIn)
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func (ds *DataStore) UpsertSpotifyUser(spotifyUser *SpotifyUser) error {
 
 func (ds *DataStore) createSpotifyUsersTable() error {
 	query := `CREATE TABLE IF NOT EXISTS spotify_users (
-		email TEXT PRIMARY KEY,
+		id TEXT PRIMARY KEY,
 		access_token TEXT NOT NULL,
 		refresh_token TEXT NOT NULL,
 		scopes TEXT NOT NULL,

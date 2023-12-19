@@ -1,8 +1,7 @@
 import { Link } from '@primer/react'
-import LocalStorage, { spotifyStateKey } from '../models/LocalStorage'
 
 // https://developer.spotify.com/documentation/web-api/concepts/scopes
-const spotifyScopes = 'user-library-modify user-read-email'
+const spotifyScopes = 'user-library-modify'
 
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 function getSpotifyAuthUrl() {
