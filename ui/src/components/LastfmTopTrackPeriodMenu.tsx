@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { ActionList, ActionMenu } from '@primer/react'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
 
@@ -12,9 +12,10 @@ const topTrackPeriods = [
 ]
 
 const LastfmTopTrackPeriodMenu = () => {
+  const [open, setOpen] = useState(false)
   const { page, limit, period, update } = useContext(LastfmTopTracksContext)
 
-  return <ActionMenu>
+  return <ActionMenu open={open} onOpenChange={setOpen}>
     <ActionMenu.Button sx={{ mb: 3 }}>
       Period: {topTrackPeriods.find(p => p.value === period)?.label ?? period}
     </ActionMenu.Button>
@@ -24,7 +25,10 @@ const LastfmTopTrackPeriodMenu = () => {
           <ActionList.Item
             selected={period === otherPeriod.value}
             key={otherPeriod.value}
-            onClick={() => update(page, otherPeriod.value, limit)}
+            onClick={() => {
+              setOpen(false)
+              update(page, otherPeriod.value, limit)
+            }}
           >{otherPeriod.label}</ActionList.Item>
         )}
       </ActionList>
