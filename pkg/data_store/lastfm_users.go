@@ -14,11 +14,11 @@ func (ds *DataStore) UpsertLastfmUser(lastfmUser *LastfmUser) error {
 	if err != nil {
 		return err
 	}
-	encodedSessionKey, err := util.Encrypt(lastfmUser.SessionKey, ds.secret)
+	encryptedSessionKey, err := util.Encrypt(lastfmUser.SessionKey, ds.secret)
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(lastfmUser.Name, encodedSessionKey)
+	_, err = stmt.Exec(lastfmUser.Name, encryptedSessionKey)
 	if err != nil {
 		return err
 	}
