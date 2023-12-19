@@ -53,6 +53,7 @@ const PageRoutes = () => {
         element={<Navigate replace to="/" />}
         loader={async () => {
           LocalStorage.delete(lastfmUsernameKey)
+          LocalStorage.delete(spotifyUserIdKey)
           return null
         }}
       />
