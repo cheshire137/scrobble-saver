@@ -3,5 +3,8 @@ frontend_port: 4000 # keep in sync with ui/.env PORT
 database: lastly-likes.db
 secret: "some secret string you come up with"
 lastfm:
-  api_key: 123abc
-  shared_secret: 987zyx
+  api_key: "your Last.fm API key here"
+  shared_secret: "your Last.fm shared secret here"
+spotify:
+  client_id: "your Spotify API app client ID here"
+  client_secret: "your Spotify API app client secret here"

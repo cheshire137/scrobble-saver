@@ -11,12 +11,18 @@ type LastfmConfig struct {
 	Secret string `yaml:"shared_secret"`
 }
 
+type SpotifyConfig struct {
+	ClientId     string `yaml:"client_id"`
+	ClientSecret string `yaml:"client_secret"`
+}
+
 type Config struct {
-	ServerPort   int          `yaml:"server_port"`
-	FrontendPort int          `yaml:"frontend_port"`
-	DatabasePath string       `yaml:"database"`
-	Secret       string       `yaml:"secret"`
-	Lastfm       LastfmConfig `yaml:"lastfm"`
+	ServerPort   int           `yaml:"server_port"`
+	FrontendPort int           `yaml:"frontend_port"`
+	DatabasePath string        `yaml:"database"`
+	Secret       string        `yaml:"secret"`
+	Lastfm       LastfmConfig  `yaml:"lastfm"`
+	Spotify      SpotifyConfig `yaml:"spotify"`
 }
 
 func NewConfig(path string) (*Config, error) {
