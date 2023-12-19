@@ -2,6 +2,7 @@ package data_store
 
 import (
 	"database/sql"
+	"time"
 )
 
 type DataStore struct {
@@ -26,6 +27,10 @@ func (ds *DataStore) CreateTables() error {
 	if err != nil {
 		return err
 	}
+	err = ds.createSpotifyCachedResponsesTable()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -39,4 +44,8 @@ func (ds *DataStore) createTable(query string) error {
 		return err
 	}
 	return nil
+}
+
+func getCacheCutoffTimestamp() string {
+	return time.Now().Add(-time.Hour).Format(time.RFC3339)
 }

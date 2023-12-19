@@ -27,7 +27,7 @@ func NewLastfmCachedResponse(obj any, method, params, username string) (*LastfmC
 }
 
 func (ds *DataStore) LoadCachedLastfmResponse(method, params, username string) string {
-	cutoffTimestamp := getCutoffTimestamp()
+	cutoffTimestamp := getCacheCutoffTimestamp()
 	query := `SELECT body FROM lastfm_cached_responses
 		WHERE method = ? AND params = ? AND username = ? AND timestamp >= ?
 		ORDER BY timestamp DESC
@@ -62,7 +62,7 @@ func (ds *DataStore) InsertLastfmCachedResponse(lastfmCachedResponse *LastfmCach
 }
 
 func (ds *DataStore) TotalExpiredLastfmCachedResponses() (int, error) {
-	cutoffTimestamp := getCutoffTimestamp()
+	cutoffTimestamp := getCacheCutoffTimestamp()
 	query := `SELECT COUNT(*) FROM lastfm_cached_responses WHERE timestamp < ?`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
@@ -91,7 +91,7 @@ func (ds *DataStore) PruneExpiredLastfmCachedResponsesIfNecessary() {
 }
 
 func (ds *DataStore) pruneExpiredLastfmCachedResponses() {
-	cutoffTimestamp := getCutoffTimestamp()
+	cutoffTimestamp := getCacheCutoffTimestamp()
 	query := `DELETE FROM lastfm_cached_responses WHERE timestamp < ?`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
@@ -115,8 +115,4 @@ func (ds *DataStore) createLastfmCachedResponsesTable() error {
 		PRIMARY KEY (method, params, username)
 	)`
 	return ds.createTable(query)
-}
-
-func getCutoffTimestamp() string {
-	return time.Now().Add(-time.Hour).Format(time.RFC3339)
 }
