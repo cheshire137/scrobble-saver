@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/cheshire137/lastly-likes/pkg/config"
@@ -43,6 +44,7 @@ func main() {
 	}
 
 	dataStore.PruneExpiredLastfmCachedResponsesIfNecessary()
+	store := sessions.NewCookieStore([]byte(config.Secret))
 	mux := http.NewServeMux()
 	env := server.NewEnv(dataStore, config)
 
