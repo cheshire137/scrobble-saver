@@ -90,4 +90,6 @@ func (a *Api) cacheResponse(response any, method string, params string, user str
 	if err != nil {
 		util.LogError("Could not cache Last.fm %s response:", method, err)
 	}
+
+	util.LogInfo("Cached Last.fm %s response for %s", method, user)
 }
