@@ -26,7 +26,8 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, error) {
 	params.Add("grant_type", "authorization_code")
 	params.Add("code", code)
 	params.Add("redirect_uri", fmt.Sprintf("http://localhost:%d/auth/spotify", a.config.ServerPort))
-	req, err := http.NewRequest(http.MethodPost, ApiUrl+path, strings.NewReader(params.Encode()))
+	req, err := http.NewRequest(http.MethodPost, "https://accounts.spotify.com/api"+path,
+		strings.NewReader(params.Encode()))
 	if err != nil {
 		return nil, err
 	}

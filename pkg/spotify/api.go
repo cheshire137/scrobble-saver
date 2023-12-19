@@ -5,7 +5,7 @@ import (
 	"github.com/cheshire137/lastly-likes/pkg/data_store"
 )
 
-const ApiUrl = "https://accounts.spotify.com/api"
+const ApiUrl = "https://api.spotify.com/v1/"
 
 type Api struct {
 	config *config.Config
