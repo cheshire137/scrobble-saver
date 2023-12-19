@@ -1,6 +1,7 @@
 const localStorageKey = 'lastly-likes'
 
 export const lastfmUsernameKey = 'lastfmUsername'
+export const spotifyStateKey = 'spotifyState'
 
 class LocalStorage {
   static getJSON() {

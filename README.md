@@ -14,7 +14,7 @@ Backend:
 cp config.yml.example config.yml
 ```
 
-Add your Last.fm API key and secret to config.yml. Make sure the backend port matches the redirect URLs you set on Spotify and Last.fm. Come up with a new secret, such as from [randomkeygen.com](https://randomkeygen.com/) for "secret" in config.yml.
+Add your Last.fm API key and secret to config.yml, as well as your Spotify client ID and client secret. Make sure the backend port matches the redirect URLs you set on Spotify and Last.fm. Come up with a new secret, such as from [randomkeygen.com](https://randomkeygen.com/) for "secret" in config.yml.
 
 ```sh
 go run cmd/server/main.go
@@ -27,7 +27,7 @@ cd ui
 cp .env.example .env
 ```
 
-Add your Last.fm API key to .env.
+Add your Last.fm API key to .env, as well as your Spotify client ID. Last.fm and Spotify secrets should _not_ be in .env.
 
 ```sh
 npm install
