@@ -20,12 +20,21 @@ func LogError(a ...interface{}) {
 }
 
 func LogRequest(r *http.Request) {
-	queryStr := r.URL.RawQuery
-	if queryStr == "" {
-		LogInfo("%s %s", r.Method, r.URL.Path)
-	} else {
-		LogInfo("%s %s?%s", r.Method, r.URL.Path, r.URL.RawQuery)
+	prefix := ""
+	if r.URL.Scheme != "" {
+		prefix = r.URL.Scheme + "://"
 	}
+	if r.URL.Host != "" {
+		prefix = prefix + r.URL.Host
+	}
+
+	queryStr := r.URL.RawQuery
+	suffix := r.URL.Path
+	if queryStr != "" {
+		suffix = suffix + "?" + queryStr
+	}
+
+	LogInfo("%s %s%s", r.Method, prefix, suffix)
 }
 
 func LogSuccess(format string, a ...interface{}) {
