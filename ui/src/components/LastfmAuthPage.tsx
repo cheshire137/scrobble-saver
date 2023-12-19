@@ -9,12 +9,12 @@ import SpotifyLoginLink from './SpotifyLoginLink'
 const LastfmAuthPage = () => {
   const username = useLoaderData() as string
   const { setPageTitle } = useContext(PageContext)
-  const { setUser } = useContext(LastfmUserContext)
+  const { setUser: setLastfmUser } = useContext(LastfmUserContext)
 
   useEffect(() => {
     setPageTitle(`Signed in as ${username} on Last.fm`)
-    setUser(username)
-  }, [setPageTitle, username, setUser])
+    setLastfmUser(username)
+  }, [setPageTitle, username, setLastfmUser])
 
   return <LastfmTopTracksContextProvider>
     <SpotifyLoginLink />
