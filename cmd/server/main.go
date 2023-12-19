@@ -49,6 +49,7 @@ func main() {
 	// mux.Handle("/", http.HandlerFunc(env.RedirectToFrontendHandler))
 	mux.Handle("/auth/lastfm", http.HandlerFunc(env.LastfmAuthHandler))
 	mux.Handle("/auth/spotify", http.HandlerFunc(env.SpotifyAuthHandler))
+	mux.Handle("/api/me", http.HandlerFunc(env.MeHandler))
 	mux.Handle("/api/lastfm/top-tracks", http.HandlerFunc(env.LastfmTopTracksHandler))
 	mux.Handle("/logout", http.HandlerFunc(env.LogoutHandler))
 
