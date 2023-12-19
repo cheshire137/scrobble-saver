@@ -1,11 +1,11 @@
-import { createContext, PropsWithChildren, useCallback, useMemo, useState } from 'react'
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react'
 import useGetLastfmTopTracks from '../hooks/use-get-lastfm-top-tracks'
 import { Flash } from '@primer/react'
 import LastfmTopTracks from '../models/LastfmTopTracks'
+import { LastfmUserContext } from './LastfmUserContext'
 
 export type LastfmTopTracksContextProps = {
   results?: LastfmTopTracks
-  user: string
   period?: string
   page?: number
   limit?: number
@@ -13,7 +13,6 @@ export type LastfmTopTracksContextProps = {
 }
 
 export const LastfmTopTracksContext = createContext<LastfmTopTracksContextProps>({
-  user: '',
   period: '6month',
   page: 1,
   limit: 20,
@@ -21,13 +20,13 @@ export const LastfmTopTracksContext = createContext<LastfmTopTracksContextProps>
 })
 
 interface Props extends PropsWithChildren {
-  user: string,
   period?: string,
   page?: number,
   limit?: number,
 }
 
-export const LastfmTopTracksContextProvider = ({ user, children, ...props }: Props) => {
+export const LastfmTopTracksContextProvider = ({ children, ...props }: Props) => {
+  const { user } = useContext(LastfmUserContext)
   const [period, setPeriod] = useState(props.period ?? 'overall')
   const [page, setPage] = useState(props.page ?? 1)
   const [limit, setLimit] = useState(props.limit ?? 20)
@@ -39,12 +38,11 @@ export const LastfmTopTracksContextProvider = ({ user, children, ...props }: Pro
   const { results, fetching, error } = useGetLastfmTopTracks(user, period, page, limit)
   const contextProps = useMemo(() => ({
     results,
-    user,
     period,
     page,
     limit,
     update,
-  } satisfies LastfmTopTracksContextProps), [results, user, period, page, limit, update])
+  } satisfies LastfmTopTracksContextProps), [results, period, page, limit, update])
 
   if (fetching) return <p>Loading Last.fm top tracks...</p>
   if (error) return <Flash variant="danger">Error loading Last.fm top tracks: {error}</Flash>
