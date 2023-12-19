@@ -24,16 +24,17 @@ const PageRoutes = () => {
         path="/lastfm/:username"
         element={isSignedInWithSpotify ? <Navigate replace to={lastfmSpotifyPath} /> : <LastfmAuthPage />}
         loader={async ({ params }) => {
-          const username = params.username
-          LocalStorage.set(lastfmUsernameKey, username)
-          return username
+          const lastfmUsername = params.username
+          LocalStorage.set(lastfmUsernameKey, lastfmUsername)
+          return lastfmUsername
         }}
       >
         <Route
-          path="/spotify/:id"
+          path="/lastfm/:username/spotify/:id"
           element={<SpotifyAuthPage />}
           loader={async ({ params }) => {
-            const spotifyUserId = params.id
+            const { username: lastfmUsername, id: spotifyUserId } = params
+            LocalStorage.set(lastfmUsernameKey, lastfmUsername)
             LocalStorage.set(spotifyUserIdKey, spotifyUserId)
             return spotifyUserId
           }}
