@@ -1,8 +1,5 @@
 const localStorageKey = 'lastly-likes'
 
-export const lastfmUsernameKey = 'lastfmUsername'
-export const spotifyUserIdKey = 'spotifyUserId'
-
 class LocalStorage {
   static getJSON() {
     if (typeof window === 'undefined') {
