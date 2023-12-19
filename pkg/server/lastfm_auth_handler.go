@@ -38,6 +38,13 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	session, err := e.store.Get(r, cookieName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	session.Values[lastfmUsernameKey] = lastfmUser.Name
+
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/lastfm/%s", e.config.FrontendPort, lastfmUser.Name),
 		http.StatusSeeOther)
 }

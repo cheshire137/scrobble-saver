@@ -61,6 +61,13 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	session, err := e.store.Get(r, cookieName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	session.Values[spotifyUserIdKey] = spotifyUser.Id
+
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/spotify/%s", e.config.FrontendPort, spotifyUser.Id),
 		http.StatusSeeOther)
 }
