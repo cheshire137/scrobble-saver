@@ -8,7 +8,7 @@ Create a [Last.fm API app](https://www.last.fm/api/account/create). Set `http://
 
 Create a [Spotify API app](https://developer.spotify.com/dashboard/create). Set `http://localhost:8080/auth/spotify` as the redirect URL. Select the 'Web API' as the API your app will use.
 
-Backend:
+### Backend
 
 ```sh
 cp config.yml.example config.yml
@@ -20,7 +20,7 @@ Add your Last.fm API key and secret to config.yml, as well as your Spotify clien
 go run cmd/server/main.go
 ```
 
-Frontend:
+### Frontend
 
 ```sh
 cd ui
