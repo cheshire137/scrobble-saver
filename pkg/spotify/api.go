@@ -13,7 +13,7 @@ import (
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
-const ApiUrl = "https://api.spotify.com/v1/"
+const ApiUrl = "https://api.spotify.com/v1"
 
 type Api struct {
 	config      *config.Config
