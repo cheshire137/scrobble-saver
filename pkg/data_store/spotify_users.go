@@ -10,6 +10,31 @@ type SpotifyUser struct {
 	ExpiresIn    int
 }
 
+func (ds *DataStore) LoadSpotifyUser(id string) (*SpotifyUser, error) {
+	query := `SELECT access_token, refresh_token, scopes, expires_in FROM spotify_users WHERE id = ?`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	var encryptedAccessToken, encryptedRefreshToken, scopes string
+	var expiresIn int
+	err = stmt.QueryRow(id).Scan(&encryptedAccessToken, &encryptedRefreshToken, &scopes, &expiresIn)
+	if err != nil {
+		return nil, err
+	}
+	accessToken, err := util.Decrypt(encryptedAccessToken, ds.secret)
+	if err != nil {
+		return nil, err
+	}
+	refreshToken, err := util.Decrypt(encryptedRefreshToken, ds.secret)
+	if err != nil {
+		return nil, err
+	}
+	spotifyUser := &SpotifyUser{Id: id, AccessToken: accessToken, RefreshToken: refreshToken, Scopes: scopes,
+		ExpiresIn: expiresIn}
+	return spotifyUser, nil
+}
+
 func (ds *DataStore) UpsertSpotifyUser(spotifyUser *SpotifyUser) error {
 	query := `INSERT INTO spotify_users (id, access_token, refresh_token, scopes, expires_in)
 		VALUES (?, ?, ?, ?, ?)

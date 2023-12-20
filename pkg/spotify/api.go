@@ -31,6 +31,10 @@ func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, access
 	return &Api{config: config, ds: ds, accessToken: accessToken}
 }
 
+func NewAuthenticatedApiForUser(config *config.Config, ds *data_store.DataStore, accessToken, userId string) *Api {
+	return &Api{config: config, ds: ds, accessToken: accessToken, userId: userId}
+}
+
 func (a *Api) get(path string, params url.Values, v any) error {
 	req, err := http.NewRequest(http.MethodGet, ApiUrl+path, strings.NewReader(params.Encode()))
 	if err != nil {
