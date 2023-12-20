@@ -6,8 +6,6 @@ class SpotifyArtist {
   href: string
   id: string
   name: string
-  popularity: number
-  type: string
   uri: string
   images: SpotifyImage[]
 
@@ -17,8 +15,6 @@ class SpotifyArtist {
     this.href = data.href
     this.id = data.id
     this.name = data.name
-    this.popularity = data.popularity
-    this.type = data.type
     this.uri = data.uri
     this.images = (data.images || []).map((image: any) => new SpotifyImage(image))
   }

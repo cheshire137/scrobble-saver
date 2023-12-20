@@ -31,10 +31,7 @@ type SearchResponse struct {
 			Href         string       `json:"href"`
 			Id           string       `json:"id"`
 			Name         string       `json:"name"`
-			Popularity   int          `json:"popularity"`
-			PreviewUrl   string       `json:"preview_url"`
 			TrackNumber  int          `json:"track_number"`
-			Type         string       `json:"type"`
 			Uri          string       `json:"uri"`
 			Album        struct {
 				AlbumType string `json:"album_type"`
@@ -43,7 +40,6 @@ type SearchResponse struct {
 					Href         string       `json:"href"`
 					Id           string       `json:"id"`
 					Name         string       `json:"name"`
-					Type         string       `json:"type"`
 					Uri          string       `json:"uri"`
 				} `json:"artists"`
 				ExternalUrls         ExternalUrls `json:"external_urls"`
@@ -54,7 +50,6 @@ type SearchResponse struct {
 				ReleaseDate          string       `json:"release_date"`
 				ReleaseDatePrecision string       `json:"release_date_precision"`
 				TotalTracks          int          `json:"total_tracks"`
-				Type                 string       `json:"type"`
 				Uri                  string       `json:"uri"`
 			} `json:"album"`
 			Artists []struct {
@@ -64,9 +59,7 @@ type SearchResponse struct {
 				Id           string       `json:"id"`
 				Images       []Image      `json:"images"`
 				Name         string       `json:"name"`
-				Type         string       `json:"type"`
 				Uri          string       `json:"uri"`
-				Popularity   int          `json:"popularity"`
 			} `json:"artists"`
 		} `json:"items"`
 	} `json:"tracks"`
