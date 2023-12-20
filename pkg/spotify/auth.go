@@ -51,6 +51,9 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, error) {
 
 // https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens
 func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, error) {
+	if refreshToken == "" {
+		return nil, fmt.Errorf("refresh token is empty")
+	}
 	path := "/token"
 	params := url.Values{}
 	params.Add("grant_type", "refresh_token")
