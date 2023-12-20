@@ -10,6 +10,8 @@ interface Results {
 function useSearchSpotifyTracks(artist: string, track: string, album?: string, offset?: number, limit?: number): Results {
   const canSearch = artist.trim().length > 0 && track.trim().length > 0
   const [results, setResults] = useState<Results>({ fetching: canSearch })
+  offset = offset ?? 0
+  limit = limit ?? 3
 
   useEffect(() => {
     async function searchTracks() {
