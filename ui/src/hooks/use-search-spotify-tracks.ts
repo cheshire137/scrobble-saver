@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import SpotifyApi from '../models/SpotifyApi'
+import SpotifyTrackSearchResults from '../models/SpotifyTrackSearchResults'
 
 interface Results {
-  results?: any;
+  results?: SpotifyTrackSearchResults;
   fetching: boolean;
   error?: string;
 }
