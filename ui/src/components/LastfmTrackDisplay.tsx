@@ -19,7 +19,7 @@ const LastfmTrackDisplay = ({ track }: Props) => {
 
   if (searchError) {
     return <Box as="li">
-      <Flash variant="danger">Error searching Spotify: {searchError.message}</Flash>
+      <Flash variant="danger">Error searching Spotify: {searchError}</Flash>
     </Box>
   }
 
