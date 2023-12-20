@@ -84,7 +84,7 @@ func (a *Api) getParamsStr(params url.Values) string {
 	return strings.Join(keyValuePairs, "")
 }
 
-func (a *Api) cacheResponse(response any, path string, params string, userId string) {
+func (a *Api) cacheResponse(response any, path, params, userId string) {
 	spotifyCachedResponse, err := data_store.NewSpotifyCachedResponse(response, path, params, userId)
 	if err != nil {
 		util.LogError("Could not serialize Spotify %s response for caching:", path, err)
