@@ -41,9 +41,9 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, error) {
 		return nil, err
 	}
 	var getTokenResp GetTokenResponse
-	err = a.handleResponse(resp, path, &getTokenResp)
-	if err != nil {
-		return nil, err
+	requestErr := a.handleResponse(resp, path, &getTokenResp)
+	if requestErr != nil {
+		return nil, requestErr.Err
 	}
 	return &getTokenResp, nil
 }
@@ -70,9 +70,9 @@ func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, error) {
 		return nil, err
 	}
 	var getTokenResp GetTokenResponse
-	err = a.handleResponse(resp, path, &getTokenResp)
-	if err != nil {
-		return nil, err
+	requestErr := a.handleResponse(resp, path, &getTokenResp)
+	if requestErr != nil {
+		return nil, requestErr.Err
 	}
 	return &getTokenResp, nil
 }

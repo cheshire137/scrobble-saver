@@ -31,7 +31,7 @@ func (e *Env) SpotifySearchTracksHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	api := spotify.NewAuthenticatedApiForUser(e.config, e.ds, spotifyUser.AccessToken, spotifyUserId)
+	api := spotify.NewAuthenticatedApi(e.config, e.ds, spotifyUser)
 	limitStr := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil {

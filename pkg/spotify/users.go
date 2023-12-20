@@ -27,7 +27,7 @@ func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
 	paramsForCache := a.getParamsStr(params)
 	var response GetCurrentUserResponse
 
-	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.userId, &response)
+	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
 		util.LogError("Failed to use cached Spotify current user response:", err)
 		return nil, err
@@ -36,11 +36,12 @@ func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
 		return &response, nil
 	}
 
-	err = a.get(path, params, &response)
-	if err != nil {
-		util.LogError("Failed to get current Spotify user:", err)
-		return nil, err
+	requestErr := a.get(path, params, &response)
+	if requestErr != nil {
+		util.LogError("Failed to get current Spotify user:", requestErr.Err)
+		return nil, requestErr.Err
 	}
+
 	userId := response.Id
 	a.cacheResponse(response, path, paramsForCache, userId)
 	return &response, nil

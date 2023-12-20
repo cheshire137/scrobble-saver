@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/cheshire137/lastly-likes/pkg/data_store"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
@@ -92,7 +93,7 @@ func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (
 	paramsForCache := a.getParamsStr(params)
 	var response SearchResponse
 
-	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.userId, &response)
+	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
 		util.LogError("Failed to use search tracks cached response:", err)
 		return nil, err
@@ -101,12 +102,51 @@ func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (
 		return &response, nil
 	}
 
-	err = a.get(path, params, &response)
-	if err != nil {
-		util.LogError("Failed to search Spotify tracks:", err)
-		return nil, err
+	requestErr := a.get(path, params, &response)
+	if requestErr != nil {
+		if requestErr.StatusCode != 401 {
+			util.LogError("Failed to search Spotify tracks:", requestErr.Err)
+			return nil, requestErr.Err
+		}
+
+		err = a.refreshSpotifyToken()
+		if err != nil {
+			return nil, err
+		}
+
+		// Try the original request once more, now with an updated access token:
+		requestErr = a.get(path, params, &response)
+		if requestErr != nil {
+			util.LogError("Failed to search Spotify tracks after refreshing token:", requestErr.Err)
+			return nil, requestErr.Err
+		}
 	}
 
-	a.cacheResponse(response, path, paramsForCache, a.userId)
+	a.cacheResponse(response, path, paramsForCache, a.spotifyUser.Id)
 	return &response, nil
+}
+
+func (a *Api) refreshSpotifyToken() error {
+	util.LogInfo("Spotify token for " + a.spotifyUser.Id + " expired, refreshing...")
+	tokenResp, err := a.RefreshToken(a.spotifyUser.RefreshToken)
+	if err != nil {
+		util.LogError("Failed to refresh Spotify token:", err)
+		return err
+	}
+
+	spotifyUser := data_store.SpotifyUser{
+		Id:           a.spotifyUser.Id,
+		AccessToken:  tokenResp.AccessToken,
+		RefreshToken: tokenResp.RefreshToken,
+		Scopes:       tokenResp.Scope,
+		ExpiresIn:    tokenResp.ExpiresIn,
+	}
+	err = a.ds.UpsertSpotifyUser(&spotifyUser)
+	if err != nil {
+		util.LogError("Failed to update Spotify user after refreshing token:", err)
+		return err
+	}
+
+	a.spotifyUser = &spotifyUser
+	return nil
 }

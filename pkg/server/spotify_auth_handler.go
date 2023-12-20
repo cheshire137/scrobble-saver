@@ -34,7 +34,13 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api = spotify.NewAuthenticatedApi(e.config, e.ds, tokenResp.AccessToken)
+	spotifyUser := data_store.SpotifyUser{
+		AccessToken:  tokenResp.AccessToken,
+		RefreshToken: tokenResp.RefreshToken,
+		Scopes:       tokenResp.Scope,
+		ExpiresIn:    tokenResp.ExpiresIn,
+	}
+	api = spotify.NewAuthenticatedApi(e.config, e.ds, &spotifyUser)
 	userResp, err := api.GetCurrentUser()
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -44,13 +50,7 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	spotifyUser := data_store.SpotifyUser{
-		Id:           userResp.Id,
-		AccessToken:  tokenResp.AccessToken,
-		RefreshToken: tokenResp.RefreshToken,
-		Scopes:       tokenResp.Scope,
-		ExpiresIn:    tokenResp.ExpiresIn,
-	}
+	spotifyUser.Id = userResp.Id
 	err = e.ds.UpsertSpotifyUser(&spotifyUser)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
