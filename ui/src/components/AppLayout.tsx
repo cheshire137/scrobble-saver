@@ -5,6 +5,8 @@ import { PageContext } from '../contexts/PageContext'
 import { AuthContext } from '../contexts/AuthContext'
 
 const AppLayout = () => {
+  const env = import.meta.env
+  const backendPort = env.VITE_BACKEND_PORT || 8080
   const { pageTitle } = useContext(PageContext)
   const { isSignedIntoLastfm, isSignedIntoSpotify } = useContext(AuthContext)
 
@@ -21,7 +23,7 @@ const AppLayout = () => {
           >{pageTitle}</Heading>}
         </Header.Item>
         {(isSignedIntoLastfm || isSignedIntoSpotify) && <Header.Item>
-          <Header.Link href="/logout">Log out</Header.Link>
+          <Header.Link href={`http://localhost:${backendPort}/logout`}>Log out</Header.Link>
         </Header.Item>}
       </Header>
     </PageLayout.Header>
