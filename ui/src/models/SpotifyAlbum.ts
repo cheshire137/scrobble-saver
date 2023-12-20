@@ -25,6 +25,17 @@ class SpotifyAlbum {
     this.images = (data.images || []).map((image: any) => new SpotifyImage(image))
     this.artists = (data.artists || []).map((artist: any) => new SpotifyArtist(artist))
   }
+
+  releaseYear() {
+    if (this.releaseDatePrecision === 'year') {
+      return this.releaseDate
+    }
+    return this.releaseDate.split('-')[0]
+  }
+
+  smallImage() {
+    return this.images.find(image => image.width < 100)
+  }
 }
 
 export default SpotifyAlbum

@@ -18,6 +18,10 @@ class SpotifyArtist {
     this.uri = data.uri
     this.images = (data.images || []).map((image: any) => new SpotifyImage(image))
   }
+
+  smallImage() {
+    return this.images.find(image => image.width < 100)
+  }
 }
 
 export default SpotifyArtist

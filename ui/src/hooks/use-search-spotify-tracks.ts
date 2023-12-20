@@ -12,12 +12,10 @@ function useSearchSpotifyTracks(artist: string, track: string, album?: string, o
   const canSearch = artist.trim().length > 0 && track.trim().length > 0
   const [results, setResults] = useState<Results>({ fetching: canSearch })
   offset = offset ?? 0
-  limit = limit ?? 3
+  limit = limit ?? 1
 
   useEffect(() => {
     async function searchTracks() {
-      console.log('searching Spotify for tracks matching artist=', artist, 'track=', track, 'album=', album, 'limit=',
-        limit, 'offset=', offset)
       try {
         const results = await SpotifyApi.searchTracks(artist, track, album, limit, offset)
         setResults({ results, fetching: false })

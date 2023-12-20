@@ -27,6 +27,13 @@ class SpotifyTrack {
     this.album = new SpotifyAlbum(data.album)
     this.artists = data.artists.map((artist: any) => new SpotifyArtist(artist))
   }
+
+  smallImage() {
+    const albumImage = this.album.smallImage()
+    if (albumImage) return albumImage
+    const artistImages = this.artists.map(artist => artist.smallImage())
+    return artistImages.find(image => image !== undefined)
+  }
 }
 
 export default SpotifyTrack

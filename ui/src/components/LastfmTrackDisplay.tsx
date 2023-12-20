@@ -2,7 +2,7 @@ import { useState } from 'react'
 import LastfmTrack from '../models/LastfmTrack'
 import { Avatar, Box, Button, CounterLabel, Flash, Heading, Link, Spinner } from '@primer/react'
 import useSearchSpotifyTracks from '../hooks/use-search-spotify-tracks'
-import SpotifySearchResultDisplay from './SpotifySearchResultDisplay'
+import SpotifySearchResultsDisplay from './SpotifySearchResultsDisplay'
 
 interface Props {
   track: LastfmTrack
@@ -45,7 +45,7 @@ const LastfmTrackDisplay = ({ track }: Props) => {
       {track.playCount} play{track.playCount === 1 ? '' : 's'}
     </Box>
     {searchResults ? (
-      <SpotifySearchResultDisplay results={searchResults} />
+      <SpotifySearchResultsDisplay results={searchResults} />
     ) : (
       <Button onClick={() => setTrackQuery(track.name)} sx={{ ml: 3 }}>Search Spotify</Button>
     )}
