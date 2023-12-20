@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/cheshire137/lastly-likes/pkg/data_store"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
@@ -75,4 +76,29 @@ func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, error) {
 		return nil, requestErr.Err
 	}
 	return &getTokenResp, nil
+}
+
+func (a *Api) refreshSpotifyToken() error {
+	util.LogInfo("Spotify token for " + a.spotifyUser.Id + " expired, refreshing...")
+	tokenResp, err := a.RefreshToken(a.spotifyUser.RefreshToken)
+	if err != nil {
+		util.LogError("Failed to refresh Spotify token:", err)
+		return err
+	}
+
+	spotifyUser := data_store.SpotifyUser{
+		Id:           a.spotifyUser.Id,
+		AccessToken:  tokenResp.AccessToken,
+		RefreshToken: tokenResp.RefreshToken,
+		Scopes:       tokenResp.Scope,
+		ExpiresIn:    tokenResp.ExpiresIn,
+	}
+	err = a.ds.UpsertSpotifyUser(&spotifyUser)
+	if err != nil {
+		util.LogError("Failed to update Spotify user after refreshing token:", err)
+		return err
+	}
+
+	a.spotifyUser = &spotifyUser
+	return nil
 }
