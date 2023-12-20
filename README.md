@@ -2,6 +2,8 @@
 
 Uses the [Last.fm API](https://www.last.fm/api) and the Spotify API to like on Spotify your top tracks and loves on Last.fm.
 
+![screenshot](./screenshot-2023-12-20.png)
+
 ## How to develop
 
 Create a [Last.fm API app](https://www.last.fm/api/account/create). Set `http://localhost:8080/auth/lastfm` as the redirect URL.
