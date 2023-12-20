@@ -74,7 +74,10 @@ type SearchResponse struct {
 // https://developer.spotify.com/documentation/web-api/reference/search
 func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (*SearchResponse, error) {
 	path := "/search"
-	query := fmt.Sprintf("artist:%s album:%s track:%s", artist, album, track)
+	query := fmt.Sprintf("artist:%s track:%s", artist, track)
+	if album != "" {
+		query = query + fmt.Sprintf(" album:%s", album)
+	}
 	if limit == 0 {
 		limit = 20
 	}
