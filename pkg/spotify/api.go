@@ -36,7 +36,12 @@ func NewAuthenticatedApiForUser(config *config.Config, ds *data_store.DataStore,
 }
 
 func (a *Api) get(path string, params url.Values, v any) error {
-	req, err := http.NewRequest(http.MethodGet, ApiUrl+path, strings.NewReader(params.Encode()))
+	url, err := url.Parse(ApiUrl + path)
+	if err != nil {
+		return err
+	}
+	url.RawQuery = params.Encode()
+	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
 	if err != nil {
 		return err
 	}
