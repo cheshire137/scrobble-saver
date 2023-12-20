@@ -93,3 +93,13 @@ func (a *Api) cacheResponse(response any, path string, params string, userId str
 
 	util.LogInfo("Cached Spotify %s response for %s", path, userId)
 }
+
+func (a *Api) loadCachedResponse(path, paramsForCache, userId string, response any) (bool, error) {
+	cachedResponseBody := a.ds.LoadCachedSpotifyResponse(path, paramsForCache, userId)
+	if cachedResponseBody != "" {
+		util.LogInfo("Using cached response for path=%s, userId=%s, params=%s", path, userId, paramsForCache)
+		err := json.Unmarshal([]byte(cachedResponseBody), &response)
+		return true, err // cache hit
+	}
+	return false, nil // cache miss
+}

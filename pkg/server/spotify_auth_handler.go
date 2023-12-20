@@ -23,7 +23,6 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	code := r.URL.Query().Get("code")
-	fmt.Println("code", code)
 	api := spotify.NewApi(e.config, e.ds)
 
 	tokenResp, err := api.GetToken(code)

@@ -26,7 +26,17 @@ func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
 	params := url.Values{}
 	paramsForCache := a.getParamsStr(params)
 	var response GetCurrentUserResponse
-	err := a.get(path, params, &response)
+
+	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.userId, &response)
+	if err != nil {
+		util.LogError("Failed to use cached Spotify current user response:", err)
+		return nil, err
+	}
+	if cacheHit {
+		return &response, nil
+	}
+
+	err = a.get(path, params, &response)
 	if err != nil {
 		util.LogError("Failed to get current Spotify user:", err)
 		return nil, err
