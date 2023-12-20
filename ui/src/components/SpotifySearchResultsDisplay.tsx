@@ -10,7 +10,7 @@ const SpotifySearchResultDisplay = ({ results: { tracks } }: Props) => {
   if (tracks.length < 1) {
     return <Box>No Spotify tracks found</Box>
   }
-  return <Box as="ol">
+  return <Box as="ol" sx={{ listStyle: 'none', pl: 0, ml: 3 }}>
     {tracks.map(track => <SpotifyTrackSearchResult key={track.id} track={track} />)}
   </Box>
 }
