@@ -43,6 +43,7 @@ func main() {
 	}
 
 	dataStore.PruneExpiredLastfmCachedResponsesIfNecessary()
+	dataStore.PruneExpiredSpotifyCachedResponsesIfNecessary()
 	mux := http.NewServeMux()
 	env := server.NewEnv(dataStore, config)
 
