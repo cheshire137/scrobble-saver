@@ -59,7 +59,7 @@ func (a *Api) handleResponse(resp *http.Response, path string, v any) error {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		util.LogError("Non-200 response for %s:", path, resp.Status, string(data))
+		util.LogError("Non-200 response for "+path+":", resp.Status, string(data))
 		return fmt.Errorf("%s %s", resp.Status, path)
 	}
 	err = json.Unmarshal(data, &v)

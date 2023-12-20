@@ -64,14 +64,14 @@ func (a *Api) get(method string, params url.Values, signed bool, v any) error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		util.LogError("Non-200 response for %s:", method, resp.Status)
-		return fmt.Errorf("%s %s", resp.Status, method)
-	}
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		util.LogError("Failed to read %s response body:", method, err)
 		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		util.LogError("Non-200 response for "+method+":", resp.Status, string(data))
+		return fmt.Errorf("%s %s", resp.Status, method)
 	}
 	err = xml.Unmarshal(data, &v)
 	if err != nil {
