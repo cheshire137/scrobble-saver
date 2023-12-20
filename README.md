@@ -1,6 +1,6 @@
 # Lastly Likes
 
-Uses the [Last.fm API](https://www.last.fm/api) and the Spotify API to like on Spotify your top tracks and loves on Last.fm.
+A web app that uses the [Last.fm API](https://www.last.fm/api) and the [Spotify API](https://developer.spotify.com/documentation/web-api) to like tracks on Spotify that are your top tracks on Last.fm.
 
 ![screenshot](./screenshot-2023-12-20.png)
 
@@ -11,6 +11,8 @@ Create a [Last.fm API app](https://www.last.fm/api/account/create). Set `http://
 Create a [Spotify API app](https://developer.spotify.com/dashboard/create). Set `http://localhost:8080/auth/spotify` as the redirect URL. Select the 'Web API' as the API your app will use.
 
 ### Backend
+
+The backend is a Go server written using Go version 1.19.4.
 
 ```sh
 cp config.yml.example config.yml
@@ -23,6 +25,8 @@ go run cmd/server/main.go
 ```
 
 ### Frontend
+
+The UI is a React app using Vite.
 
 ```sh
 cd ui
