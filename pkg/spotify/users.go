@@ -69,7 +69,7 @@ func (a *Api) CheckSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, er
 
 func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, error) {
 	if len(trackIDs) > 50 {
-		return nil, fmt.Errorf("cannot check more than 50 track IDs at a time")
+		return nil, fmt.Errorf("cannot check more than 50 track IDs at a time, got %d", len(trackIDs))
 	}
 	path := "/me/tracks/contains"
 	params := url.Values{}
