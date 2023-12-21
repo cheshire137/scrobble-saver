@@ -1,9 +1,9 @@
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { SpotifyTracksContext } from '../contexts/SpotifyTracksContext'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
-import { Avatar, Box, Heading } from '@primer/react'
+import { ActionList, Avatar, Box, Heading } from '@primer/react'
 import SpotifyTrackDisplay from './SpotifyTrackDisplay'
-import TrackContainer from './TrackContainer'
+import { TrackContainerBox } from './TrackContainer'
 import SpotifyLogo from '../assets/Spotify_Icon_RGB_Green.png'
 import SpotifyTrackSearch from './SpotifyTrackSearch'
 
@@ -22,18 +22,18 @@ const SpotifyTracks = () => {
       />
       Spotify tracks
     </Heading>
-    <Box as="ol" sx={{ listStyle: 'none', pl: 0 }}>
+    <ActionList>
       {lastfmTopTrackResults.tracks.map(lastfmTrack => {
         const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []
-        return <TrackContainer key={lastfmTrack.url} sx={{ minHeight: '32px' }}>
-          {spotifyTrackIds.length < 1 && <SpotifyTrackSearch lastfmTrack={lastfmTrack} />}
+        if (spotifyTrackIds.length < 1) return <SpotifyTrackSearch key={lastfmTrack.url} lastfmTrack={lastfmTrack} />
+        return <Fragment key={lastfmTrack.url}>
           {spotifyTrackIds.map(spotifyTrackId => {
             const spotifyTrack = spotifyTracks.find(track => track.id === spotifyTrackId)
             return spotifyTrack ? <SpotifyTrackDisplay key={spotifyTrack.id} track={spotifyTrack} /> : null
           })}
-        </TrackContainer>
+        </Fragment>
       })}
-    </Box>
+    </ActionList>
   </Box>
 }
 

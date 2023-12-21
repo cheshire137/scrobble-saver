@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Button, Flash, Spinner } from '@primer/react'
+import { Flash, ActionList, Spinner } from '@primer/react'
 import { SearchIcon } from '@primer/octicons-react'
 import SpotifySearchResultsDisplay from './SpotifySearchResultsDisplay'
 import LastfmTrack from '../models/LastfmTrack'
 import useSearchSpotifyTracks from '../hooks/use-search-spotify-tracks'
-import TrackContainer from './TrackContainer'
+import { TrackContainerActionListItem } from './TrackContainer'
 
 interface Props {
   lastfmTrack: LastfmTrack
@@ -17,19 +17,18 @@ const SpotifyTrackSearch = ({ lastfmTrack }: Props) => {
     fetching: searching,
     error: searchError
   } = useSearchSpotifyTracks(lastfmTrack.url, lastfmTrack.artist.name, trackNameQuery)
+  const onClick = searchResults ? undefined : () => setTrackQuery(lastfmTrack.name)
 
-  return <TrackContainer>
+  return <TrackContainerActionListItem onClick={onClick}>
     {searching && <Spinner size="small" />}
     {searchError && <Flash variant="danger">Error searching Spotify: {searchError}</Flash>}
+    <ActionList.LeadingVisual>
+      <SearchIcon />
+    </ActionList.LeadingVisual>
     {searchResults
       ? <SpotifySearchResultsDisplay results={searchResults} />
-      : <Button
-          leadingVisual={SearchIcon}
-          onClick={() => setTrackQuery(lastfmTrack.name)}
-          sx={{ ml: 1 }}
-          variant="invisible"
-        >Search Spotify</Button>}
-  </TrackContainer>
+      : <span>Search Spotify</span>}
+  </TrackContainerActionListItem>
 }
 
 export default SpotifyTrackSearch

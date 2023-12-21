@@ -1,6 +1,6 @@
 import LastfmTrack from '../models/LastfmTrack'
 import { Avatar, Box, CounterLabel, Heading, Link } from '@primer/react'
-import TrackContainer from './TrackContainer'
+import { TrackContainerBox } from './TrackContainer'
 
 interface Props {
   track: LastfmTrack
@@ -8,7 +8,7 @@ interface Props {
 
 const LastfmTrackDisplay = ({ track: lastfmTrack }: Props) => {
   const image = lastfmTrack.mediumImage()
-  return <TrackContainer sx={{ display: 'flex', alignItems: 'center' }}>
+  return <TrackContainerBox sx={{ display: 'flex', alignItems: 'center' }}>
     <Heading as="h3" sx={{ fontSize: 2, display: 'flex', alignItems: 'center' }}>
       {image && <Avatar src={image.url} size={32} sx={{ mr: 2 }} />}
       <CounterLabel sx={{ mr: 1 }}>#{lastfmTrack.rank}</CounterLabel>
@@ -18,7 +18,7 @@ const LastfmTrackDisplay = ({ track: lastfmTrack }: Props) => {
       by <Link href={lastfmTrack.artist.url} muted target="_blank">{lastfmTrack.artist.name}</Link>
     </Box>
 
-  </TrackContainer>
+  </TrackContainerBox>
 }
 
 export default LastfmTrackDisplay

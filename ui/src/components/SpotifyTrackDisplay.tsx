@@ -1,6 +1,7 @@
 import { Avatar, Box, Link } from '@primer/react'
 import SpotifyTrack from '../models/SpotifyTrack'
 import SpotifyAlbumDisplay from './SpotifyAlbumDisplay'
+import { TrackContainerActionListItem } from './TrackContainer'
 
 interface Props {
   track: SpotifyTrack
@@ -8,13 +9,15 @@ interface Props {
 
 const SpotifyTrackDisplay = ({ track }: Props) => {
   const image = track.smallImage()
-  return <Link sx={{ display: 'flex', alignItems: 'center' }} href={track.url} target="_blank">
-    {image && <Avatar src={image.url} square alt={`${track.album.name} cover art`} size={32} sx={{ mr: 2 }} />}
-    <Box>
-      {track.name} by {track.artists.map(artist => artist.name).join(', ')}
-      <SpotifyAlbumDisplay album={track.album} />
-    </Box>
-  </Link>
+  return <TrackContainerActionListItem>
+    <Link sx={{ display: 'flex', alignItems: 'center' }} href={track.url} target="_blank">
+      {image && <Avatar src={image.url} square alt={`${track.album.name} cover art`} size={32} sx={{ mr: 2 }} />}
+      <Box>
+        {track.name} by {track.artists.map(artist => artist.name).join(', ')}
+        <SpotifyAlbumDisplay album={track.album} />
+      </Box>
+    </Link>
+  </TrackContainerActionListItem>
 }
 
 export default SpotifyTrackDisplay
