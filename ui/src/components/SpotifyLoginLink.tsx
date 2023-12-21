@@ -1,7 +1,7 @@
 import { Link } from '@primer/react'
 
 // https://developer.spotify.com/documentation/web-api/concepts/scopes
-const spotifyScopes = 'user-library-modify'
+const spotifyScopes = 'user-library-modify user-library-read'
 
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 function getSpotifyAuthUrl() {
