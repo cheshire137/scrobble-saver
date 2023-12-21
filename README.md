@@ -2,7 +2,7 @@
 
 A web app that uses the [Last.fm API](https://www.last.fm/api) and the [Spotify API](https://developer.spotify.com/documentation/web-api) to like tracks on Spotify that are your top tracks on Last.fm.
 
-![screenshot](./screenshot-2023-12-20.png)
+![screenshot](./screenshot-2023-12-21.png)
 
 ## How to develop
 
