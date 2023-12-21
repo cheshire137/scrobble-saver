@@ -7,6 +7,9 @@ const colors = {
     text: '#C84630',
     logo: '#69140E',
   },
+  border: {
+    default: '#FFB563',
+  },
   accent: {
     fg: '#4D5382',
   },
