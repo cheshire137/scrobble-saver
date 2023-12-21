@@ -27,9 +27,9 @@ interface Props extends PropsWithChildren {
 
 export const LastfmTopTracksContextProvider = ({ children, ...props }: Props) => {
   const { lastfmUsername } = useContext(AuthContext)
-  const [period, setPeriod] = useState(props.period ?? 'overall')
+  const [period, setPeriod] = useState(props.period ?? '3month')
   const [page, setPage] = useState(props.page ?? 1)
-  const [limit, setLimit] = useState(props.limit ?? 20)
+  const [limit, setLimit] = useState(props.limit ?? 10)
   const update = useCallback((page?: number, period?: string, limit?: number) => {
     if (typeof page === 'number') setPage(page)
     if (period) setPeriod(period)
