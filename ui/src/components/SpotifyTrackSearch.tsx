@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Flash, ActionList, Spinner } from '@primer/react'
 import { SearchIcon } from '@primer/octicons-react'
 import SpotifySearchResultsDisplay from './SpotifySearchResultsDisplay'
@@ -8,16 +8,21 @@ import { TrackContainerActionListItem } from './TrackContainer'
 
 interface Props {
   lastfmTrack: LastfmTrack
+  preload?: boolean
 }
 
-const SpotifyTrackSearch = ({ lastfmTrack }: Props) => {
-  const [trackNameQuery, setTrackQuery] = useState('')
+const SpotifyTrackSearch = ({ lastfmTrack, preload = false }: Props) => {
+  const [trackNameQuery, setTrackQuery] = useState(preload ? lastfmTrack.name : '')
   const {
     results: searchResults,
     fetching: searching,
     error: searchError
   } = useSearchSpotifyTracks(lastfmTrack.url, lastfmTrack.artist.name, trackNameQuery)
-  const onClick = searchResults ? undefined : () => setTrackQuery(lastfmTrack.name)
+  const onClick = searchResults || searchError ? undefined : () => setTrackQuery(lastfmTrack.name)
+
+  useEffect(() => {
+    if (preload && !(searchResults || searchError)) setTrackQuery(lastfmTrack.name)
+  }, [preload, lastfmTrack.name, searchResults, searchError])
 
   return <TrackContainerActionListItem onClick={onClick}>
     {searching && <Spinner size="small" />}
