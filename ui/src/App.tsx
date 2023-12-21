@@ -3,6 +3,7 @@ import PageRoutes from './PageRoutes'
 import { PageContextProvider } from './contexts/PageContext'
 import { AuthContextProvider } from './contexts/AuthContext'
 import { LastfmTopTracksContextProvider } from './contexts/LastfmTopTracksContext'
+import { SpotifyTracksContextProvider } from './contexts/SpotifyTracksContext'
 
 function App() {
   return <ThemeProvider>
@@ -10,7 +11,9 @@ function App() {
       <PageContextProvider>
         <AuthContextProvider>
           <LastfmTopTracksContextProvider>
-            <PageRoutes />
+            <SpotifyTracksContextProvider>
+              <PageRoutes />
+            </SpotifyTracksContextProvider>
           </LastfmTopTracksContextProvider>
         </AuthContextProvider>
       </PageContextProvider>
