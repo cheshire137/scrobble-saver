@@ -4,6 +4,7 @@ import { PageContext } from '../contexts/PageContext'
 import { AuthContext } from '../contexts/AuthContext'
 import LastfmTopTracks from './LastfmTopTracks'
 import LastfmTopTrackPeriodMenu from './LastfmTopTrackPeriodMenu'
+import SpotifyTracks from './SpotifyTracks'
 
 const SpotifyAuthPage = () => {
   const { setPageTitle } = useContext(PageContext)
@@ -19,8 +20,9 @@ const SpotifyAuthPage = () => {
 
   return <Box>
     <LastfmTopTrackPeriodMenu />
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 4 }}>
       <LastfmTopTracks />
+      <SpotifyTracks />
     </Box>
   </Box>
 }
