@@ -19,6 +19,10 @@ class LastfmTrack {
     this.artist = new LastfmArtist(data.Artist)
     this.images = data.Images.map((image: any) => new LastfmImage(image))
   }
+
+  mediumImage() {
+    return this.images.find(image => image.size === 'medium')
+  }
 }
 
 export default LastfmTrack

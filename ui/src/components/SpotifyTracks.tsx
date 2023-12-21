@@ -5,11 +5,12 @@ import { Avatar, Box, Heading } from '@primer/react'
 import SpotifyTrackDisplay from './SpotifyTrackDisplay'
 import TrackContainer from './TrackContainer'
 import SpotifyLogo from '../assets/Spotify_Icon_RGB_Green.png'
+import SpotifyTrackSearch from './SpotifyTrackSearch'
 
 const SpotifyTracks = () => {
   const { tracks: spotifyTracks, trackIdsByLastfmUrl: spotifyTrackIdsByLastfmUrl } = useContext(SpotifyTracksContext)
   const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
-  if (spotifyTracks.length < 1) return null
+
   if (!lastfmTopTrackResults || lastfmTopTrackResults.tracks.length < 1) return null
 
   return <Box>
@@ -25,7 +26,7 @@ const SpotifyTracks = () => {
       {lastfmTopTrackResults.tracks.map(lastfmTrack => {
         const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []
         return <TrackContainer key={lastfmTrack.url} sx={{ minHeight: '32px' }}>
-          {spotifyTrackIds.length < 1 && <span>&mdash;</span>}
+          {spotifyTrackIds.length < 1 && <SpotifyTrackSearch lastfmTrack={lastfmTrack} />}
           {spotifyTrackIds.map(spotifyTrackId => {
             const spotifyTrack = spotifyTracks.find(track => track.id === spotifyTrackId)
             return spotifyTrack ? <SpotifyTrackDisplay key={spotifyTrack.id} track={spotifyTrack} /> : null

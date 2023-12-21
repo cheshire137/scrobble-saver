@@ -1,9 +1,5 @@
-import { useState } from 'react'
 import LastfmTrack from '../models/LastfmTrack'
-import { Avatar, Box, IconButton, CounterLabel, Flash, Heading, Link, Spinner } from '@primer/react'
-import { SearchIcon } from '@primer/octicons-react'
-import useSearchSpotifyTracks from '../hooks/use-search-spotify-tracks'
-import SpotifySearchResultsDisplay from './SpotifySearchResultsDisplay'
+import { Avatar, Box, CounterLabel, Heading, Link } from '@primer/react'
 import TrackContainer from './TrackContainer'
 
 interface Props {
@@ -11,26 +7,7 @@ interface Props {
 }
 
 const LastfmTrackDisplay = ({ track: lastfmTrack }: Props) => {
-  const [trackNameQuery, setTrackQuery] = useState('')
-  const image = lastfmTrack.images.find(image => image.size === 'medium')
-  const {
-    results: searchResults,
-    fetching: searching,
-    error: searchError
-  } = useSearchSpotifyTracks(lastfmTrack.url, lastfmTrack.artist.name, trackNameQuery)
-
-  if (searchError) {
-    return <TrackContainer>
-      <Flash variant="danger">Error searching Spotify: {searchError}</Flash>
-    </TrackContainer>
-  }
-
-  if (searching) {
-    return <TrackContainer>
-      <Spinner size="small" />
-    </TrackContainer>
-  }
-
+  const image = lastfmTrack.mediumImage()
   return <TrackContainer sx={{ display: 'flex', alignItems: 'center' }}>
     <Heading as="h3" sx={{ fontSize: 2, display: 'flex', alignItems: 'center' }}>
       {image && <Avatar src={image.url} size={32} sx={{ mr: 2 }} />}
@@ -40,15 +17,7 @@ const LastfmTrackDisplay = ({ track: lastfmTrack }: Props) => {
     <Box sx={{ ml: 1, color: 'fg.muted' }}>
       by <Link href={lastfmTrack.artist.url} muted target="_blank">{lastfmTrack.artist.name}</Link>
     </Box>
-    {searchResults
-      ? <SpotifySearchResultsDisplay results={searchResults} />
-      : <IconButton
-          icon={SearchIcon}
-          onClick={() => setTrackQuery(lastfmTrack.name)}
-          sx={{ ml: 1 }}
-          variant="invisible"
-          aria-label="Search Spotify for this track"
-        />}
+
   </TrackContainer>
 }
 
