@@ -15,7 +15,7 @@ const LastfmTrackDisplay = ({ track }: Props) => {
     results: searchResults,
     fetching: searching,
     error: searchError
-  } = useSearchSpotifyTracks(track.artist.name, trackQuery)
+  } = useSearchSpotifyTracks(track.url, track.artist.name, trackQuery)
 
   if (searchError) {
     return <Box as="li">

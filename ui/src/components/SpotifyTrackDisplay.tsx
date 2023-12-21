@@ -6,7 +6,7 @@ interface Props {
   track: SpotifyTrack
 }
 
-const SpotifyTrackSearchResult = ({ track }: Props) => {
+const SpotifyTrackDisplay = ({ track }: Props) => {
   const image = track.smallImage()
   return <Box as="li">
     <Link sx={{ display: 'flex', alignItems: 'center' }} href={track.url} target="_blank">
@@ -19,4 +19,4 @@ const SpotifyTrackSearchResult = ({ track }: Props) => {
   </Box>
 }
 
-export default SpotifyTrackSearchResult
+export default SpotifyTrackDisplay

@@ -1,6 +1,6 @@
 import { Box } from '@primer/react'
 import SpotifyTrackSearchResults from '../models/SpotifyTrackSearchResults'
-import SpotifyTrackSearchResult from './SpotifyTrackSearchResult'
+import SpotifyTrackDisplay from './SpotifyTrackDisplay'
 
 interface Props {
   results: SpotifyTrackSearchResults
@@ -11,7 +11,7 @@ const SpotifySearchResultDisplay = ({ results: { tracks } }: Props) => {
     return <Box>No Spotify tracks found</Box>
   }
   return <Box as="ol" sx={{ listStyle: 'none', pl: 0, ml: 3 }}>
-    {tracks.map(track => <SpotifyTrackSearchResult key={track.id} track={track} />)}
+    {tracks.map(track => <SpotifyTrackDisplay key={track.id} track={track} />)}
   </Box>
 }
 

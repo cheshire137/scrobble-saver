@@ -9,7 +9,7 @@ interface Results {
   error?: string;
 }
 
-function useSearchSpotifyTracks(artist: string, track: string, album?: string, offset?: number, limit?: number): Results {
+function useSearchSpotifyTracks(lastfmTrackUrl: string, artist: string, track: string, album?: string, offset?: number, limit?: number): Results {
   const canSearch = artist.trim().length > 0 && track.trim().length > 0
   const [results, setResults] = useState<Results>({ fetching: canSearch })
   const { addTracks } = useContext(SpotifyTracksContext)
@@ -20,7 +20,7 @@ function useSearchSpotifyTracks(artist: string, track: string, album?: string, o
     async function searchTracks() {
       try {
         const results = await SpotifyApi.searchTracks(artist, track, album, limit, offset)
-        addTracks(results.tracks)
+        addTracks(lastfmTrackUrl, results.tracks)
         setResults({ results, fetching: false })
       } catch (err: any) {
         console.error('failed to search Spotify tracks', err)
@@ -29,7 +29,7 @@ function useSearchSpotifyTracks(artist: string, track: string, album?: string, o
     }
 
     if (canSearch) searchTracks()
-  }, [offset, limit, artist, track, album, canSearch, addTracks])
+  }, [lastfmTrackUrl, offset, limit, artist, track, album, canSearch, addTracks])
 
   return results
 }
