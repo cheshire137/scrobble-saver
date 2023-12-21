@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Header, Heading, PageLayout } from '@primer/react'
+import { Box, Header, Heading, PageLayout } from '@primer/react'
 import { Outlet, useHref } from 'react-router-dom'
 import { PageContext } from '../contexts/PageContext'
 import { AuthContext } from '../contexts/AuthContext'
@@ -10,10 +10,10 @@ const AppLayout = () => {
   const { pageTitle } = useContext(PageContext)
   const { isSignedIntoLastfm, isSignedIntoSpotify } = useContext(AuthContext)
 
-  return <PageLayout>
+  return <PageLayout containerWidth="full" padding="none">
     <PageLayout.Header>
       <Header>
-        <Header.Item full>
+        <Header.Item full sx={{ display: 'flex', alignItems: 'baseline' }}>
           <Heading as="h1">
             <Header.Link href={useHref('/')}>Lastly Likes</Header.Link>
           </Heading>
@@ -27,7 +27,7 @@ const AppLayout = () => {
         </Header.Item>}
       </Header>
     </PageLayout.Header>
-    <PageLayout.Content sx={{ fontSize: 2 }}>
+    <PageLayout.Content width="xlarge" sx={{ fontSize: 2 }}>
       <Outlet />
     </PageLayout.Content>
   </PageLayout>

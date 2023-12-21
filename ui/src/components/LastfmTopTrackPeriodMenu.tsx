@@ -16,7 +16,7 @@ const LastfmTopTrackPeriodMenu = () => {
   const { page, limit, period, update } = useContext(LastfmTopTracksContext)
 
   return <ActionMenu open={open} onOpenChange={setOpen}>
-    <ActionMenu.Button sx={{ mb: 3 }}>
+    <ActionMenu.Button>
       Period: {topTrackPeriods.find(p => p.value === period)?.label ?? period}
     </ActionMenu.Button>
     <ActionMenu.Overlay width="small">

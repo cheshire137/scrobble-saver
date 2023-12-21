@@ -12,7 +12,7 @@ const SpotifyTracks = () => {
   if (!lastfmTopTrackResults || lastfmTopTrackResults.tracks.length < 1) return null
 
   return <Box>
-    <Heading sx={{ color: 'spotify.fg' }}>Spotify tracks</Heading>
+    <Heading sx={{ mb: 2, color: 'spotify.fg' }}>Spotify tracks</Heading>
     <Box as="ol" sx={{ listStyle: 'none', pl: 0 }}>
       {lastfmTopTrackResults.tracks.map(lastfmTrack => {
         const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []

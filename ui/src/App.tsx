@@ -6,11 +6,12 @@ import { AuthContextProvider } from './contexts/AuthContext'
 import { LastfmTopTracksContextProvider } from './contexts/LastfmTopTracksContext'
 import { SpotifyTracksContextProvider } from './contexts/SpotifyTracksContext'
 import themeOverrides from './themes/overrides'
+import './App.css'
 
 const customTheme = deepmerge(theme, themeOverrides)
 
 function App() {
-  return <ThemeProvider theme={customTheme}>
+  return <ThemeProvider colorMode="day" theme={customTheme}>
     <BaseStyles>
       <PageContextProvider>
         <AuthContextProvider>

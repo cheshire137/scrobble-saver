@@ -3,7 +3,6 @@ import { Box } from '@primer/react'
 import { PageContext } from '../contexts/PageContext'
 import { AuthContext } from '../contexts/AuthContext'
 import LastfmTopTracks from './LastfmTopTracks'
-import LastfmTopTrackPeriodMenu from './LastfmTopTrackPeriodMenu'
 import SpotifyTracks from './SpotifyTracks'
 
 const SpotifyAuthPage = () => {
@@ -18,12 +17,9 @@ const SpotifyAuthPage = () => {
     }
   }, [setPageTitle, spotifyUserId, lastfmUsername])
 
-  return <Box>
-    <LastfmTopTrackPeriodMenu />
-    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 4 }}>
-      <LastfmTopTracks />
-      <SpotifyTracks />
-    </Box>
+  return <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 4 }}>
+    <LastfmTopTracks />
+    <SpotifyTracks />
   </Box>
 }
 
