@@ -1,12 +1,16 @@
-import { BaseStyles, ThemeProvider } from '@primer/react'
+import { BaseStyles, ThemeProvider, theme } from '@primer/react'
+import deepmerge from 'deepmerge'
 import PageRoutes from './PageRoutes'
 import { PageContextProvider } from './contexts/PageContext'
 import { AuthContextProvider } from './contexts/AuthContext'
 import { LastfmTopTracksContextProvider } from './contexts/LastfmTopTracksContext'
 import { SpotifyTracksContextProvider } from './contexts/SpotifyTracksContext'
+import themeOverrides from './themes/overrides'
+
+const customTheme = deepmerge(theme, themeOverrides)
 
 function App() {
-  return <ThemeProvider>
+  return <ThemeProvider theme={customTheme}>
     <BaseStyles>
       <PageContextProvider>
         <AuthContextProvider>
