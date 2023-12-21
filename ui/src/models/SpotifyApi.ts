@@ -12,6 +12,14 @@ class SpotifyApi {
     const data = await Api.get(`/spotify/search-tracks?${params.toString()}`)
     return new SpotifyTrackSearchResults(data)
   }
+
+  public static async checkSavedTracks(trackIDs: string[]) {
+    const params = new URLSearchParams()
+    params.append('track_ids', trackIDs.map(id => id.trim()).join(','))
+    const data = await Api.get(`/spotify/check-saved-tracks?${params.toString()}`)
+    console.log('saved tracks response', data)
+    return data
+  }
 }
 
 export default SpotifyApi
