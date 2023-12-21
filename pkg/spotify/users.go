@@ -3,6 +3,7 @@ package spotify
 import (
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
 
 	"github.com/cheshire137/lastly-likes/pkg/util"
@@ -53,6 +54,7 @@ type CheckSavedTracksResponse map[string]bool
 
 // https://developer.spotify.com/documentation/web-api/reference/check-users-saved-tracks
 func (a *Api) CheckSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, error) {
+	sort.Strings(trackIDs)
 	batchesOfTrackIDs := util.ChunkSlice(trackIDs, 50)
 	var result CheckSavedTracksResponse
 	for _, batch := range batchesOfTrackIDs {
