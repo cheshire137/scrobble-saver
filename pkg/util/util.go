@@ -86,3 +86,15 @@ func Decrypt(input string, secret string) (string, error) {
 	stream.XORKeyStream(ciphertext, ciphertext)
 	return string(ciphertext), nil
 }
+
+func ChunkSlice(list []string, chunkSize int) [][]string {
+	var chunks [][]string
+	for i := 0; i < len(list); i += chunkSize {
+		end := i + chunkSize
+		if end > len(list) {
+			end = len(list)
+		}
+		chunks = append(chunks, list[i:end])
+	}
+	return chunks
+}
