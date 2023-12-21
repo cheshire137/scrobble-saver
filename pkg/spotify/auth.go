@@ -57,7 +57,6 @@ func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, error) {
 	path := "/token"
 	params := url.Values{}
 	params.Add("grant_type", "refresh_token")
-	params.Add("client_id", a.config.Spotify.ClientId)
 	params.Add("refresh_token", refreshToken)
 	req, err := http.NewRequest(http.MethodPost, AuthApiUrl+path, strings.NewReader(params.Encode()))
 	if err != nil {
