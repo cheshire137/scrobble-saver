@@ -88,6 +88,7 @@ func (a *Api) refreshSpotifyToken() error {
 		return err
 	}
 
+	fmt.Println("new refresh token:" + tokenResp.RefreshToken)
 	spotifyUser := data_store.SpotifyUser{
 		Id:           a.spotifyUser.Id,
 		AccessToken:  tokenResp.AccessToken,

@@ -1,6 +1,10 @@
 package data_store
 
-import "github.com/cheshire137/lastly-likes/pkg/util"
+import (
+	"fmt"
+
+	"github.com/cheshire137/lastly-likes/pkg/util"
+)
 
 type SpotifyUser struct {
 	Id           string
@@ -52,6 +56,7 @@ func (ds *DataStore) UpsertSpotifyUser(spotifyUser *SpotifyUser) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("encrypted refresh token:" + encryptedRefreshToken)
 	_, err = stmt.Exec(spotifyUser.Id, encryptedAccessToken, encryptedRefreshToken, spotifyUser.Scopes,
 		spotifyUser.ExpiresIn)
 	if err != nil {
