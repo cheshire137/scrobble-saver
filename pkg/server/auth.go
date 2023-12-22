@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/cheshire137/lastly-likes/pkg/spotify"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 )
 
 const cookieName = "lastly-likes"
-const spotifyUserIdKey = "spotifyUserId"
 const lastfmUsernameKey = "lastfmUsername"
 
 type MeResponse struct {
@@ -27,7 +27,7 @@ func (e *Env) MeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	spotifyUserId, isSignedIntoSpotify := session.Values[spotifyUserIdKey].(string)
+	spotifyUserId, isSignedIntoSpotify := session.Values[spotify.SpotifyUserIdSessionKey].(string)
 	lastfmUsername, isSignedIntoLastfm := session.Values[lastfmUsernameKey].(string)
 	response := MeResponse{SpotifyUserId: spotifyUserId, LastfmUsername: lastfmUsername,
 		IsSignedIntoLastfm: isSignedIntoLastfm, IsSignedIntoSpotify: isSignedIntoSpotify}
@@ -41,9 +41,9 @@ func (e *Env) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	session.Values[spotifyUserIdKey] = nil
+	session.Values[spotify.SpotifyUserIdSessionKey] = nil
 	session.Values[lastfmUsernameKey] = nil
-	util.LogInfo("Clearing session values for %s and %s", spotifyUserIdKey, lastfmUsernameKey)
+	util.LogInfo("Clearing session values for %s and %s", spotify.SpotifyUserIdSessionKey, lastfmUsernameKey)
 	session.Save(r, w)
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d", e.config.FrontendPort), http.StatusSeeOther)
 }

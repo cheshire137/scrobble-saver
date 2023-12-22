@@ -6,6 +6,7 @@ import (
 
 	"github.com/cheshire137/lastly-likes/pkg/config"
 	"github.com/cheshire137/lastly-likes/pkg/data_store"
+	"github.com/cheshire137/lastly-likes/pkg/spotify"
 	"github.com/cheshire137/lastly-likes/pkg/util"
 	"github.com/gorilla/sessions"
 )
@@ -32,7 +33,7 @@ func (e *Env) RedirectToFrontendHandler(w http.ResponseWriter, r *http.Request) 
 	path := ""
 	if isSignedIntoLastfm {
 		path = fmt.Sprintf("/#/lastfm/%s", lastfmUsername)
-		spotifyUserId, isSignedIntoSpotify := session.Values[spotifyUserIdKey].(string)
+		spotifyUserId, isSignedIntoSpotify := session.Values[spotify.SpotifyUserIdSessionKey].(string)
 		if isSignedIntoSpotify {
 			path = fmt.Sprintf("%s/spotify/%s", path, spotifyUserId)
 		}

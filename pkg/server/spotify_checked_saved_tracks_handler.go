@@ -19,7 +19,7 @@ func (e *Env) SpotifyCheckSavedTracksHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	spotifyUserId, isSignedIntoSpotify := session.Values[spotifyUserIdKey].(string)
+	spotifyUserId, isSignedIntoSpotify := session.Values[spotify.SpotifyUserIdSessionKey].(string)
 	if !isSignedIntoSpotify {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
