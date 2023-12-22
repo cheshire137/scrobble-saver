@@ -23,6 +23,14 @@ class SpotifyApi {
     }
     return result
   }
+
+  public static async saveTracks(trackIDs: string[]): Promise<string[]> {
+    const params = new URLSearchParams()
+    params.append('track_ids', trackIDs.map(id => id.trim()).join(','))
+    const result = await Api.post(`/spotify/save-tracks?${params.toString()}`)
+    console.log('save result', result)
+    return result.ids
+  }
 }
 
 export default SpotifyApi

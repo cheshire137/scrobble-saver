@@ -8,10 +8,12 @@ import SpotifyTrackDisplay from './SpotifyTrackDisplay'
 import SpotifyLogo from '../assets/Spotify_Icon_RGB_Green.png'
 import SpotifyTrackSearch from './SpotifyTrackSearch'
 import useCheckSpotifySavedTracks from '../hooks/use-check-spotify-saved-tracks'
+import useSaveSpotifyTracks from '../hooks/use-save-spotify-tracks'
 
 const SpotifyTracks = () => {
   const [hasUserSelectedAnyTracks, setHasUserSelectedAnyTracks] = useState(false)
   const [preloadAll, setPreloadAll] = useState(false)
+  const [spotifyTrackIdsToSave, setSpotifyTrackIdsToSave] = useState<string[]>([])
   const { tracks: spotifyTracks, trackIdsByLastfmUrl: spotifyTrackIdsByLastfmUrl } = useContext(SpotifyTracksContext)
   const { selectedTrackIds, addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
   const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
@@ -32,12 +34,29 @@ const SpotifyTracks = () => {
     () => notSavedTrackIds.filter(trackId => !selectedTrackIds.has(trackId)),
     [notSavedTrackIds, selectedTrackIds],
   )
+  const notSavedSelectedTrackIds = useMemo(
+    () => notSavedTrackIds.filter(trackId => selectedTrackIds.has(trackId)),
+    [notSavedTrackIds, selectedTrackIds],
+  )
+  const { savedTrackIds, saving: savingTracks, error: saveTracksError } = useSaveSpotifyTracks(spotifyTrackIdsToSave)
 
   useEffect(() => {
     if (!hasUserSelectedAnyTracks && !checkingSavedTracks && !checkSavedTracksError) {
       if (notSavedTrackIds.length > 0) addSelectedTrackIds(notSavedTrackIds)
     }
   }, [hasUserSelectedAnyTracks, checkingSavedTracks, checkSavedTracksError, addSelectedTrackIds, notSavedTrackIds])
+
+  useEffect(() => {
+    if (savedTrackIds || savedStatusByTrackId) {
+      const alreadySavedTrackIds = new Set(savedTrackIds ?? [])
+      if (savedStatusByTrackId) {
+        savedStatusByTrackId.forEach((saved, trackId) => {
+          if (saved) alreadySavedTrackIds.add(trackId)
+        })
+      }
+      setSpotifyTrackIdsToSave(spotifyTrackIdsToSave.filter(trackId => !alreadySavedTrackIds.has(trackId)))
+    }
+  }, [savedStatusByTrackId, savedTrackIds, spotifyTrackIdsToSave])
 
   if (!lastfmTopTrackResults || lastfmTopTrackResults.tracks.length < 1) return null
 
@@ -57,9 +76,14 @@ const SpotifyTracks = () => {
       >Find all</Button>}
       {checkingSavedTracks && <Spinner sx={{ ml: 2 }} />}
       {checkSavedTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{checkSavedTracksError}</Flash>}
+      {saveTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{saveTracksError}</Flash>}
       {notSavedUnselectedTrackIds.length > 0 && <Button
         onClick={() => addSelectedTrackIds(notSavedUnselectedTrackIds)}
       >Select all unsaved tracks</Button>}
+      {notSavedSelectedTrackIds.length > 0 && !savingTracks && <Button
+        variant="primary"
+        onClick={() => setSpotifyTrackIdsToSave(notSavedSelectedTrackIds)}
+      >Save selected tracks</Button>}
     </Heading>
     <ActionList selectionVariant={allLastfmTracksLookedUpOnSpotify ? 'multiple' : 'single'}>
       {lastfmTopTrackResults.tracks.map(lastfmTrack => {
