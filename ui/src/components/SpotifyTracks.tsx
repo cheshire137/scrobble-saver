@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 import { SpotifyTracksContext } from '../contexts/SpotifyTracksContext'
 import { SpotifySelectedTracksContext } from '../contexts/SpotifySelectedTracksContext'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
@@ -13,7 +13,7 @@ const SpotifyTracks = () => {
   const [hasUserSelectedAnyTracks, setHasUserSelectedAnyTracks] = useState(false)
   const [preloadAll, setPreloadAll] = useState(false)
   const { tracks: spotifyTracks, trackIdsByLastfmUrl: spotifyTrackIdsByLastfmUrl } = useContext(SpotifyTracksContext)
-  const { addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
+  const { selectedTrackIds, addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
   const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
   const allLastfmTracksLookedUpOnSpotify = lastfmTopTrackResults && lastfmTopTrackResults.tracks.every(lastfmTrack =>
     (spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []).length > 0 &&
@@ -25,15 +25,19 @@ const SpotifyTracks = () => {
     fetching: checkingSavedTracks,
     error: checkSavedTracksError
   } = useCheckSpotifySavedTracks(spotifyTrackIdsToCheck)
+  const notSavedTrackIds = useMemo(() => savedStatusByTrackId
+    ? Array.from(savedStatusByTrackId.keys()).filter(trackId => !savedStatusByTrackId.get(trackId))
+    : [], [savedStatusByTrackId])
+  const notSavedUnselectedTrackIds = useMemo(
+    () => notSavedTrackIds.filter(trackId => !selectedTrackIds.has(trackId)),
+    [notSavedTrackIds, selectedTrackIds],
+  )
 
   useEffect(() => {
     if (!hasUserSelectedAnyTracks && !checkingSavedTracks && !checkSavedTracksError) {
-      const notSavedTrackIds = savedStatusByTrackId
-        ? Array.from(savedStatusByTrackId.keys()).filter(trackId => !savedStatusByTrackId.get(trackId))
-        : []
       if (notSavedTrackIds.length > 0) addSelectedTrackIds(notSavedTrackIds)
     }
-  }, [hasUserSelectedAnyTracks, checkingSavedTracks, checkSavedTracksError, addSelectedTrackIds, savedStatusByTrackId])
+  }, [hasUserSelectedAnyTracks, checkingSavedTracks, checkSavedTracksError, addSelectedTrackIds, notSavedTrackIds])
 
   if (!lastfmTopTrackResults || lastfmTopTrackResults.tracks.length < 1) return null
 
@@ -53,6 +57,9 @@ const SpotifyTracks = () => {
       >Find all</Button>}
       {checkingSavedTracks && <Spinner sx={{ ml: 2 }} />}
       {checkSavedTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{checkSavedTracksError}</Flash>}
+      {notSavedUnselectedTrackIds.length > 0 && <Button
+        onClick={() => addSelectedTrackIds(notSavedUnselectedTrackIds)}
+      >Select all unsaved tracks</Button>}
     </Heading>
     <ActionList selectionVariant={allLastfmTracksLookedUpOnSpotify ? 'multiple' : 'single'}>
       {lastfmTopTrackResults.tracks.map(lastfmTrack => {
