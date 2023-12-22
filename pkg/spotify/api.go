@@ -63,7 +63,9 @@ func (a *Api) handleResponse(resp *http.Response, path string, v any) *RequestEr
 		return NewRequestError(0, err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		util.LogError("Non-200 response for "+path+":", resp.Status, string(data))
+		if resp.StatusCode != http.StatusUnauthorized {
+			util.LogError("Non-200 response for "+path+":", resp.Status, string(data))
+		}
 		return NewRequestError(resp.StatusCode, fmt.Errorf("%s %s", resp.Status, path))
 	}
 	err = json.Unmarshal(data, &v)
