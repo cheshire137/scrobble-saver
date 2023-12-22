@@ -1,6 +1,7 @@
 package spotify
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,6 +33,36 @@ func NewApi(config *config.Config, ds *data_store.DataStore) *Api {
 
 func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, spotifyUser *data_store.SpotifyUser, session *sessions.Session, w http.ResponseWriter, r *http.Request) *Api {
 	return &Api{config: config, ds: ds, spotifyUser: spotifyUser, session: session, w: w, r: r}
+}
+
+func (a *Api) put(path string, body any) *util.RequestError {
+	url, err := url.Parse(ApiUrl + path)
+	if err != nil {
+		return util.NewRequestError(http.StatusInternalServerError, err)
+	}
+	bodyJson, err := json.Marshal(body)
+	if err != nil {
+		return util.NewRequestError(http.StatusInternalServerError, err)
+	}
+	req, err := http.NewRequest(http.MethodPut, url.String(), bytes.NewBuffer(bodyJson))
+	if err != nil {
+		return util.NewRequestError(http.StatusInternalServerError, err)
+	}
+	util.LogRequest(req)
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.spotifyUser.AccessToken))
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		util.LogError("Failed to get %s:", path, err)
+		return util.NewRequestError(http.StatusInternalServerError, err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode != http.StatusUnauthorized {
+			util.LogError("Non-200 response for "+path+":", resp.Status)
+		}
+		return util.NewRequestError(resp.StatusCode, fmt.Errorf("%s %s", resp.Status, path))
+	}
+	return nil
 }
 
 func (a *Api) get(path string, params url.Values, v any) *util.RequestError {

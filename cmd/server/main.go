@@ -54,6 +54,7 @@ func main() {
 	mux.Handle("/api/lastfm/top-tracks", http.HandlerFunc(env.LastfmTopTracksHandler))
 	mux.Handle("/api/spotify/search-tracks", http.HandlerFunc(env.SpotifySearchTracksHandler))
 	mux.Handle("/api/spotify/check-saved-tracks", http.HandlerFunc(env.SpotifyCheckSavedTracksHandler))
+	mux.Handle("/api/spotify/save-tracks", http.HandlerFunc(env.SpotifySaveTracksHandler))
 	mux.Handle("/logout", http.HandlerFunc(env.LogoutHandler))
 
 	server := &http.Server{
