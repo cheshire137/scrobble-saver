@@ -51,7 +51,7 @@ const SpotifyTracks = () => {
         />
         Spotify tracks
       </span>
-      {!preloadAll && <Button
+      {!preloadAll && !allLastfmTracksLookedUpOnSpotify && <Button
         leadingVisual={SearchIcon}
         onClick={() => setPreloadAll(true)}
       >Find all</Button>}
