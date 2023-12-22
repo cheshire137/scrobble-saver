@@ -1,5 +1,6 @@
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { SpotifyTracksContext } from '../contexts/SpotifyTracksContext'
+import { SpotifySelectedTracksContext } from '../contexts/SpotifySelectedTracksContext'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
 import { ActionList, Avatar, Box, Button, Flash, Heading, Spinner } from '@primer/react'
 import { SearchIcon } from '@primer/octicons-react'
@@ -9,8 +10,10 @@ import SpotifyTrackSearch from './SpotifyTrackSearch'
 import useCheckSpotifySavedTracks from '../hooks/use-check-spotify-saved-tracks'
 
 const SpotifyTracks = () => {
+  const [hasUserSelectedAnyTracks, setHasUserSelectedAnyTracks] = useState(false)
   const [preloadAll, setPreloadAll] = useState(false)
   const { tracks: spotifyTracks, trackIdsByLastfmUrl: spotifyTrackIdsByLastfmUrl } = useContext(SpotifyTracksContext)
+  const { addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
   const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
   const allLastfmTracksLookedUpOnSpotify = lastfmTopTrackResults && lastfmTopTrackResults.tracks.every(lastfmTrack =>
     (spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []).length > 0 &&
@@ -18,9 +21,19 @@ const SpotifyTracks = () => {
   )
   const spotifyTrackIdsToCheck = allLastfmTracksLookedUpOnSpotify ? spotifyTracks.map(track => track.id) : []
   const {
+    results: savedStatusByTrackId,
     fetching: checkingSavedTracks,
     error: checkSavedTracksError
   } = useCheckSpotifySavedTracks(spotifyTrackIdsToCheck)
+
+  useEffect(() => {
+    if (!hasUserSelectedAnyTracks && !checkingSavedTracks && !checkSavedTracksError) {
+      const notSavedTrackIds = savedStatusByTrackId
+        ? Array.from(savedStatusByTrackId.keys()).filter(trackId => !savedStatusByTrackId.get(trackId))
+        : []
+      if (notSavedTrackIds.length > 0) addSelectedTrackIds(notSavedTrackIds)
+    }
+  }, [hasUserSelectedAnyTracks, checkingSavedTracks, checkSavedTracksError, addSelectedTrackIds, savedStatusByTrackId])
 
   if (!lastfmTopTrackResults || lastfmTopTrackResults.tracks.length < 1) return null
 
@@ -54,6 +67,7 @@ const SpotifyTracks = () => {
               key={spotifyTrack.id}
               track={spotifyTrack}
               asLink={!allLastfmTracksLookedUpOnSpotify}
+              onSelect={() => setHasUserSelectedAnyTracks(true)}
             /> : null
           })}
         </Fragment>
