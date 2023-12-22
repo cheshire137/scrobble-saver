@@ -11,6 +11,7 @@ import (
 )
 
 const AuthApiUrl = "https://accounts.spotify.com/api"
+const SpotifyUserIdSessionKey = "spotifyUserId"
 
 type GetTokenResponse struct {
 	AccessToken  string `json:"access_token"`
