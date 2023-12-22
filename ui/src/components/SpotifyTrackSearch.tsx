@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Flash, ActionList, Spinner } from '@primer/react'
-import { SearchIcon } from '@primer/octicons-react'
+import { ActionList, Spinner, SxProp } from '@primer/react'
+import { SearchIcon, AlertIcon } from '@primer/octicons-react'
 import SpotifySearchResultsDisplay from './SpotifySearchResultsDisplay'
 import LastfmTrack from '../models/LastfmTrack'
 import useSearchSpotifyTracks from '../hooks/use-search-spotify-tracks'
@@ -19,20 +19,21 @@ const SpotifyTrackSearch = ({ lastfmTrack, preload = false }: Props) => {
     error: searchError
   } = useSearchSpotifyTracks(lastfmTrack.url, lastfmTrack.artist.name, trackNameQuery)
   const onClick = searchResults || searchError ? undefined : () => setTrackQuery(lastfmTrack.name)
+  const sxProp: SxProp['sx'] = searchError ? { color: 'danger.fg' } : undefined
 
   useEffect(() => {
     if (preload && !(searchResults || searchError)) setTrackQuery(lastfmTrack.name)
   }, [preload, lastfmTrack.name, searchResults, searchError])
 
-  return <TrackContainerActionListItem onClick={onClick}>
+  return <TrackContainerActionListItem sx={sxProp} disabled={searching || !!searchError} onClick={onClick}>
     {searching && <Spinner size="small" />}
-    {searchError && <Flash variant="danger">Error searching Spotify: {searchError}</Flash>}
-    <ActionList.LeadingVisual>
-      <SearchIcon />
+    {searchError && <span>Error searching Spotify: {searchError}</span>}
+    <ActionList.LeadingVisual sx={sxProp}>
+      {searchError ? <AlertIcon /> : <SearchIcon />}
     </ActionList.LeadingVisual>
     {searchResults
       ? <SpotifySearchResultsDisplay results={searchResults} />
-      : <span>Search Spotify</span>}
+      : searchError ? null : <span>Search Spotify</span>}
   </TrackContainerActionListItem>
 }
 
