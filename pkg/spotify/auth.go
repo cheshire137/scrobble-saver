@@ -47,6 +47,7 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, error) {
 	if requestErr != nil {
 		return nil, requestErr.Err
 	}
+	fmt.Println("refresh token: " + getTokenResp.RefreshToken)
 	return &getTokenResp, nil
 }
 
@@ -78,6 +79,7 @@ func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, error) {
 	if requestErr != nil {
 		return nil, requestErr.Err
 	}
+	fmt.Println("new refresh token: " + getTokenResp.RefreshToken)
 	return &getTokenResp, nil
 }
 
