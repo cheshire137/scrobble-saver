@@ -83,7 +83,7 @@ func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksRespo
 
 	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
-		util.LogError("Failed to use saved tracks check cached response:", err)
+		util.LogError("Failed to use cached response for checking saved Spotify tracks:", err)
 		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	if cacheHit {
