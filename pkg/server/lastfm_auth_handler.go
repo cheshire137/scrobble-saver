@@ -20,8 +20,7 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to sign in with Last.fm: " + err.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Last.fm: " + err.Error()})
 		return
 	}
 
@@ -33,14 +32,15 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to create your account: " + err.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Last.fm: " + err.Error()})
 		return
 	}
 
 	session, err := e.store.Get(r, cookieName)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Last.fm: " + err.Error()})
 		return
 	}
 	util.LogInfo("Setting session value for key %s to %s", lastfmUsernameKey, lastfmUser.Name)
@@ -50,8 +50,7 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to clear your session: " + err.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to clear your session: " + err.Error()})
 		return
 	}
 

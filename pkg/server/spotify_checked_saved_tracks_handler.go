@@ -12,26 +12,29 @@ import (
 func (e *Env) SpotifyCheckSavedTracksHandler(w http.ResponseWriter, r *http.Request) {
 	e.enableCors(&w)
 	util.LogRequest(r)
+	w.Header().Set("Content-Type", "application/json")
 
 	session, err := e.store.Get(r, cookieName)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to check saved tracks: " + err.Error()})
 		return
 	}
 
 	spotifyUserId, isSignedIntoSpotify := session.Values[spotify.SpotifyUserIdSessionKey].(string)
 	if !isSignedIntoSpotify {
 		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Not authenticated with Spotify"})
 		return
 	}
 
 	spotifyUser, err := e.ds.LoadSpotifyUser(spotifyUserId)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to check saved tracks: " + err.Error()})
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	api := spotify.NewAuthenticatedApi(e.config, e.ds, spotifyUser, session, w, r)
 	trackIDsStr := r.URL.Query().Get("track_ids")
 	trackIDs := strings.Split(trackIDsStr, ",")
@@ -44,8 +47,7 @@ func (e *Env) SpotifyCheckSavedTracksHandler(w http.ResponseWriter, r *http.Requ
 	checkSavedTracksResponse, requestErr := api.CheckSavedTracks(trackIDs)
 	if requestErr != nil {
 		w.WriteHeader(requestErr.StatusCode)
-		message := "Failed to check saved tracks: " + requestErr.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to check saved tracks: " + requestErr.Error()})
 		return
 	}
 

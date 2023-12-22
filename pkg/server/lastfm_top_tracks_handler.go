@@ -12,6 +12,8 @@ import (
 func (e *Env) LastfmTopTracksHandler(w http.ResponseWriter, r *http.Request) {
 	e.enableCors(&w)
 	util.LogRequest(r)
+	w.Header().Set("Content-Type", "application/json")
+
 	user := r.URL.Query().Get("user")
 	period := r.URL.Query().Get("period")
 	limitStr := r.URL.Query().Get("limit")
@@ -25,16 +27,13 @@ func (e *Env) LastfmTopTracksHandler(w http.ResponseWriter, r *http.Request) {
 		page = 1
 	}
 	api := lastfm.NewApi(e.config, e.ds)
-	topTracksResp, err := api.GetTopTracks(user, period, limit, page)
 
+	topTracksResp, err := api.GetTopTracks(user, period, limit, page)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to get user's top tracks: " + err.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to get user's top tracks: " + err.Error()})
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topTracksResp.TopTracks)
 }

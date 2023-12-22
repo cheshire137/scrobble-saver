@@ -13,12 +13,11 @@ import (
 func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 	e.enableCors(&w)
 	util.LogRequest(r)
-	error := r.URL.Query().Get("error")
-	if error != "" {
+	errorMessage := r.URL.Query().Get("error")
+	if errorMessage != "" {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to sign in with Spotify: " + error
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Spotify: " + errorMessage})
 		return
 	}
 
@@ -27,16 +26,17 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	session, err := e.store.Get(r, cookieName)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Spotify: " + err.Error()})
 		return
 	}
 
-	tokenResp, err := api.GetToken(code)
-	if err != nil {
+	tokenResp, requestErr := api.GetToken(code)
+	if requestErr != nil {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to sign in with Spotify: " + err.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		w.WriteHeader(requestErr.StatusCode)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Spotify: " + requestErr.Error()})
 		return
 	}
 
@@ -61,8 +61,7 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to save Spotify details: " + err.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to save Spotify details: " + err.Error()})
 		return
 	}
 
@@ -73,8 +72,7 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to save your session: " + err.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to save your session: " + err.Error()})
 		return
 	}
 

@@ -12,22 +12,26 @@ import (
 func (e *Env) SpotifySearchTracksHandler(w http.ResponseWriter, r *http.Request) {
 	e.enableCors(&w)
 	util.LogRequest(r)
+	w.Header().Set("Content-Type", "application/json")
 
 	session, err := e.store.Get(r, cookieName)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to search tracks: " + err.Error()})
 		return
 	}
 
 	spotifyUserId, isSignedIntoSpotify := session.Values[spotify.SpotifyUserIdSessionKey].(string)
 	if !isSignedIntoSpotify {
 		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Not authenticated with Spotify"})
 		return
 	}
 
 	spotifyUser, err := e.ds.LoadSpotifyUser(spotifyUserId)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to search tracks: " + err.Error()})
 		return
 	}
 
@@ -46,13 +50,10 @@ func (e *Env) SpotifySearchTracksHandler(w http.ResponseWriter, r *http.Request)
 	album := r.URL.Query().Get("album")
 	track := r.URL.Query().Get("track")
 
-	w.Header().Set("Content-Type", "application/json")
-
 	searchTracksResp, requestErr := api.SearchTracks(artist, album, track, limit, offset)
 	if requestErr != nil {
 		w.WriteHeader(requestErr.StatusCode)
-		message := "Failed to search tracks: " + requestErr.Error()
-		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to search tracks: " + requestErr.Error()})
 		return
 	}
 
