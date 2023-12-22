@@ -41,7 +41,7 @@ const SpotifyTracks = () => {
       {checkingSavedTracks && <Spinner sx={{ ml: 2 }} />}
       {checkSavedTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{checkSavedTracksError}</Flash>}
     </Heading>
-    <ActionList>
+    <ActionList selectionVariant={allLastfmTracksLookedUpOnSpotify ? 'multiple' : 'single'}>
       {lastfmTopTrackResults.tracks.map(lastfmTrack => {
         const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []
         if (spotifyTrackIds.length < 1) {
@@ -50,7 +50,11 @@ const SpotifyTracks = () => {
         return <Fragment key={lastfmTrack.url}>
           {spotifyTrackIds.map(spotifyTrackId => {
             const spotifyTrack = spotifyTracks.find(track => track.id === spotifyTrackId)
-            return spotifyTrack ? <SpotifyTrackDisplay key={spotifyTrack.id} track={spotifyTrack} /> : null
+            return spotifyTrack ? <SpotifyTrackDisplay
+              key={spotifyTrack.id}
+              track={spotifyTrack}
+              asLink={!allLastfmTracksLookedUpOnSpotify}
+            /> : null
           })}
         </Fragment>
       })}

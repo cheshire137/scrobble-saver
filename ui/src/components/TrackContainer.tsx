@@ -16,3 +16,12 @@ export const TrackContainerActionListItem = styled(ActionList.Item)`
   margin-bottom: ${props => props.theme.space[3]};
   padding-bottom: ${props => props.theme.space[3]};
 `
+
+export const TrackContainerActionListLinkItem = styled(ActionList.LinkItem)`
+  height: 61px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid ${props => props.theme.colors.border.default};
+  margin-bottom: ${props => props.theme.space[3]};
+  padding-bottom: ${props => props.theme.space[3]};
+`

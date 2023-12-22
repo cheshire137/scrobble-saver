@@ -1,24 +1,26 @@
-import { ActionList, Avatar, Box, Link } from '@primer/react'
+import { ActionList, Link } from '@primer/react'
 import SpotifyTrack from '../models/SpotifyTrack'
-import SpotifyAlbumDisplay from './SpotifyAlbumDisplay'
-import { TrackContainerActionListItem } from './TrackContainer'
+import { TrackContainerActionListItem, TrackContainerActionListLinkItem } from './TrackContainer'
 import SpotifySavedTrackStatus from './SpotifySavedTrackStatus'
+import SpotifyTrackMetadata from './SpotifyTrackMetadata'
 
 interface Props {
   track: SpotifyTrack
+  asLink: boolean
 }
 
-const SpotifyTrackDisplay = ({ track }: Props) => {
-  const image = track.smallImage()
+const SpotifyTrackDisplay = ({ track, asLink }: Props) => {
+  if (asLink) {
+    return <TrackContainerActionListLinkItem href={track.url} target="_blank" rel="noopener noreferrer">
+      <SpotifyTrackMetadata track={track} />
+      <ActionList.TrailingVisual>
+        <SpotifySavedTrackStatus track={track} />
+      </ActionList.TrailingVisual>
+    </TrackContainerActionListLinkItem>
+  }
 
   return <TrackContainerActionListItem>
-    <Link sx={{ display: 'flex', alignItems: 'center' }} href={track.url} target="_blank">
-      {image && <Avatar src={image.url} square alt={`${track.album.name} cover art`} size={32} sx={{ mr: 2 }} />}
-      <Box>
-        {track.name} by {track.artists.map(artist => artist.name).join(', ')}
-        <SpotifyAlbumDisplay album={track.album} />
-      </Box>
-    </Link>
+    <SpotifyTrackMetadata track={track} />
     <ActionList.TrailingVisual>
       <SpotifySavedTrackStatus track={track} />
     </ActionList.TrailingVisual>
