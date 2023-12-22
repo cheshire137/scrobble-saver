@@ -1,21 +1,20 @@
 import { createContext, PropsWithChildren, useCallback, useMemo, useState } from 'react'
 
 export type SpotifySelectedTracksContextProps = {
-  selectedTrackIds: string[]
+  selectedTrackIds: Set<string>
   addSelectedTrackIds(ids: string[]): void
 }
 
 export const SpotifySelectedTracksContext = createContext<SpotifySelectedTracksContextProps>({
-  selectedTrackIds: [],
+  selectedTrackIds: new Set(),
   addSelectedTrackIds: () => {},
 })
 
 export const SpotifySelectedTracksContextProvider = ({ children }: PropsWithChildren) => {
-  const [selectedTrackIds, setSelectedTrackIds] = useState<string[]>([])
+  const [selectedTrackIds, setSelectedTrackIds] = useState<Set<string>>(new Set())
   const addSelectedTrackIds = useCallback((newTrackIds: string[]) => {
-    setSelectedTrackIds(t => {
-      const existingTrackIds = t.filter(existingTrackId => !newTrackIds.includes(existingTrackId))
-      return [...existingTrackIds, ...newTrackIds]
+    setSelectedTrackIds(existingTrackIds => {
+      return new Set([...existingTrackIds, ...newTrackIds])
     })
   }, [setSelectedTrackIds])
   const contextProps = useMemo(() => ({
