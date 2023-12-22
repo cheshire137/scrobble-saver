@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Box, Header, Heading, PageLayout } from '@primer/react'
+import { Header, Heading, PageLayout } from '@primer/react'
 import { Outlet, useHref } from 'react-router-dom'
 import { PageContext } from '../contexts/PageContext'
 import { AuthContext } from '../contexts/AuthContext'

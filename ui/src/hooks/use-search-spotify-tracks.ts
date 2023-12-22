@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import SpotifyApi from '../models/SpotifyApi'
 import SpotifyTrackSearchResults from '../models/SpotifyTrackSearchResults'
 import { SpotifyTracksContext } from '../contexts/SpotifyTracksContext'
@@ -13,6 +14,7 @@ function useSearchSpotifyTracks(lastfmTrackUrl: string, artist: string, track: s
   const canSearch = artist.trim().length > 0 && track.trim().length > 0
   const [results, setResults] = useState<Results>({ fetching: canSearch })
   const { addTracks } = useContext(SpotifyTracksContext)
+  const navigate = useNavigate()
   offset = offset ?? 0
   limit = limit ?? 1
 
@@ -24,12 +26,13 @@ function useSearchSpotifyTracks(lastfmTrackUrl: string, artist: string, track: s
         setResults({ results, fetching: false })
       } catch (err: any) {
         console.error('failed to search Spotify tracks', err)
+        if (err.name === 'UnauthorizedError') navigate('/')
         setResults({ fetching: false, error: err.message })
       }
     }
 
     if (canSearch) searchTracks()
-  }, [lastfmTrackUrl, offset, limit, artist, track, album, canSearch, addTracks])
+  }, [lastfmTrackUrl, offset, limit, artist, track, album, canSearch, addTracks, navigate])
 
   return results
 }
