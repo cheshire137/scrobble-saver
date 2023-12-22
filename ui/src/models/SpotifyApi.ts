@@ -17,8 +17,11 @@ class SpotifyApi {
     const params = new URLSearchParams()
     params.append('track_ids', trackIDs.map(id => id.trim()).join(','))
     const data = await Api.get(`/spotify/check-saved-tracks?${params.toString()}`)
-    console.log('saved tracks response', data)
-    return data
+    const result = new Map<string, boolean>()
+    for (const key of Object.keys(data)) {
+      result.set(key, data[key])
+    }
+    return result
   }
 }
 

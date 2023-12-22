@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Avatar, Box, Link, Octicon } from '@primer/react'
-import { HeartFillIcon } from '@primer/octicons-react'
+import { HeartIcon, HeartFillIcon } from '@primer/octicons-react'
 import SpotifyTrack from '../models/SpotifyTrack'
 import SpotifyAlbumDisplay from './SpotifyAlbumDisplay'
 import { TrackContainerActionListItem } from './TrackContainer'
@@ -12,8 +12,8 @@ interface Props {
 
 const SpotifyTrackDisplay = ({ track }: Props) => {
   const image = track.smallImage()
-  const { savedTrackIds } = useContext(SpotifySavedTracksContext)
-  const isTrackSavedToSpotifyLibrary = savedTrackIds.has(track.id)
+  const { savedStatusByTrackId } = useContext(SpotifySavedTracksContext)
+  const trackSavedStatus = savedStatusByTrackId.get(track.id)
 
   return <TrackContainerActionListItem>
     <Link sx={{ display: 'flex', alignItems: 'center' }} href={track.url} target="_blank">
@@ -23,7 +23,9 @@ const SpotifyTrackDisplay = ({ track }: Props) => {
         <SpotifyAlbumDisplay album={track.album} />
       </Box>
     </Link>
-    {isTrackSavedToSpotifyLibrary && <Octicon icon={HeartFillIcon} sx={{ ml: 2, color: 'spotify.fg' }} />}
+    {trackSavedStatus && <Octicon icon={HeartFillIcon} sx={{ ml: 2, color: 'spotify.fg' }} />}
+    {typeof trackSavedStatus === 'boolean' && !trackSavedStatus &&
+      <Octicon icon={HeartIcon} sx={{ ml: 2, color: 'spotify.fg' }} />}
   </TrackContainerActionListItem>
 }
 

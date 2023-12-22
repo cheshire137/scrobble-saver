@@ -1,16 +1,26 @@
 import { Fragment, useContext, useState } from 'react'
 import { SpotifyTracksContext } from '../contexts/SpotifyTracksContext'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
-import { ActionList, Avatar, Box, Button, Heading } from '@primer/react'
+import { ActionList, Avatar, Box, Button, Flash, Heading, Spinner } from '@primer/react'
 import { SearchIcon } from '@primer/octicons-react'
 import SpotifyTrackDisplay from './SpotifyTrackDisplay'
 import SpotifyLogo from '../assets/Spotify_Icon_RGB_Green.png'
 import SpotifyTrackSearch from './SpotifyTrackSearch'
+import useCheckSpotifySavedTracks from '../hooks/use-check-spotify-saved-tracks'
 
 const SpotifyTracks = () => {
   const [preloadAll, setPreloadAll] = useState(false)
   const { tracks: spotifyTracks, trackIdsByLastfmUrl: spotifyTrackIdsByLastfmUrl } = useContext(SpotifyTracksContext)
   const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
+  const allLastfmTracksLookedUpOnSpotify = lastfmTopTrackResults && lastfmTopTrackResults.tracks.every(lastfmTrack =>
+    (spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []).length > 0 &&
+    spotifyTrackIdsByLastfmUrl[lastfmTrack.url].every(spotifyTrackId => spotifyTracks.some(track => track.id === spotifyTrackId))
+  )
+  const spotifyTrackIdsToCheck = allLastfmTracksLookedUpOnSpotify ? spotifyTracks.map(track => track.id) : []
+  const {
+    fetching: checkingSavedTracks,
+    error: checkSavedTracksError
+  } = useCheckSpotifySavedTracks(spotifyTrackIdsToCheck)
 
   if (!lastfmTopTrackResults || lastfmTopTrackResults.tracks.length < 1) return null
 
@@ -28,6 +38,8 @@ const SpotifyTracks = () => {
         leadingVisual={SearchIcon}
         onClick={() => setPreloadAll(true)}
       >Find all</Button>}
+      {checkingSavedTracks && <Spinner sx={{ ml: 2 }} />}
+      {checkSavedTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{checkSavedTracksError}</Flash>}
     </Heading>
     <ActionList>
       {lastfmTopTrackResults.tracks.map(lastfmTrack => {

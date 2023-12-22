@@ -4,22 +4,23 @@ import SpotifyApi from '../models/SpotifyApi'
 import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext'
 
 interface Results {
-  results?: any;
+  results?: Map<string, boolean>;
   fetching: boolean;
   error?: string;
 }
 
-function useCheckSpotifySavedTracks(spotifyTrackIDs: string[]): Results {
-  const canCheck = spotifyTrackIDs.length > 0
+function useCheckSpotifySavedTracks(spotifyTrackIds: string[]): Results {
+  const { savedStatusByTrackId, addTrackStatuses } = useContext(SpotifySavedTracksContext)
+  const spotifyTrackIdsToCheck = spotifyTrackIds.filter(id => !savedStatusByTrackId.has(id))
+  const canCheck = spotifyTrackIdsToCheck.length > 0
   const [results, setResults] = useState<Results>({ fetching: canCheck })
-  const { addSavedTracks } = useContext(SpotifySavedTracksContext)
   const navigate = useNavigate()
 
   useEffect(() => {
     async function checkSavedTracks() {
       try {
-        const results = await SpotifyApi.checkSavedTracks(spotifyTrackIDs)
-        addSavedTracks(results)
+        const results = await SpotifyApi.checkSavedTracks(spotifyTrackIdsToCheck)
+        addTrackStatuses(results)
         setResults({ results, fetching: false })
       } catch (err: any) {
         console.error('failed to check saved Spotify tracks', err)
@@ -29,7 +30,7 @@ function useCheckSpotifySavedTracks(spotifyTrackIDs: string[]): Results {
     }
 
     if (canCheck) checkSavedTracks()
-  }, [addSavedTracks, spotifyTrackIDs, navigate, canCheck])
+  }, [addTrackStatuses, spotifyTrackIdsToCheck, navigate, canCheck])
 
   return results
 }
