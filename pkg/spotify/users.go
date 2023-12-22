@@ -57,7 +57,7 @@ type CheckSavedTracksResponse map[string]bool
 func (a *Api) CheckSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, *util.RequestError) {
 	sort.Strings(trackIDs)
 	batchesOfTrackIDs := util.ChunkSlice(trackIDs, 50)
-	var result CheckSavedTracksResponse
+	result := make(CheckSavedTracksResponse)
 	for _, batch := range batchesOfTrackIDs {
 		batchResult, requestErr := a.checkBatchOfSavedTracks(batch)
 		if requestErr != nil {
@@ -117,7 +117,7 @@ func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksRespo
 }
 
 func zipCheckSavedTracksResponse(trackIDs []string, response []bool) *CheckSavedTracksResponse {
-	isTrackSavedByTrackID := CheckSavedTracksResponse{}
+	isTrackSavedByTrackID := make(CheckSavedTracksResponse)
 	for i, trackID := range trackIDs {
 		isTrackSavedByTrackID[trackID] = response[i]
 	}
