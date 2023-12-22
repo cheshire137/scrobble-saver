@@ -2,6 +2,7 @@ package spotify
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"sort"
 	"strings"
@@ -24,7 +25,7 @@ type GetCurrentUserResponse struct {
 }
 
 // https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile
-func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
+func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, *RequestError) {
 	path := "/me"
 	params := url.Values{}
 	paramsForCache := a.getParamsStr(params)
@@ -33,7 +34,7 @@ func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
 	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
 		util.LogError("Failed to use cached Spotify current user response:", err)
-		return nil, err
+		return nil, NewRequestError(http.StatusInternalServerError, err)
 	}
 	if cacheHit {
 		return &response, nil
@@ -42,7 +43,7 @@ func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
 	requestErr := a.get(path, params, &response)
 	if requestErr != nil {
 		util.LogError("Failed to get current Spotify user:", requestErr.Err)
-		return nil, requestErr.Err
+		return nil, requestErr
 	}
 
 	userId := response.Id
@@ -53,14 +54,14 @@ func (a *Api) GetCurrentUser() (*GetCurrentUserResponse, error) {
 type CheckSavedTracksResponse map[string]bool
 
 // https://developer.spotify.com/documentation/web-api/reference/check-users-saved-tracks
-func (a *Api) CheckSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, error) {
+func (a *Api) CheckSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, *RequestError) {
 	sort.Strings(trackIDs)
 	batchesOfTrackIDs := util.ChunkSlice(trackIDs, 50)
 	var result CheckSavedTracksResponse
 	for _, batch := range batchesOfTrackIDs {
-		batchResult, err := a.checkBatchOfSavedTracks(batch)
-		if err != nil {
-			return nil, err
+		batchResult, requestErr := a.checkBatchOfSavedTracks(batch)
+		if requestErr != nil {
+			return nil, requestErr
 		}
 		for trackID, isSaved := range *batchResult {
 			result[trackID] = isSaved
@@ -69,9 +70,10 @@ func (a *Api) CheckSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, er
 	return &result, nil
 }
 
-func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, error) {
+func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, *RequestError) {
 	if len(trackIDs) > 50 {
-		return nil, fmt.Errorf("cannot check more than 50 track IDs at a time, got %d", len(trackIDs))
+		err := fmt.Errorf("cannot check more than 50 track IDs at a time, got %d", len(trackIDs))
+		return nil, NewRequestError(http.StatusInternalServerError, err)
 	}
 	path := "/me/tracks/contains"
 	params := url.Values{}
@@ -82,7 +84,7 @@ func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksRespo
 	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
 		util.LogError("Failed to use saved tracks check cached response:", err)
-		return nil, err
+		return nil, NewRequestError(http.StatusInternalServerError, err)
 	}
 	if cacheHit {
 		result := zipCheckSavedTracksResponse(trackIDs, response)
@@ -93,19 +95,19 @@ func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksRespo
 	if requestErr != nil {
 		if requestErr.StatusCode != 401 {
 			util.LogError("Failed to check Spotify saved tracks:", requestErr.Err)
-			return nil, requestErr.Err
+			return nil, requestErr
 		}
 
-		err := a.refreshSpotifyToken()
-		if err != nil {
-			return nil, err
+		requestErr = a.refreshSpotifyToken()
+		if requestErr != nil {
+			return nil, requestErr
 		}
 
 		// Try the original request once more, now with an updated access token:
 		requestErr = a.get(path, params, &response)
 		if requestErr != nil {
 			util.LogError("Failed to check Spotify saved tracks after refreshing token:", requestErr.Err)
-			return nil, requestErr.Err
+			return nil, requestErr
 		}
 	}
 

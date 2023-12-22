@@ -48,10 +48,10 @@ func (e *Env) SpotifySearchTracksHandler(w http.ResponseWriter, r *http.Request)
 
 	w.Header().Set("Content-Type", "application/json")
 
-	searchTracksResp, err := api.SearchTracks(artist, album, track, limit, offset)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to search tracks: " + err.Error()
+	searchTracksResp, requestErr := api.SearchTracks(artist, album, track, limit, offset)
+	if requestErr != nil {
+		w.WriteHeader(requestErr.StatusCode)
+		message := "Failed to search tracks: " + requestErr.Error()
 		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
 		return
 	}

@@ -2,6 +2,7 @@ package spotify
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -65,7 +66,7 @@ type SearchResponse struct {
 }
 
 // https://developer.spotify.com/documentation/web-api/reference/search
-func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (*SearchResponse, error) {
+func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (*SearchResponse, *RequestError) {
 	path := "/search"
 	query := fmt.Sprintf("artist:%s track:%s", artist, track)
 	if album != "" {
@@ -88,7 +89,7 @@ func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (
 	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
 		util.LogError("Failed to use search tracks cached response:", err)
-		return nil, err
+		return nil, NewRequestError(http.StatusInternalServerError, err)
 	}
 	if cacheHit {
 		return &response, nil
@@ -98,19 +99,19 @@ func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (
 	if requestErr != nil {
 		if requestErr.StatusCode != 401 {
 			util.LogError("Failed to search Spotify tracks:", requestErr.Err)
-			return nil, requestErr.Err
+			return nil, requestErr
 		}
 
-		err = a.refreshSpotifyToken()
-		if err != nil {
-			return nil, err
+		requestErr = a.refreshSpotifyToken()
+		if requestErr != nil {
+			return nil, requestErr
 		}
 
 		// Try the original request once more, now with an updated access token:
 		requestErr = a.get(path, params, &response)
 		if requestErr != nil {
 			util.LogError("Failed to search Spotify tracks after refreshing token:", requestErr.Err)
-			return nil, requestErr.Err
+			return nil, requestErr
 		}
 	}
 

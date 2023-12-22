@@ -47,11 +47,11 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		ExpiresIn:    tokenResp.ExpiresIn,
 	}
 	api = spotify.NewAuthenticatedApi(e.config, e.ds, &spotifyUser, session, w, r)
-	userResp, err := api.GetCurrentUser()
-	if err != nil {
+	userResp, requestErr := api.GetCurrentUser()
+	if requestErr != nil {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to fetch account details from Spotify: " + err.Error()
+		w.WriteHeader(requestErr.StatusCode)
+		message := "Failed to fetch account details from Spotify: " + requestErr.Error()
 		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
 		return
 	}

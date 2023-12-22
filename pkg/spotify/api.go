@@ -37,12 +37,12 @@ func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, spotif
 func (a *Api) get(path string, params url.Values, v any) *RequestError {
 	url, err := url.Parse(ApiUrl + path)
 	if err != nil {
-		return NewRequestError(0, err)
+		return NewRequestError(http.StatusInternalServerError, err)
 	}
 	url.RawQuery = params.Encode()
 	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
 	if err != nil {
-		return NewRequestError(0, err)
+		return NewRequestError(http.StatusInternalServerError, err)
 	}
 	util.LogRequest(req)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.spotifyUser.AccessToken))
@@ -50,7 +50,7 @@ func (a *Api) get(path string, params url.Values, v any) *RequestError {
 	resp, err := client.Do(req)
 	if err != nil {
 		util.LogError("Failed to get %s:", path, err)
-		return NewRequestError(0, err)
+		return NewRequestError(http.StatusInternalServerError, err)
 	}
 	return a.handleResponse(resp, path, v)
 }
@@ -60,7 +60,7 @@ func (a *Api) handleResponse(resp *http.Response, path string, v any) *RequestEr
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		util.LogError("Failed to read %s response body:", path, err)
-		return NewRequestError(0, err)
+		return NewRequestError(http.StatusInternalServerError, err)
 	}
 	if resp.StatusCode != http.StatusOK {
 		if resp.StatusCode != http.StatusUnauthorized {

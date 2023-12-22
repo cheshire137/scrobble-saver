@@ -36,15 +36,15 @@ func (e *Env) SpotifyCheckSavedTracksHandler(w http.ResponseWriter, r *http.Requ
 	trackIDsStr := r.URL.Query().Get("track_ids")
 	trackIDs := strings.Split(trackIDsStr, ",")
 	if len(trackIDs) < 1 {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(ErrorResponse{Error: "No Spotify track IDs specified"})
 		return
 	}
 
-	checkSavedTracksResponse, err := api.CheckSavedTracks(trackIDs)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		message := "Failed to check saved tracks: " + err.Error()
+	checkSavedTracksResponse, requestErr := api.CheckSavedTracks(trackIDs)
+	if requestErr != nil {
+		w.WriteHeader(requestErr.StatusCode)
+		message := "Failed to check saved tracks: " + requestErr.Error()
 		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
 		return
 	}
