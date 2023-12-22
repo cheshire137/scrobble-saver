@@ -25,6 +25,12 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query().Get("code")
 	api := spotify.NewApi(e.config, e.ds)
 
+	session, err := e.store.Get(r, cookieName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	tokenResp, err := api.GetToken(code)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -40,7 +46,7 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		Scopes:       tokenResp.Scope,
 		ExpiresIn:    tokenResp.ExpiresIn,
 	}
-	api = spotify.NewAuthenticatedApi(e.config, e.ds, &spotifyUser)
+	api = spotify.NewAuthenticatedApi(e.config, e.ds, &spotifyUser, session)
 	userResp, err := api.GetCurrentUser()
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -60,11 +66,6 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := e.store.Get(r, cookieName)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	util.LogInfo("Setting session value for key %s to %s", spotifyUserIdKey, spotifyUser.Id)
 	session.Values[spotifyUserIdKey] = spotifyUser.Id
 	session.Save(r, w)

@@ -12,6 +12,7 @@ import (
 	"github.com/cheshire137/lastly-likes/pkg/config"
 	"github.com/cheshire137/lastly-likes/pkg/data_store"
 	"github.com/cheshire137/lastly-likes/pkg/util"
+	"github.com/gorilla/sessions"
 )
 
 const ApiUrl = "https://api.spotify.com/v1"
@@ -20,14 +21,15 @@ type Api struct {
 	config      *config.Config
 	ds          *data_store.DataStore
 	spotifyUser *data_store.SpotifyUser
+	session     *sessions.Session
 }
 
 func NewApi(config *config.Config, ds *data_store.DataStore) *Api {
 	return &Api{config: config, ds: ds}
 }
 
-func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, spotifyUser *data_store.SpotifyUser) *Api {
-	return &Api{config: config, ds: ds, spotifyUser: spotifyUser}
+func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, spotifyUser *data_store.SpotifyUser, session *sessions.Session) *Api {
+	return &Api{config: config, ds: ds, spotifyUser: spotifyUser, session: session}
 }
 
 func (a *Api) get(path string, params url.Values, v any) *RequestError {
