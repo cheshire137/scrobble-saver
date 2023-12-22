@@ -32,7 +32,7 @@ func (e *Env) SpotifyCheckSavedTracksHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	api := spotify.NewAuthenticatedApi(e.config, e.ds, spotifyUser, session)
+	api := spotify.NewAuthenticatedApi(e.config, e.ds, spotifyUser, session, w, r)
 	trackIDsStr := r.URL.Query().Get("track_ids")
 	trackIDs := strings.Split(trackIDsStr, ",")
 	if len(trackIDs) < 1 {

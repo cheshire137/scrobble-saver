@@ -22,14 +22,16 @@ type Api struct {
 	ds          *data_store.DataStore
 	spotifyUser *data_store.SpotifyUser
 	session     *sessions.Session
+	w           http.ResponseWriter
+	r           *http.Request
 }
 
 func NewApi(config *config.Config, ds *data_store.DataStore) *Api {
 	return &Api{config: config, ds: ds}
 }
 
-func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, spotifyUser *data_store.SpotifyUser, session *sessions.Session) *Api {
-	return &Api{config: config, ds: ds, spotifyUser: spotifyUser, session: session}
+func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, spotifyUser *data_store.SpotifyUser, session *sessions.Session, w http.ResponseWriter, r *http.Request) *Api {
+	return &Api{config: config, ds: ds, spotifyUser: spotifyUser, session: session, w: w, r: r}
 }
 
 func (a *Api) get(path string, params url.Values, v any) *RequestError {

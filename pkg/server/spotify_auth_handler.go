@@ -46,7 +46,7 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		Scopes:       tokenResp.Scope,
 		ExpiresIn:    tokenResp.ExpiresIn,
 	}
-	api = spotify.NewAuthenticatedApi(e.config, e.ds, &spotifyUser, session)
+	api = spotify.NewAuthenticatedApi(e.config, e.ds, &spotifyUser, session, w, r)
 	userResp, err := api.GetCurrentUser()
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
