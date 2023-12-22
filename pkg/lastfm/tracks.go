@@ -2,6 +2,7 @@ package lastfm
 
 import (
 	"encoding/xml"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -36,7 +37,7 @@ type GetTopTracksResponse struct {
 }
 
 // https://www.last.fm/api/show/user.getTopTracks
-func (a *Api) GetTopTracks(user string, period string, limit int, page int) (*GetTopTracksResponse, error) {
+func (a *Api) GetTopTracks(user string, period string, limit int, page int) (*GetTopTracksResponse, *util.RequestError) {
 	if period == "" {
 		period = "3month"
 	}
@@ -58,16 +59,16 @@ func (a *Api) GetTopTracks(user string, period string, limit int, page int) (*Ge
 	cacheHit, err := a.loadCachedResponse(method, paramsForCache, user, &response)
 	if err != nil {
 		util.LogError("Failed to use top tracks cached response:", err)
-		return nil, err
+		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	if cacheHit {
 		return &response, nil
 	}
 
-	err = a.get(method, params, false, &response)
-	if err != nil {
-		util.LogError("Failed to get user's top tracks:", err)
-		return nil, err
+	requestErr := a.get(method, params, false, &response)
+	if requestErr != nil {
+		util.LogError("Failed to get user's top tracks:", requestErr)
+		return nil, requestErr
 	}
 	a.cacheResponse(response, method, paramsForCache, user)
 

@@ -16,11 +16,11 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	token := r.URL.Query().Get("token")
 	api := lastfm.NewApi(e.config, e.ds)
 
-	sessionResp, err := api.GetSession(token)
-	if err != nil {
+	sessionResp, requestErr := api.GetSession(token)
+	if requestErr != nil {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Last.fm: " + err.Error()})
+		w.WriteHeader(requestErr.StatusCode)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to sign in with Last.fm: " + requestErr.Error()})
 		return
 	}
 
@@ -28,7 +28,7 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 		Name:       sessionResp.Session.Name,
 		SessionKey: sessionResp.Session.Key,
 	}
-	err = e.ds.UpsertLastfmUser(&lastfmUser)
+	err := e.ds.UpsertLastfmUser(&lastfmUser)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

@@ -49,7 +49,7 @@ func (a *Api) getSignature(keyValuePairsStr string) string {
 	return fmt.Sprintf("%x", md5Hash)
 }
 
-func (a *Api) get(method string, params url.Values, signed bool, v any) error {
+func (a *Api) get(method string, params url.Values, signed bool, v any) *util.RequestError {
 	params.Add("api_key", a.config.Lastfm.ApiKey)
 	params.Add("method", method)
 	keyValuePairsStr := a.getParamsStr(params)
@@ -61,22 +61,22 @@ func (a *Api) get(method string, params url.Values, signed bool, v any) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		util.LogError("Failed to get %s:", method, err)
-		return err
+		return util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		util.LogError("Failed to read %s response body:", method, err)
-		return err
+		return util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	if resp.StatusCode != http.StatusOK {
 		util.LogError("Non-200 response for "+method+":", resp.Status, string(data))
-		return fmt.Errorf("%s %s", resp.Status, method)
+		return util.NewRequestError(resp.StatusCode, fmt.Errorf("%s %s", resp.Status, method))
 	}
 	err = xml.Unmarshal(data, &v)
 	if err != nil {
 		util.LogError("Failed to unmarshal %s response:", method, err)
-		return err
+		return util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	return nil
 }

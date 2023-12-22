@@ -28,10 +28,10 @@ func (e *Env) LastfmTopTracksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	api := lastfm.NewApi(e.config, e.ds)
 
-	topTracksResp, err := api.GetTopTracks(user, period, limit, page)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to get user's top tracks: " + err.Error()})
+	topTracksResp, requestErr := api.GetTopTracks(user, period, limit, page)
+	if requestErr != nil {
+		w.WriteHeader(requestErr.StatusCode)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to get user's top tracks: " + requestErr.Error()})
 		return
 	}
 
