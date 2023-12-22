@@ -66,7 +66,7 @@ type SearchResponse struct {
 }
 
 // https://developer.spotify.com/documentation/web-api/reference/search
-func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (*SearchResponse, *RequestError) {
+func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (*SearchResponse, *util.RequestError) {
 	path := "/search"
 	query := fmt.Sprintf("artist:%s track:%s", artist, track)
 	if album != "" {
@@ -89,7 +89,7 @@ func (a *Api) SearchTracks(artist, album, track string, limit int, offset int) (
 	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
 		util.LogError("Failed to use search tracks cached response:", err)
-		return nil, NewRequestError(http.StatusInternalServerError, err)
+		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	if cacheHit {
 		return &response, nil

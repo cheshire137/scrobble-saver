@@ -1,4 +1,4 @@
-package spotify
+package util
 
 type RequestError struct {
 	StatusCode int

@@ -22,7 +22,7 @@ type GetTokenResponse struct {
 }
 
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
-func (a *Api) GetToken(code string) (*GetTokenResponse, *RequestError) {
+func (a *Api) GetToken(code string) (*GetTokenResponse, *util.RequestError) {
 	path := "/token"
 	params := url.Values{}
 	params.Add("grant_type", "authorization_code")
@@ -30,7 +30,7 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, *RequestError) {
 	params.Add("redirect_uri", fmt.Sprintf("http://localhost:%d/auth/spotify", a.config.ServerPort))
 	req, err := http.NewRequest(http.MethodPost, AuthApiUrl+path, strings.NewReader(params.Encode()))
 	if err != nil {
-		return nil, NewRequestError(http.StatusInternalServerError, err)
+		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	clientIdAndSecret := fmt.Sprintf("%s:%s", a.config.Spotify.ClientId, a.config.Spotify.ClientSecret)
 	encodedClientIdAndSecret := util.Encode([]byte(clientIdAndSecret))
@@ -40,7 +40,7 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, *RequestError) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, NewRequestError(http.StatusInternalServerError, err)
+		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	var getTokenResp GetTokenResponse
 	requestErr := a.handleResponse(resp, path, &getTokenResp)
@@ -52,9 +52,9 @@ func (a *Api) GetToken(code string) (*GetTokenResponse, *RequestError) {
 }
 
 // https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens
-func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, *RequestError) {
+func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, *util.RequestError) {
 	if refreshToken == "" {
-		return nil, NewRequestError(http.StatusInternalServerError, fmt.Errorf("refresh token is empty"))
+		return nil, util.NewRequestError(http.StatusInternalServerError, fmt.Errorf("refresh token is empty"))
 	}
 	path := "/token"
 	params := url.Values{}
@@ -62,7 +62,7 @@ func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, *RequestErro
 	params.Add("refresh_token", refreshToken)
 	req, err := http.NewRequest(http.MethodPost, AuthApiUrl+path, strings.NewReader(params.Encode()))
 	if err != nil {
-		return nil, NewRequestError(http.StatusInternalServerError, err)
+		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	clientIdAndSecret := fmt.Sprintf("%s:%s", a.config.Spotify.ClientId, a.config.Spotify.ClientSecret)
 	encodedClientIdAndSecret := util.Encode([]byte(clientIdAndSecret))
@@ -72,7 +72,7 @@ func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, *RequestErro
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, NewRequestError(http.StatusInternalServerError, err)
+		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	var getTokenResp GetTokenResponse
 	requestErr := a.handleResponse(resp, path, &getTokenResp)
@@ -83,7 +83,7 @@ func (a *Api) RefreshToken(refreshToken string) (*GetTokenResponse, *RequestErro
 	return &getTokenResp, nil
 }
 
-func (a *Api) refreshSpotifyToken() *RequestError {
+func (a *Api) refreshSpotifyToken() *util.RequestError {
 	util.LogInfo("Spotify token for " + a.spotifyUser.Id + " expired, refreshing...")
 	tokenResp, requestErr := a.RefreshToken(a.spotifyUser.RefreshToken)
 	if requestErr != nil {
@@ -110,7 +110,7 @@ func (a *Api) refreshSpotifyToken() *RequestError {
 	err := a.ds.UpsertSpotifyUser(&spotifyUser)
 	if err != nil {
 		util.LogError("Failed to update Spotify user after refreshing token:", err)
-		return NewRequestError(http.StatusInternalServerError, err)
+		return util.NewRequestError(http.StatusInternalServerError, err)
 	}
 
 	a.spotifyUser = &spotifyUser
