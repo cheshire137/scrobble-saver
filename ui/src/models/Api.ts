@@ -1,3 +1,5 @@
+import UnauthorizedError from './UnauthorizedError'
+
 class Api {
   static apiUrl() {
     const env = import.meta.env
@@ -17,6 +19,7 @@ class Api {
     if (response.status >= 200 && response.status < 300) return json
     let errorMessage = response.statusText
     if (json && json.error) errorMessage += `: ${json.error}`
+    if (response.status === 401) throw new UnauthorizedError(errorMessage)
     throw new Error(errorMessage)
   }
 }
