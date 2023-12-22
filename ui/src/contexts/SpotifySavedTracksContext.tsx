@@ -13,12 +13,7 @@ export const SpotifySavedTracksContext = createContext<SpotifySavedTracksContext
 export const SpotifySavedTracksContextProvider = ({ children }: PropsWithChildren) => {
   const [savedStatusByTrackId, setSavedStatusByTrackId] = useState<Map<string, boolean>>(new Map())
   const addTrackStatuses = useCallback((updates: Map<string, boolean>) => {
-    setSavedStatusByTrackId(prev => {
-      console.log('was:', prev)
-      console.log('updates:', updates)
-      console.log('now:', new Map([...prev, ...updates]))
-      return new Map([...prev, ...updates])
-    })
+    setSavedStatusByTrackId(prev => new Map([...prev, ...updates]))
   }, [setSavedStatusByTrackId])
   const contextProps = useMemo(() => ({
     savedStatusByTrackId,
