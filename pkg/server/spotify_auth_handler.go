@@ -68,7 +68,15 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	util.LogInfo("Setting session value for key %s to %s", spotify.SpotifyUserIdSessionKey, spotifyUser.Id)
 	session.Values[spotify.SpotifyUserIdSessionKey] = spotifyUser.Id
-	session.Save(r, w)
+
+	err = session.Save(r, w)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		message := "Failed to save your session: " + err.Error()
+		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		return
+	}
 
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/spotify/%s", e.config.FrontendPort, spotifyUser.Id),
 		http.StatusSeeOther)

@@ -90,7 +90,12 @@ func (a *Api) refreshSpotifyToken() *RequestError {
 		util.LogError("Failed to refresh Spotify token:", requestErr)
 		a.session.Values[SpotifyUserIdSessionKey] = nil
 		util.LogInfo("Clearing session value for %s", SpotifyUserIdSessionKey)
-		a.session.Save(a.r, a.w)
+
+		err := a.session.Save(a.r, a.w)
+		if err != nil {
+			util.LogError("Failed to save session:", err)
+		}
+
 		return requestErr
 	}
 

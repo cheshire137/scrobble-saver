@@ -44,6 +44,15 @@ func (e *Env) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	session.Values[spotify.SpotifyUserIdSessionKey] = nil
 	session.Values[lastfmUsernameKey] = nil
 	util.LogInfo("Clearing session values for %s and %s", spotify.SpotifyUserIdSessionKey, lastfmUsernameKey)
-	session.Save(r, w)
+
+	err = session.Save(r, w)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		message := "Failed to clear your session: " + err.Error()
+		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		return
+	}
+
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d", e.config.FrontendPort), http.StatusSeeOther)
 }

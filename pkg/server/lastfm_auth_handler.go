@@ -45,7 +45,15 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	util.LogInfo("Setting session value for key %s to %s", lastfmUsernameKey, lastfmUser.Name)
 	session.Values[lastfmUsernameKey] = lastfmUser.Name
-	session.Save(r, w)
+
+	err = session.Save(r, w)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		message := "Failed to clear your session: " + err.Error()
+		json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+		return
+	}
 
 	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/lastfm/%s", e.config.FrontendPort, lastfmUser.Name),
 		http.StatusSeeOther)
