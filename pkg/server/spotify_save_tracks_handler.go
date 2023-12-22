@@ -14,6 +14,12 @@ func (e *Env) SpotifySaveTracksHandler(w http.ResponseWriter, r *http.Request) {
 	util.LogRequest(r)
 	w.Header().Set("Content-Type", "application/json")
 
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Method not allowed"})
+		return
+	}
+
 	session, err := e.store.Get(r, cookieName)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
