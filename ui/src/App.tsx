@@ -6,6 +6,7 @@ import { AuthContextProvider } from './contexts/AuthContext'
 import { LastfmTopTracksContextProvider } from './contexts/LastfmTopTracksContext'
 import { SpotifyTracksContextProvider } from './contexts/SpotifyTracksContext'
 import { SpotifySavedTracksContextProvider } from './contexts/SpotifySavedTracksContext'
+import { SpotifySelectedTracksContextProvider } from './contexts/SpotifySelectedTracksContext'
 import themeOverrides from './themes/overrides'
 import './App.css'
 
@@ -19,7 +20,9 @@ function App() {
           <LastfmTopTracksContextProvider>
             <SpotifyTracksContextProvider>
               <SpotifySavedTracksContextProvider>
-                <PageRoutes />
+                <SpotifySelectedTracksContextProvider>
+                  <PageRoutes />
+                </SpotifySelectedTracksContextProvider>
               </SpotifySavedTracksContextProvider>
             </SpotifyTracksContextProvider>
           </LastfmTopTracksContextProvider>
