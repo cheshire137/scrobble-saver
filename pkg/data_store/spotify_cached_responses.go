@@ -102,6 +102,7 @@ func (ds *DataStore) ClearCachedResponsesForPath(path, userId string) {
 		util.LogError("Failed to clear cached Spotify responses for path "+path+":", err)
 		return
 	}
+	util.LogInfo("Cleared cached " + path + " Spotify responses for user " + userId)
 }
 
 func (ds *DataStore) pruneExpiredSpotifyCachedResponses() {

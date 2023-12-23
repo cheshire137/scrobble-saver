@@ -57,6 +57,8 @@ func (e *Env) SpotifySaveTracksHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	e.ds.ClearCachedResponsesForPath(spotify.CheckSavedTracksPath, spotifyUserId)
+
 	response := spotify.SaveTracksRequestBody{TrackIds: trackIDs}
 	json.NewEncoder(w).Encode(response)
 }
