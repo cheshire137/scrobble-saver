@@ -17,7 +17,6 @@ function useGetLastfmLovedTracks(page?: number, limit?: number): Results {
     async function fetchLastfmLovedTracks() {
       try {
         const results = await LastfmApi.getLovedTracks(page, limit)
-        console.log('loved tracks result', results)
         setResults({ results, fetching: false })
       } catch (err: any) {
         console.error('failed to fetch Last.fm loved tracks', err)

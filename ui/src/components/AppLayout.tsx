@@ -1,14 +1,14 @@
 import { useContext } from 'react'
 import { Header, Heading, PageLayout } from '@primer/react'
 import { Outlet, useHref } from 'react-router-dom'
-import { PageContext } from '../contexts/PageContext'
 import { AuthContext } from '../contexts/AuthContext'
 
 const AppLayout = () => {
   const env = import.meta.env
   const backendPort = env.VITE_BACKEND_PORT || 8080
-  const { pageTitle } = useContext(PageContext)
-  const { isSignedIntoLastfm, isSignedIntoSpotify } = useContext(AuthContext)
+  const { isSignedIntoLastfm, isSignedIntoSpotify, lastfmUsername, spotifyUserId } = useContext(AuthContext)
+  const isFullySignedIn = isSignedIntoLastfm && isSignedIntoSpotify
+  const spotifyAuthPageUrl = useHref(`/lastfm/${lastfmUsername}/spotify/${spotifyUserId}`)
 
   return <PageLayout containerWidth="full" padding="none">
     <PageLayout.Header>
@@ -17,10 +17,14 @@ const AppLayout = () => {
           <Heading as="h1">
             <Header.Link href={useHref('/')}>Scrobble Saver</Header.Link>
           </Heading>
-          {pageTitle && pageTitle.length > 0 && <Heading
-            as="h2"
-            sx={{ fontWeight: 'normal', fontSize: 3, mx: 4 }}
-          >{pageTitle}</Heading>}
+          {isFullySignedIn && <>
+            <Header.Link sx={{ ml: 3 }} href={`${spotifyAuthPageUrl}?lastfm_source=top`}>
+              Top tracks
+            </Header.Link>
+            <Header.Link sx={{ ml: 3 }} href={`${spotifyAuthPageUrl}?lastfm_source=loved`}>
+              Loved tracks
+            </Header.Link>
+          </>}
         </Header.Item>
         {(isSignedIntoLastfm || isSignedIntoSpotify) && <Header.Item>
           <Header.Link href={`http://localhost:${backendPort}/logout`}>Log out</Header.Link>
