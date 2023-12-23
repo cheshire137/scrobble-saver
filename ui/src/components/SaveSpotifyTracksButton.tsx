@@ -16,6 +16,7 @@ const SaveSpotifyTracksButton = () => {
   const {
     savedTrackIds: preexistingSavedTrackIds,
     notSavedTrackIds,
+    addSavedTrackIds,
   } = useContext(SpotifySavedTracksContext)
   const {
     savedTrackIds: justSavedTrackIds,
@@ -39,9 +40,11 @@ const SaveSpotifyTracksButton = () => {
   }, [alreadySavedTrackIds, spotifyTrackIdsToSave])
 
   useEffect(() => {
-    // Uncheck tracks we just saved to the user's Spotify library
-    if (justSavedTrackIds) deselectTrackIds(justSavedTrackIds)
-  }, [justSavedTrackIds, deselectTrackIds])
+    if (justSavedTrackIds) {
+      deselectTrackIds(justSavedTrackIds) // Uncheck tracks we just saved to the user's Spotify library
+      addSavedTrackIds(justSavedTrackIds) // Mark tracks as saved to change how they're shown
+    }
+  }, [justSavedTrackIds, deselectTrackIds, addSavedTrackIds])
 
   if (saveTracksError) return <Flash variant="danger" sx={{ ml: 2 }}>{saveTracksError}</Flash>
 
