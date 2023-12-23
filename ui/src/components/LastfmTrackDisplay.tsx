@@ -18,7 +18,7 @@ const LastfmTrackDisplay = ({ track: lastfmTrack }: Props) => {
           by <Link href={lastfmTrack.artist.url} muted target="_blank">{lastfmTrack.artist.name}</Link>
         </Box>
       </Box>
-      <Box sx={{ fontSize: 1, color: 'fg.muted' }}>
+      <Box sx={{ fontSize: 1, color: 'fg.muted', mt: 1 }}>
         {lastfmTrack.playCount} play{lastfmTrack.playCount === 1 ? '' : 's'}
       </Box>
     </Box>

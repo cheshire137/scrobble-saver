@@ -36,6 +36,10 @@ class SpotifyAlbum {
   smallImage() {
     return this.images.find(image => image.width < 100)
   }
+
+  mediumImage() {
+    return this.images.find(image => image.width < 400)
+  }
 }
 
 export default SpotifyAlbum

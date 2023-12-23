@@ -1,11 +1,10 @@
 import { useContext } from 'react'
-import { ActionList, Avatar, Box } from '@primer/react'
+import { ActionList, Box, Heading } from '@primer/react'
 import SpotifyTrack from '../models/SpotifyTrack'
 import { TrackContainerActionListItem } from './TrackContainer'
 import SpotifySavedTrackStatus from './SpotifySavedTrackStatus'
 import { SpotifySelectedTracksContext } from '../contexts/SpotifySelectedTracksContext'
 import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext'
-import SpotifyAlbumDisplay from './SpotifyAlbumDisplay'
 
 interface Props {
   track: SpotifyTrack
@@ -18,7 +17,7 @@ const SpotifyTrackDisplay = ({ track, selectable, ...props }: Props) => {
   const { savedTrackIds } = useContext(SpotifySavedTracksContext)
   const isTrackSaved = savedTrackIds.has(track.id)
   const isTrackSelected = selectedTrackIds.has(track.id)
-  const image = track.smallImage()
+  const albumImage = track.mediumAlbumImage()
 
   return <TrackContainerActionListItem
     disabled={isTrackSaved && selectable}
@@ -29,13 +28,22 @@ const SpotifyTrackDisplay = ({ track, selectable, ...props }: Props) => {
     }}
     sx={{
       color: isTrackSaved ? 'fg.default' : undefined,
+      backgroundImage: albumImage ? `url('${albumImage.url}')` : undefined,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'top 0 left 36px',
+      backgroundSize: 'contain',
     }}
   >
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {image && <Avatar src={image.url} square alt={`${track.album.name} cover art`} size={32} sx={{ mr: 2 }} />}
-      <Box>
-        {track.name} by {track.artists.map(artist => artist.name).join(', ')}
-        <SpotifyAlbumDisplay album={track.album} />
+    <ActionList.LeadingVisual sx={{ width: '80px', maxWidth: '80px' }}></ActionList.LeadingVisual>
+    <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 2 }}>
+        <Heading as="h3" sx={{ fontSize: 2 }}>{track.name}</Heading>
+        <Box sx={{ ml: 1, color: 'fg.muted' }}>
+          by {track.artists.map(artist => artist.name).join(', ')}
+        </Box>
+      </Box>
+      <Box sx={{ fontSize: 1, color: 'fg.muted', mt: 1 }}>
+        &ldquo;{track.album.name}&rdquo; / {track.album.releaseYear()}
       </Box>
     </Box>
     <ActionList.TrailingVisual sx={{ height: 'auto', display: 'flex', alignItems: 'center' }}>
