@@ -5,6 +5,7 @@ import { TrackContainerActionListItem, TrackContainerActionListLinkItem } from '
 import SpotifySavedTrackStatus from './SpotifySavedTrackStatus'
 import SpotifyTrackMetadata from './SpotifyTrackMetadata'
 import { SpotifySelectedTracksContext } from '../contexts/SpotifySelectedTracksContext'
+import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext'
 
 interface Props {
   track: SpotifyTrack
@@ -14,6 +15,7 @@ interface Props {
 
 const SpotifyTrackDisplay = ({ track, asLink, ...props }: Props) => {
   const { selectedTrackIds, toggle: toggleSelected } = useContext(SpotifySelectedTracksContext)
+  const { savedTrackIds } = useContext(SpotifySavedTracksContext)
 
   if (asLink) {
     return <TrackContainerActionListLinkItem href={track.url} target="_blank" rel="noopener noreferrer">
@@ -24,10 +26,14 @@ const SpotifyTrackDisplay = ({ track, asLink, ...props }: Props) => {
     </TrackContainerActionListLinkItem>
   }
 
-  return <TrackContainerActionListItem selected={selectedTrackIds.has(track.id)} onSelect={e => {
-    if (props.onSelect) props.onSelect(e)
-    toggleSelected(track.id)
-  }}>
+  return <TrackContainerActionListItem
+    disabled={savedTrackIds.has(track.id)}
+    selected={selectedTrackIds.has(track.id)}
+    onSelect={e => {
+      if (props.onSelect) props.onSelect(e)
+      toggleSelected(track.id)
+    }}
+  >
     <SpotifyTrackMetadata track={track} />
     <ActionList.TrailingVisual>
       <SpotifySavedTrackStatus track={track} />
