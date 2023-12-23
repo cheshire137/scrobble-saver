@@ -90,6 +90,20 @@ func (ds *DataStore) PruneExpiredSpotifyCachedResponsesIfNecessary() {
 	ds.pruneExpiredSpotifyCachedResponses()
 }
 
+func (ds *DataStore) ClearCachedResponsesForPath(path, userId string) {
+	query := `DELETE FROM spotify_cached_responses WHERE path = ? AND user_id = ?`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		util.LogError("Failed to prepare query to clear cached Spotify responses for path "+path+":", err)
+		return
+	}
+	_, err = stmt.Exec(path, userId)
+	if err != nil {
+		util.LogError("Failed to clear cached Spotify responses for path "+path+":", err)
+		return
+	}
+}
+
 func (ds *DataStore) pruneExpiredSpotifyCachedResponses() {
 	cutoffTimestamp := getCacheCutoffTimestamp()
 	query := `DELETE FROM spotify_cached_responses WHERE timestamp < ?`
