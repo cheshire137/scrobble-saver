@@ -12,7 +12,7 @@ function areArraysEqual(a: string[], b: string[]) {
 
 const SaveSpotifyTracksButton = () => {
   const [spotifyTrackIdsToSave, setSpotifyTrackIdsToSave] = useState<string[]>([])
-  const { selectedTrackIds } = useContext(SpotifySelectedTracksContext)
+  const { selectedTrackIds, deselectTrackIds } = useContext(SpotifySelectedTracksContext)
   const {
     savedTrackIds: preexistingSavedTrackIds,
     notSavedTrackIds,
@@ -32,10 +32,16 @@ const SaveSpotifyTracksButton = () => {
   )
 
   useEffect(() => {
+    // Don't try to re-save tracks that are already saved to the Spotify library
     const oldValue = [...spotifyTrackIdsToSave].sort()
     const newValue = spotifyTrackIdsToSave.filter(trackId => !alreadySavedTrackIds.has(trackId)).sort()
     if (!areArraysEqual(oldValue, newValue)) setSpotifyTrackIdsToSave(newValue)
   }, [alreadySavedTrackIds, spotifyTrackIdsToSave])
+
+  useEffect(() => {
+    // Uncheck tracks we just saved to the user's Spotify library
+    if (justSavedTrackIds) deselectTrackIds(justSavedTrackIds)
+  }, [justSavedTrackIds, deselectTrackIds])
 
   if (saveTracksError) return <Flash variant="danger" sx={{ ml: 2 }}>{saveTracksError}</Flash>
 
