@@ -1,27 +1,30 @@
 import styled from 'styled-components'
 import { ActionList, Box } from '@primer/react'
 
+const height = '73px'
+
 export const TrackContainerBox = styled(Box).attrs({
   as: 'li',
 })`
-  height: 61px;
+  display: flex;
+  align-items: center;
+  height: ${height};
   border-bottom: 1px solid ${props => props.theme.colors.border.default};
-  margin-bottom: ${props => props.theme.space[3]};
-  padding-bottom: ${props => props.theme.space[3]};
+  padding: ${props => props.theme.space[3]} 0;
 `
 
 export const TrackContainerActionListItem = styled(ActionList.Item)`
-  height: 61px;
+  display: flex;
+  align-items: center;
+  height: ${height};
   border-bottom: 1px solid ${props => props.theme.colors.border.default};
-  margin-bottom: ${props => props.theme.space[3]};
-  padding-bottom: ${props => props.theme.space[3]};
+  padding: ${props => props.theme.space[3]} 0;
 `
 
 export const TrackContainerActionListLinkItem = styled(ActionList.LinkItem)`
-  height: 61px;
   display: flex;
   align-items: center;
+  height: ${height};
   border-bottom: 1px solid ${props => props.theme.colors.border.default};
-  margin-bottom: ${props => props.theme.space[3]};
-  padding-bottom: ${props => props.theme.space[3]};
+  padding: ${props => props.theme.space[3]} 0;
 `
