@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Octicon } from '@primer/react'
+import { Octicon, Tooltip } from '@primer/react'
 import { HeartIcon, HeartFillIcon } from '@primer/octicons-react'
 import SpotifyTrack from '../models/SpotifyTrack'
 import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext'
@@ -15,8 +15,11 @@ const SpotifySavedTrackStatus = ({ track }: Props) => {
   if (typeof trackSavedStatus === 'undefined') return null
 
   const icon = trackSavedStatus ? HeartFillIcon : HeartIcon
+  const title = trackSavedStatus ? 'Liked on Spotify' : 'Not a liked track on Spotify'
 
-  return <Octicon icon={icon} sx={{ ml: 2, color: 'spotify.fg' }} />
+  return <Tooltip aria-label={title}>
+    <Octicon icon={icon} sx={{ ml: 2, color: 'spotify.fg' }} />
+  </Tooltip>
 }
 
 export default SpotifySavedTrackStatus
