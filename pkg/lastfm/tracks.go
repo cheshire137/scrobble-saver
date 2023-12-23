@@ -58,7 +58,7 @@ func (a *Api) GetTopTracks(period string, limit, page int) (*GetTopTracksRespons
 
 	cacheHit, err := a.loadCachedResponse(method, paramsForCache, &response)
 	if err != nil {
-		util.LogError("Failed to use top tracks cached response:", err)
+		util.LogError("Failed to use Last.fm top tracks cached response:", err)
 		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
 	if cacheHit {
@@ -68,6 +68,68 @@ func (a *Api) GetTopTracks(period string, limit, page int) (*GetTopTracksRespons
 	requestErr := a.get(method, params, false, &response)
 	if requestErr != nil {
 		util.LogError("Failed to get user's top tracks:", requestErr)
+		return nil, requestErr
+	}
+	a.cacheResponse(response, method, paramsForCache)
+
+	return &response, nil
+}
+
+type GetLovedTracksResponse struct {
+	XMLName     xml.Name `xml:"lfm"`
+	Status      string   `xml:"status,attr"`
+	LovedTracks struct {
+		Username   string `xml:"user,attr"`
+		Page       int    `xml:"page,attr"`
+		Limit      int    `xml:"perPage,attr"`
+		TotalPages int    `xml:"totalPages,attr"`
+		Total      int    `xml:"total,attr"`
+		Tracks     []struct {
+			Name string `xml:"name"`
+			Url  string `xml:"url"`
+			Date struct {
+				Uts string `xml:"uts,attr"`
+			} `xml:"date"`
+			Artist struct {
+				Name string `xml:"name"`
+				Url  string `xml:"url"`
+			} `xml:"artist"`
+			Images []struct {
+				Size string `xml:"size,attr"`
+				Url  string `xml:",chardata"`
+			} `xml:"image"`
+		} `xml:"track"`
+	} `xml:"lovedtracks"`
+}
+
+// https://www.last.fm/api/show/user.getLovedTracks
+func (a *Api) GetLovedTracks(limit, page int) (*GetLovedTracksResponse, *util.RequestError) {
+	if limit < 1 {
+		limit = 50
+	}
+	if page < 1 {
+		page = 1
+	}
+	method := "user.getLovedTracks"
+	params := url.Values{}
+	params.Add("user", a.lastfmUser.Name)
+	params.Add("limit", strconv.Itoa(limit))
+	params.Add("page", strconv.Itoa(page))
+	paramsForCache := a.getParamsStr(params)
+	var response GetLovedTracksResponse
+
+	cacheHit, err := a.loadCachedResponse(method, paramsForCache, &response)
+	if err != nil {
+		util.LogError("Failed to use Last.fm loved tracks cached response:", err)
+		return nil, util.NewRequestError(http.StatusInternalServerError, err)
+	}
+	if cacheHit {
+		return &response, nil
+	}
+
+	requestErr := a.get(method, params, false, &response)
+	if requestErr != nil {
+		util.LogError("Failed to get user's loved tracks:", requestErr)
 		return nil, requestErr
 	}
 	a.cacheResponse(response, method, paramsForCache)

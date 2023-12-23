@@ -50,11 +50,12 @@ func main() {
 	mux.Handle("/", http.HandlerFunc(env.RedirectToFrontendHandler))
 	mux.Handle("/auth/lastfm", http.HandlerFunc(env.LastfmAuthHandler))
 	mux.Handle("/auth/spotify", http.HandlerFunc(env.SpotifyAuthHandler))
-	mux.Handle("/api/me", http.HandlerFunc(env.MeHandler))
+	mux.Handle("/api/lastfm/loved-tracks", http.HandlerFunc(env.LastfmLovedTracksHandler))
 	mux.Handle("/api/lastfm/top-tracks", http.HandlerFunc(env.LastfmTopTracksHandler))
-	mux.Handle("/api/spotify/search-tracks", http.HandlerFunc(env.SpotifySearchTracksHandler))
+	mux.Handle("/api/me", http.HandlerFunc(env.MeHandler))
 	mux.Handle("/api/spotify/check-saved-tracks", http.HandlerFunc(env.SpotifyCheckSavedTracksHandler))
 	mux.Handle("/api/spotify/save-tracks", http.HandlerFunc(env.SpotifySaveTracksHandler))
+	mux.Handle("/api/spotify/search-tracks", http.HandlerFunc(env.SpotifySearchTracksHandler))
 	mux.Handle("/logout", http.HandlerFunc(env.LogoutHandler))
 
 	server := &http.Server{
