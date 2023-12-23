@@ -21,6 +21,8 @@ const colors = {
   // https://developer.spotify.com/documentation/design
   spotify: {
     fg: '#1db954',
+    bg: '#66d36e',
+    bgHover: '#1ed760',
   },
 };
 

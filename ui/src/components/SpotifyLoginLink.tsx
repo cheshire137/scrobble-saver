@@ -1,4 +1,5 @@
-import { Link } from '@primer/react'
+import { Avatar, Button, Link } from '@primer/react'
+import SpotifyLogo from '../assets/Spotify_Icon_RGB_White.png'
 
 // https://developer.spotify.com/documentation/web-api/concepts/scopes
 const spotifyScopes = 'user-library-modify user-library-read'
@@ -24,7 +25,19 @@ function getSpotifyAuthUrl() {
 const SpotifyLoginLink = () => {
   const href = getSpotifyAuthUrl()
   if (!href) return null
-  return <Link href={href}>Log in with Spotify</Link>
+  return <Button
+    as={Link}
+    href={href}
+    sx={{ backgroundColor: 'spotify.bg', color: 'white', ':hover': { backgroundColor: 'spotify.bgHover' } }}
+    size="large"
+  >
+    <Avatar
+      sx={{ mr: 2, display: 'inline-block', verticalAlign: 'middle', boxShadow: 'none' }}
+      size={32}
+      src={SpotifyLogo}
+    />
+    Log in with Spotify
+  </Button>
 }
 
 export default SpotifyLoginLink

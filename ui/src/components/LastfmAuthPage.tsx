@@ -11,7 +11,10 @@ const LastfmAuthPage = () => {
     setPageTitle(`Signed in as ${lastfmUsername} on Last.fm`)
   }, [setPageTitle, lastfmUsername])
 
-  return <SpotifyLoginLink />
+  return <>
+    <p>Sign in with Spotify to save tracks you've scrobbled a lot or loved to your library.</p>
+    <SpotifyLoginLink />
+  </>
 }
 
 export default LastfmAuthPage
