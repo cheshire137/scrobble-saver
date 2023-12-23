@@ -1,8 +1,7 @@
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, PropsWithChildren, useCallback, useMemo, useState } from 'react'
 import useGetLastfmTopTracks from '../hooks/use-get-lastfm-top-tracks'
 import { Flash } from '@primer/react'
 import LastfmTopTracks from '../models/LastfmTopTracks'
-import { AuthContext } from './AuthContext'
 
 export type LastfmTopTracksContextProps = {
   results?: LastfmTopTracks
@@ -26,7 +25,6 @@ interface Props extends PropsWithChildren {
 }
 
 export const LastfmTopTracksContextProvider = ({ children, ...props }: Props) => {
-  const { lastfmUsername } = useContext(AuthContext)
   const [period, setPeriod] = useState(props.period ?? '3month')
   const [page, setPage] = useState(props.page ?? 1)
   const [limit, setLimit] = useState(props.limit ?? 10)
@@ -35,7 +33,7 @@ export const LastfmTopTracksContextProvider = ({ children, ...props }: Props) =>
     if (period) setPeriod(period)
     if (typeof limit === 'number') setLimit(limit)
   }, [setPage, setPeriod, setLimit])
-  const { results, fetching, error } = useGetLastfmTopTracks(lastfmUsername, period, page, limit)
+  const { results, fetching, error } = useGetLastfmTopTracks(period, page, limit)
   const contextProps = useMemo(() => ({
     results,
     period,

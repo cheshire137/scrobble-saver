@@ -8,9 +8,8 @@ interface Results {
   error?: string;
 }
 
-function useGetLastfmTopTracks(user: string, period?: string, page?: number, limit?: number): Results {
-  const canFetch = user.trim().length > 0
-  const [results, setResults] = useState<Results>({ fetching: canFetch })
+function useGetLastfmTopTracks(period?: string, page?: number, limit?: number): Results {
+  const [results, setResults] = useState<Results>({ fetching: true })
   period ||= '6month'
   page ||= 1
   limit ||= 20
@@ -18,7 +17,7 @@ function useGetLastfmTopTracks(user: string, period?: string, page?: number, lim
   useEffect(() => {
     async function fetchLastfmTopTracks() {
       try {
-        const results = await LastfmApi.getTopTracks(user, period, page, limit)
+        const results = await LastfmApi.getTopTracks(period, page, limit)
         setResults({ results, fetching: false })
       } catch (err: any) {
         console.error('failed to fetch Last.fm top tracks', err)
@@ -26,8 +25,8 @@ function useGetLastfmTopTracks(user: string, period?: string, page?: number, lim
       }
     }
 
-    if (canFetch) fetchLastfmTopTracks()
-  }, [page, limit, period, user, canFetch])
+    fetchLastfmTopTracks()
+  }, [page, limit, period])
 
   return results
 }

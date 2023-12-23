@@ -37,7 +37,7 @@ type GetTopTracksResponse struct {
 }
 
 // https://www.last.fm/api/show/user.getTopTracks
-func (a *Api) GetTopTracks(user string, period string, limit int, page int) (*GetTopTracksResponse, *util.RequestError) {
+func (a *Api) GetTopTracks(period string, limit, page int) (*GetTopTracksResponse, *util.RequestError) {
 	if period == "" {
 		period = "3month"
 	}
@@ -49,14 +49,14 @@ func (a *Api) GetTopTracks(user string, period string, limit int, page int) (*Ge
 	}
 	method := "user.getTopTracks"
 	params := url.Values{}
-	params.Add("user", user)
+	params.Add("user", a.lastfmUser.Name)
 	params.Add("period", period)
 	params.Add("limit", strconv.Itoa(limit))
 	params.Add("page", strconv.Itoa(page))
 	paramsForCache := a.getParamsStr(params)
 	var response GetTopTracksResponse
 
-	cacheHit, err := a.loadCachedResponse(method, paramsForCache, user, &response)
+	cacheHit, err := a.loadCachedResponse(method, paramsForCache, &response)
 	if err != nil {
 		util.LogError("Failed to use top tracks cached response:", err)
 		return nil, util.NewRequestError(http.StatusInternalServerError, err)
@@ -70,7 +70,7 @@ func (a *Api) GetTopTracks(user string, period string, limit int, page int) (*Ge
 		util.LogError("Failed to get user's top tracks:", requestErr)
 		return nil, requestErr
 	}
-	a.cacheResponse(response, method, paramsForCache, user)
+	a.cacheResponse(response, method, paramsForCache)
 
 	return &response, nil
 }

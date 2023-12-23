@@ -2,9 +2,8 @@ import Api from './Api'
 import LastfmTopTracks from './LastfmTopTracks'
 
 class LastfmApi {
-  public static async getTopTracks(user: string, period?: string, page?: number, limit?: number) {
+  public static async getTopTracks(period?: string, page?: number, limit?: number) {
     const params = new URLSearchParams()
-    params.append('user', user)
     if (period) params.append('period', period)
     if (page) params.append('page', page.toString())
     if (limit) params.append('limit', limit.toString())

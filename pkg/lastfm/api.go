@@ -20,12 +20,17 @@ import (
 const ApiUrl = "http://ws.audioscrobbler.com/2.0"
 
 type Api struct {
-	config *config.Config
-	ds     *data_store.DataStore
+	config     *config.Config
+	ds         *data_store.DataStore
+	lastfmUser *data_store.LastfmUser
 }
 
 func NewApi(config *config.Config, ds *data_store.DataStore) *Api {
 	return &Api{config: config, ds: ds}
+}
+
+func NewAuthenticatedApi(config *config.Config, ds *data_store.DataStore, lastfmUser *data_store.LastfmUser) *Api {
+	return &Api{config: config, ds: ds, lastfmUser: lastfmUser}
 }
 
 func (a *Api) getParamsStr(params url.Values) string {
@@ -81,8 +86,8 @@ func (a *Api) get(method string, params url.Values, signed bool, v any) *util.Re
 	return nil
 }
 
-func (a *Api) cacheResponse(response any, method string, params string, user string) {
-	lastfmCachedResponse, err := data_store.NewLastfmCachedResponse(response, method, params, user)
+func (a *Api) cacheResponse(response any, method, params string) {
+	lastfmCachedResponse, err := data_store.NewLastfmCachedResponse(response, method, params, a.lastfmUser.Name)
 	if err != nil {
 		util.LogError("Could not serialize Last.fm %s response for caching:", method, err)
 	}
@@ -92,13 +97,13 @@ func (a *Api) cacheResponse(response any, method string, params string, user str
 		util.LogError("Could not cache Last.fm %s response:", method, err)
 	}
 
-	util.LogInfo("Cached Last.fm %s response for %s", method, user)
+	util.LogInfo("Cached Last.fm %s response for %s", method, a.lastfmUser.Name)
 }
 
-func (a *Api) loadCachedResponse(method, paramsForCache, user string, response any) (bool, error) {
-	cachedResponseBody := a.ds.LoadCachedLastfmResponse(method, paramsForCache, user)
+func (a *Api) loadCachedResponse(method, paramsForCache string, response any) (bool, error) {
+	cachedResponseBody := a.ds.LoadCachedLastfmResponse(method, paramsForCache, a.lastfmUser.Name)
 	if cachedResponseBody != "" {
-		util.LogInfo("Using cached response for method=%s, user=%s, params=%s", method, user, paramsForCache)
+		util.LogInfo("Using cached response for method=%s, user=%s, params=%s", method, a.lastfmUser.Name, paramsForCache)
 		err := json.Unmarshal([]byte(cachedResponseBody), &response)
 		return true, err // cache hit
 	}
