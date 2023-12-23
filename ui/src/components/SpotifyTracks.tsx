@@ -70,7 +70,7 @@ const SpotifyTracks = () => {
               return spotifyTrack ? <SpotifyTrackDisplay
                 key={spotifyTrack.id}
                 track={spotifyTrack}
-                selectable={allLastfmTracksLookedUpOnSpotify}
+                selectable={allLastfmTracksLookedUpOnSpotify ?? false}
                 onSelect={() => setHasUserSelectedAnyTracks(true)}
               /> : null
             })}

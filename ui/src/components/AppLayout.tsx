@@ -12,7 +12,7 @@ const AppLayout = () => {
 
   return <PageLayout containerWidth="full" padding="none">
     <PageLayout.Header>
-      <Header>
+      <Header sx={{ px: 5 }}>
         <Header.Item full sx={{ display: 'flex', alignItems: 'baseline' }}>
           <Heading as="h1">
             <Header.Link href={useHref('/')}>Scrobble Saver</Header.Link>
@@ -27,7 +27,7 @@ const AppLayout = () => {
         </Header.Item>}
       </Header>
     </PageLayout.Header>
-    <PageLayout.Content width="xlarge" sx={{ fontSize: 2 }}>
+    <PageLayout.Content width="full" sx={{ fontSize: 2, px: 5 }}>
       <Outlet />
     </PageLayout.Content>
   </PageLayout>
