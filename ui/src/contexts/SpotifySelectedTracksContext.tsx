@@ -3,12 +3,14 @@ import { createContext, PropsWithChildren, useCallback, useMemo, useState } from
 export type SpotifySelectedTracksContextProps = {
   selectedTrackIds: Set<string>
   addSelectedTrackIds(ids: string[]): void
+  deselectTrackIds(ids: string[]): void
   toggle(id: string): void
 }
 
 export const SpotifySelectedTracksContext = createContext<SpotifySelectedTracksContextProps>({
   selectedTrackIds: new Set(),
   addSelectedTrackIds: () => {},
+  deselectTrackIds: () => {},
   toggle: () => {},
 })
 
@@ -17,6 +19,13 @@ export const SpotifySelectedTracksContextProvider = ({ children }: PropsWithChil
   const addSelectedTrackIds = useCallback((newTrackIds: string[]) => {
     setSelectedTrackIds(existingTrackIds => {
       return new Set([...existingTrackIds, ...newTrackIds])
+    })
+  }, [setSelectedTrackIds])
+  const deselectTrackIds = useCallback((trackIdsToDeselect: string[]) => {
+    setSelectedTrackIds(existingTrackIds => {
+      const result = new Set([...existingTrackIds])
+      trackIdsToDeselect.forEach(id => result.delete(id))
+      return result
     })
   }, [setSelectedTrackIds])
   const toggle = useCallback((id: string) => {
@@ -33,8 +42,9 @@ export const SpotifySelectedTracksContextProvider = ({ children }: PropsWithChil
   const contextProps = useMemo(() => ({
     selectedTrackIds,
     addSelectedTrackIds,
+    deselectTrackIds,
     toggle,
-  } satisfies SpotifySelectedTracksContextProps), [selectedTrackIds, addSelectedTrackIds, toggle])
+  } satisfies SpotifySelectedTracksContextProps), [selectedTrackIds, addSelectedTrackIds, deselectTrackIds, toggle])
 
   return <SpotifySelectedTracksContext.Provider value={contextProps}>{children}</SpotifySelectedTracksContext.Provider>
 }
