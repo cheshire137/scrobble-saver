@@ -15,6 +15,8 @@ const colors = {
   },
   lastfm: {
     fg: '#c8382f',
+    bg: '#c43420',
+    bgHover: '#b32e1c',
   },
   // https://developer.spotify.com/documentation/design
   spotify: {
