@@ -50,10 +50,6 @@ const SpotifyTracks = () => {
         />
         Spotify tracks
       </span>
-      {!preloadAll && !allLastfmTracksLookedUpOnSpotify && <Button
-        leadingVisual={SearchIcon}
-        onClick={() => setPreloadAll(true)}
-      >Find all</Button>}
       {checkingSavedTracks && <Spinner sx={{ ml: 2 }} />}
       {checkSavedTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{checkSavedTracksError}</Flash>}
       {notSavedUnselectedTrackIds.length > 0 && <Button
@@ -61,25 +57,35 @@ const SpotifyTracks = () => {
       >Select all unsaved tracks</Button>}
       <SaveSpotifyTracksButton />
     </Heading>
-    <ActionList selectionVariant={allLastfmTracksLookedUpOnSpotify ? 'multiple' : 'single'}>
-      {lastfmTopTrackResults.tracks.map(lastfmTrack => {
-        const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []
-        if (spotifyTrackIds.length < 1) {
-          return <SpotifyTrackSearch key={lastfmTrack.url} lastfmTrack={lastfmTrack} preload={preloadAll} />
-        }
-        return <Fragment key={lastfmTrack.url}>
-          {spotifyTrackIds.map(spotifyTrackId => {
-            const spotifyTrack = spotifyTracks.find(track => track.id === spotifyTrackId)
-            return spotifyTrack ? <SpotifyTrackDisplay
-              key={spotifyTrack.id}
-              track={spotifyTrack}
-              asLink={!allLastfmTracksLookedUpOnSpotify}
-              onSelect={() => setHasUserSelectedAnyTracks(true)}
-            /> : null
-          })}
-        </Fragment>
-      })}
-    </ActionList>
+    {allLastfmTracksLookedUpOnSpotify || preloadAll ? (
+      <ActionList selectionVariant="multiple">
+        {lastfmTopTrackResults.tracks.map(lastfmTrack => {
+          const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []
+          if (spotifyTrackIds.length < 1) {
+            return <SpotifyTrackSearch key={lastfmTrack.url} lastfmTrack={lastfmTrack} preload={preloadAll} />
+          }
+          return <Fragment key={lastfmTrack.url}>
+            {spotifyTrackIds.map(spotifyTrackId => {
+              const spotifyTrack = spotifyTracks.find(track => track.id === spotifyTrackId)
+              return spotifyTrack ? <SpotifyTrackDisplay
+                key={spotifyTrack.id}
+                track={spotifyTrack}
+                asLink={!allLastfmTracksLookedUpOnSpotify}
+                onSelect={() => setHasUserSelectedAnyTracks(true)}
+              /> : null
+            })}
+          </Fragment>
+        })}
+      </ActionList>
+    ) : (
+      <>
+        {!preloadAll && !allLastfmTracksLookedUpOnSpotify && <Button
+          leadingVisual={SearchIcon}
+          onClick={() => setPreloadAll(true)}
+          size="large"
+        >Look up Last.fm tracks on Spotify</Button>}
+      </>
+    )}
   </Box>
 }
 
