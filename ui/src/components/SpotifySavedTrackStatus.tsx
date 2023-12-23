@@ -18,7 +18,7 @@ const SpotifySavedTrackStatus = ({ track }: Props) => {
   const title = trackSavedStatus ? 'Liked on Spotify' : 'Not a liked track on Spotify'
 
   return <Tooltip aria-label={title}>
-    <Octicon icon={icon} sx={{ ml: 2, color: 'spotify.fg' }} />
+    <Octicon icon={icon} size="medium" sx={{ ml: 2, color: 'spotify.fg' }} />
   </Tooltip>
 }
 

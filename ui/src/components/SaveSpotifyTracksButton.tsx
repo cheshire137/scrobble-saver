@@ -53,9 +53,13 @@ const SaveSpotifyTracksButton = () => {
   if (notSavedSelectedTrackIds.length < 1) return null
 
   return <Button
-    variant="primary"
     onClick={() => setSpotifyTrackIdsToSave(notSavedSelectedTrackIds)}
-    sx={{ ml: 2 }}
+    sx={{
+      ml: 2,
+      backgroundColor: 'spotify.bg',
+      color: 'white',
+      ':hover:not([disabled])': { backgroundColor: 'spotify.bgHover' },
+    }}
   >Save selected tracks</Button>
 }
 

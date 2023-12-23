@@ -70,7 +70,7 @@ const SpotifyTracks = () => {
               return spotifyTrack ? <SpotifyTrackDisplay
                 key={spotifyTrack.id}
                 track={spotifyTrack}
-                asLink={!allLastfmTracksLookedUpOnSpotify}
+                selectable={allLastfmTracksLookedUpOnSpotify}
                 onSelect={() => setHasUserSelectedAnyTracks(true)}
               /> : null
             })}
@@ -83,6 +83,7 @@ const SpotifyTracks = () => {
           leadingVisual={SearchIcon}
           onClick={() => setPreloadAll(true)}
           size="large"
+          sx={{ mt: 4 }}
         >Look up Last.fm tracks on Spotify</Button>}
       </>
     )}

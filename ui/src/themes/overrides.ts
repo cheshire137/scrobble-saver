@@ -1,14 +1,11 @@
 const colors = {
   canvas: {
-    default: '#FFD29D',
+    default: '#fefefe',
   },
   header: {
     bg: '#FFB563',
     text: '#C84630',
     logo: '#69140E',
-  },
-  border: {
-    default: '#FFB563',
   },
   accent: {
     fg: '#4D5382',
