@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cheshire137/lastly-likes/pkg/data_store"
-	"github.com/cheshire137/lastly-likes/pkg/spotify"
-	"github.com/cheshire137/lastly-likes/pkg/util"
+	"github.com/cheshire137/scrobble-saver/pkg/data_store"
+	"github.com/cheshire137/scrobble-saver/pkg/spotify"
+	"github.com/cheshire137/scrobble-saver/pkg/util"
 )
 
 func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {

@@ -15,7 +15,7 @@ const AppLayout = () => {
       <Header>
         <Header.Item full sx={{ display: 'flex', alignItems: 'baseline' }}>
           <Heading as="h1">
-            <Header.Link href={useHref('/')}>Lastly Likes</Header.Link>
+            <Header.Link href={useHref('/')}>Scrobble Saver</Header.Link>
           </Heading>
           {pageTitle && pageTitle.length > 0 && <Heading
             as="h2"

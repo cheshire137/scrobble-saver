@@ -1,4 +1,4 @@
-module github.com/cheshire137/lastly-likes
+module github.com/cheshire137/scrobble-saver
 
 go 1.19
 

@@ -1,4 +1,4 @@
-const localStorageKey = 'lastly-likes'
+const localStorageKey = 'scrobble-saver'
 
 class LocalStorage {
   static getJSON() {

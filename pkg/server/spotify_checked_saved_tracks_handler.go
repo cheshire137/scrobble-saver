@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/cheshire137/lastly-likes/pkg/spotify"
-	"github.com/cheshire137/lastly-likes/pkg/util"
+	"github.com/cheshire137/scrobble-saver/pkg/spotify"
+	"github.com/cheshire137/scrobble-saver/pkg/util"
 )
 
 func (e *Env) SpotifyCheckSavedTracksHandler(w http.ResponseWriter, r *http.Request) {

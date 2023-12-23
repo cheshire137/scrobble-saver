@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/cheshire137/lastly-likes/pkg/util"
+	"github.com/cheshire137/scrobble-saver/pkg/util"
 )
 
 type SpotifyCachedResponse struct {

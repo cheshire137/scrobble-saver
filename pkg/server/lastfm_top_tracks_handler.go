@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cheshire137/lastly-likes/pkg/lastfm"
-	"github.com/cheshire137/lastly-likes/pkg/util"
+	"github.com/cheshire137/scrobble-saver/pkg/lastfm"
+	"github.com/cheshire137/scrobble-saver/pkg/util"
 )
 
 func (e *Env) LastfmTopTracksHandler(w http.ResponseWriter, r *http.Request) {

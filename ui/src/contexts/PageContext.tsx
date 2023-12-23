@@ -16,9 +16,9 @@ export const PageContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (pageTitle.length > 0) {
-      document.title = `${pageTitle} - Lastly Likes`
+      document.title = `${pageTitle} - Scrobble Saver`
     } else {
-      document.title = 'Lastly Likes'
+      document.title = 'Scrobble Saver'
     }
   }, [pageTitle])
 

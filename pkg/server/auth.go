@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cheshire137/lastly-likes/pkg/spotify"
-	"github.com/cheshire137/lastly-likes/pkg/util"
+	"github.com/cheshire137/scrobble-saver/pkg/spotify"
+	"github.com/cheshire137/scrobble-saver/pkg/util"
 )
 
-const cookieName = "lastly-likes"
+const cookieName = "scrobble-saver"
 const lastfmUsernameKey = "lastfmUsername"
 
 type MeResponse struct {

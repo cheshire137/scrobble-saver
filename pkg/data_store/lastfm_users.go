@@ -1,6 +1,6 @@
 package data_store
 
-import "github.com/cheshire137/lastly-likes/pkg/util"
+import "github.com/cheshire137/scrobble-saver/pkg/util"
 
 type LastfmUser struct {
 	Name       string

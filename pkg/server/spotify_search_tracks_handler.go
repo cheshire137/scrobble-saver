@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cheshire137/lastly-likes/pkg/spotify"
-	"github.com/cheshire137/lastly-likes/pkg/util"
+	"github.com/cheshire137/scrobble-saver/pkg/spotify"
+	"github.com/cheshire137/scrobble-saver/pkg/util"
 )
 
 func (e *Env) SpotifySearchTracksHandler(w http.ResponseWriter, r *http.Request) {
