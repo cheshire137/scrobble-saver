@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { ActionList, Spinner, SxProp } from '@primer/react'
 import { SearchIcon, AlertIcon } from '@primer/octicons-react'
 import SpotifySearchResultsDisplay from './SpotifySearchResultsDisplay'
-import LastfmTrack from '../models/LastfmTrack'
+import LastfmTopTrack from '../models/LastfmTopTrack'
+import LastfmLovedTrack from '../models/LastfmLovedTrack'
 import useSearchSpotifyTracks from '../hooks/use-search-spotify-tracks'
 import { TrackContainerActionListItem } from './TrackContainer'
 
 interface Props {
-  lastfmTrack: LastfmTrack
+  lastfmTrack: LastfmTopTrack | LastfmLovedTrack
   preload?: boolean
 }
 

@@ -1,9 +1,9 @@
-import LastfmTrack from '../models/LastfmTrack'
+import LastfmTopTrack from '../models/LastfmTopTrack'
 import { Box, CounterLabel, Heading, Link } from '@primer/react'
 import { TrackContainerBox } from './TrackContainer'
 
 interface Props {
-  track: LastfmTrack
+  track: LastfmTopTrack
 }
 
 const LastfmTrackDisplay = ({ track: lastfmTrack }: Props) => {
