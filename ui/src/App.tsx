@@ -3,10 +3,6 @@ import deepmerge from 'deepmerge'
 import PageRoutes from './PageRoutes'
 import { PageContextProvider } from './contexts/PageContext'
 import { AuthContextProvider } from './contexts/AuthContext'
-import { LastfmTopTracksContextProvider } from './contexts/LastfmTopTracksContext'
-import { SpotifyTracksContextProvider } from './contexts/SpotifyTracksContext'
-import { SpotifySavedTracksContextProvider } from './contexts/SpotifySavedTracksContext'
-import { SpotifySelectedTracksContextProvider } from './contexts/SpotifySelectedTracksContext'
 import themeOverrides from './themes/overrides'
 import './App.css'
 
@@ -17,15 +13,7 @@ function App() {
     <BaseStyles>
       <PageContextProvider>
         <AuthContextProvider>
-          <LastfmTopTracksContextProvider>
-            <SpotifyTracksContextProvider>
-              <SpotifySavedTracksContextProvider>
-                <SpotifySelectedTracksContextProvider>
-                  <PageRoutes />
-                </SpotifySelectedTracksContextProvider>
-              </SpotifySavedTracksContextProvider>
-            </SpotifyTracksContextProvider>
-          </LastfmTopTracksContextProvider>
+          <PageRoutes />
         </AuthContextProvider>
       </PageContextProvider>
     </BaseStyles>

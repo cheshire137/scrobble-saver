@@ -19,9 +19,9 @@ export const LastfmTopTracksContext = createContext<LastfmTopTracksContextProps>
 })
 
 interface Props extends PropsWithChildren {
-  period?: string,
-  page?: number,
-  limit?: number,
+  period?: string | null,
+  page?: number | null,
+  limit?: number | null,
 }
 
 export const LastfmTopTracksContextProvider = ({ children, ...props }: Props) => {
