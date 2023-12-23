@@ -16,6 +16,7 @@ interface Props {
 const SpotifyTrackDisplay = ({ track, asLink, ...props }: Props) => {
   const { selectedTrackIds, toggle: toggleSelected } = useContext(SpotifySelectedTracksContext)
   const { savedTrackIds } = useContext(SpotifySavedTracksContext)
+  const isTrackSaved = savedTrackIds.has(track.id)
 
   if (asLink) {
     return <TrackContainerActionListLinkItem href={track.url} target="_blank" rel="noopener noreferrer">
@@ -27,11 +28,14 @@ const SpotifyTrackDisplay = ({ track, asLink, ...props }: Props) => {
   }
 
   return <TrackContainerActionListItem
-    disabled={savedTrackIds.has(track.id)}
+    disabled={isTrackSaved}
     selected={selectedTrackIds.has(track.id)}
     onSelect={e => {
       if (props.onSelect) props.onSelect(e)
       toggleSelected(track.id)
+    }}
+    sx={{
+      color: isTrackSaved ? 'fg.default' : undefined,
     }}
   >
     <SpotifyTrackMetadata track={track} />
