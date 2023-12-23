@@ -189,18 +189,19 @@ func (a *Api) saveBatchOfTracks(trackIDs []string) *util.RequestError {
 	return nil
 }
 
+const CheckSavedTracksPath = "/me/tracks/contains"
+
 func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksResponse, *util.RequestError) {
 	if len(trackIDs) > 50 {
 		err := fmt.Errorf("cannot check more than 50 track IDs at a time, got %d", len(trackIDs))
 		return nil, util.NewRequestError(http.StatusInternalServerError, err)
 	}
-	path := "/me/tracks/contains"
 	params := url.Values{}
 	params.Add("ids", strings.Join(trackIDs, ","))
 	paramsForCache := a.getParamsStr(params)
 	var response []bool
 
-	cacheHit, err := a.loadCachedResponse(path, paramsForCache, a.spotifyUser.Id, &response)
+	cacheHit, err := a.loadCachedResponse(CheckSavedTracksPath, paramsForCache, a.spotifyUser.Id, &response)
 	if err != nil {
 		util.LogError("Failed to use cached response for checking saved Spotify tracks:", err)
 		return nil, util.NewRequestError(http.StatusInternalServerError, err)
@@ -210,7 +211,7 @@ func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksRespo
 		return result, nil
 	}
 
-	requestErr := a.get(path, params, &response)
+	requestErr := a.get(CheckSavedTracksPath, params, &response)
 	if requestErr != nil {
 		if requestErr.StatusCode != 401 {
 			util.LogError("Failed to check Spotify saved tracks:", requestErr.Err)
@@ -223,14 +224,14 @@ func (a *Api) checkBatchOfSavedTracks(trackIDs []string) (*CheckSavedTracksRespo
 		}
 
 		// Try the original request once more, now with an updated access token:
-		requestErr = a.get(path, params, &response)
+		requestErr = a.get(CheckSavedTracksPath, params, &response)
 		if requestErr != nil {
 			util.LogError("Failed to check Spotify saved tracks after refreshing token:", requestErr.Err)
 			return nil, requestErr
 		}
 	}
 
-	a.cacheResponse(response, path, paramsForCache, a.spotifyUser.Id)
+	a.cacheResponse(response, CheckSavedTracksPath, paramsForCache, a.spotifyUser.Id)
 	result := zipCheckSavedTracksResponse(trackIDs, response)
 	return result, nil
 }
