@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { ActionList, Box, Heading } from '@primer/react'
+import { ActionList, Box, Heading, Truncate } from '@primer/react'
 import SpotifyTrack from '../models/SpotifyTrack'
 import { TrackContainerActionListItem } from './TrackContainer'
 import SpotifySavedTrackStatus from './SpotifySavedTrackStatus'
@@ -18,6 +18,7 @@ const SpotifyTrackDisplay = ({ track, selectable, ...props }: Props) => {
   const isTrackSaved = savedTrackIds.has(track.id)
   const isTrackSelected = selectedTrackIds.has(track.id)
   const albumImage = track.mediumAlbumImage()
+  const artistNames = track.artistNames()
 
   return <TrackContainerActionListItem
     disabled={isTrackSaved && selectable}
@@ -38,7 +39,9 @@ const SpotifyTrackDisplay = ({ track, selectable, ...props }: Props) => {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 2, flexWrap: 'wrap' }}>
         <Heading as="h3" sx={{ fontSize: 2, mr: 1 }}>{track.name}</Heading>
-        <Box sx={{ color: 'fg.muted' }}>by {track.artists.map(artist => artist.name).join(', ')}</Box>
+        <Box sx={{ color: 'fg.muted' }}>
+          by <Truncate maxWidth={250} inline title={artistNames}>{artistNames}</Truncate>
+        </Box>
       </Box>
       <Box sx={{ fontSize: 1, color: 'fg.muted', mt: 1 }}>
         &ldquo;{track.album.name}&rdquo; / {track.album.releaseYear()}

@@ -31,6 +31,15 @@ class SpotifyTrack {
   mediumAlbumImage() {
     return this.album.mediumImage()
   }
+
+  artistNames() {
+    const names = this.artists.map(artist => artist.name)
+    if (names.length === 1) return names[0]
+    if (names.length === 2) return names.join(' and ')
+    const leadingNames = names.slice(0, -2)
+    const lastPair = names.slice(-2)
+    return leadingNames.join(', ') + ', ' + lastPair.join(', and ')
+  }
 }
 
 export default SpotifyTrack
