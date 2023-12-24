@@ -28,7 +28,11 @@ function useGetLastfmTopTracks(period?: string, page?: number, limit?: number): 
       }
     }
 
-    if (isTopTracks) fetchLastfmTopTracks()
+    if (isTopTracks) {
+      fetchLastfmTopTracks()
+    } else {
+      setResults({ fetching: false })
+    }
   }, [isTopTracks, page, limit, period])
 
   return results

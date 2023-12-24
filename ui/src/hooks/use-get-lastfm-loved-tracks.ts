@@ -26,7 +26,11 @@ function useGetLastfmLovedTracks(page?: number, limit?: number): Results {
       }
     }
 
-    if (isLovedTracks) fetchLastfmLovedTracks()
+    if (isLovedTracks) {
+      fetchLastfmLovedTracks()
+    } else {
+      setResults({ fetching: false })
+    }
   }, [isLovedTracks, page, limit])
 
   return results
