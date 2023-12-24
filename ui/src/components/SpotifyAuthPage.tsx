@@ -1,15 +1,13 @@
 import { useContext, useEffect } from 'react'
-import { Box } from '@primer/react'
 import { PageContext } from '../contexts/PageContext'
 import { AuthContext } from '../contexts/AuthContext'
 import { LastfmTopTracksContextProvider } from '../contexts/LastfmTopTracksContext'
 import { LastfmLovedTracksContextProvider } from '../contexts/LastfmLovedTracksContext'
+import { LastfmTrackSourceContextProvider } from '../contexts/LastfmTrackSourceContext'
 import { SpotifyTracksContextProvider } from '../contexts/SpotifyTracksContext'
 import { SpotifySavedTracksContextProvider } from '../contexts/SpotifySavedTracksContext'
 import { SpotifySelectedTracksContextProvider } from '../contexts/SpotifySelectedTracksContext'
-import LastfmTopTracks from './LastfmTopTracks'
-import LastfmLovedTracks from './LastfmLovedTracks'
-import SpotifyTracks from './SpotifyTracks'
+import LastfmAndSpotifyTracks from './LastfmAndSpotifyTracks'
 import { useSearchParams } from 'react-router-dom'
 
 const SpotifyAuthPage = () => {
@@ -17,7 +15,6 @@ const SpotifyAuthPage = () => {
   const { lastfmUsername, spotifyUserId } = useContext(AuthContext)
   const [searchParams] = useSearchParams()
   const period = searchParams.get('period')
-  const lastfmSource = searchParams.get('lastfm_source')
 
   useEffect(() => {
     if (lastfmUsername === spotifyUserId) {
@@ -27,20 +24,19 @@ const SpotifyAuthPage = () => {
     }
   }, [setPageTitle, spotifyUserId, lastfmUsername])
 
-  return <LastfmTopTracksContextProvider period={period}>
-    <LastfmLovedTracksContextProvider>
-      <SpotifyTracksContextProvider>
-        <SpotifySavedTracksContextProvider>
-          <SpotifySelectedTracksContextProvider>
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 4 }}>
-              {lastfmSource === 'loved' ? <LastfmLovedTracks /> : <LastfmTopTracks />}
-              <SpotifyTracks />
-            </Box>
-          </SpotifySelectedTracksContextProvider>
-        </SpotifySavedTracksContextProvider>
-      </SpotifyTracksContextProvider>
-    </LastfmLovedTracksContextProvider>
-  </LastfmTopTracksContextProvider>
+  return <LastfmTrackSourceContextProvider>
+    <LastfmTopTracksContextProvider period={period}>
+      <LastfmLovedTracksContextProvider>
+        <SpotifyTracksContextProvider>
+          <SpotifySavedTracksContextProvider>
+            <SpotifySelectedTracksContextProvider>
+              <LastfmAndSpotifyTracks />
+            </SpotifySelectedTracksContextProvider>
+          </SpotifySavedTracksContextProvider>
+        </SpotifyTracksContextProvider>
+      </LastfmLovedTracksContextProvider>
+    </LastfmTopTracksContextProvider>
+  </LastfmTrackSourceContextProvider>
 }
 
 export default SpotifyAuthPage
