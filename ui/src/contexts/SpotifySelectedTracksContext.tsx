@@ -3,7 +3,7 @@ import { createContext, PropsWithChildren, useCallback, useMemo, useState } from
 export type SpotifySelectedTracksContextProps = {
   selectedTrackIds: Set<string>
   addSelectedTrackIds(ids: string[]): void
-  deselectTrackIds(ids: string[]): void
+  deselectTrackIds(ids: string[] | Set<string>): void
   toggle(id: string): void
 }
 
@@ -21,7 +21,7 @@ export const SpotifySelectedTracksContextProvider = ({ children }: PropsWithChil
       return new Set([...existingTrackIds, ...newTrackIds])
     })
   }, [setSelectedTrackIds])
-  const deselectTrackIds = useCallback((trackIdsToDeselect: string[]) => {
+  const deselectTrackIds = useCallback((trackIdsToDeselect: string[] | Set<string>) => {
     setSelectedTrackIds(existingTrackIds => {
       const result = new Set([...existingTrackIds])
       trackIdsToDeselect.forEach(id => result.delete(id))
