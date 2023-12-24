@@ -1,8 +1,9 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { Button, Flash, Spinner } from '@primer/react'
+import { Avatar, Button, Flash, Spinner } from '@primer/react'
 import { SpotifySelectedTracksContext } from '../contexts/SpotifySelectedTracksContext'
 import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext'
 import useSaveSpotifyTracks from '../hooks/use-save-spotify-tracks'
+import SpotifyLogo from '../assets/Spotify_Icon_RGB_White.png'
 
 function areArraysEqual(a: string[], b: string[]) {
   if (a.length !== b.length) return false
@@ -60,7 +61,14 @@ const SaveSpotifyTracksButton = () => {
       color: 'white',
       ':hover:not([disabled])': { backgroundColor: 'spotify.bgHover' },
     }}
-  >Save selected tracks</Button>
+  >
+    <Avatar
+      sx={{ mr: 2, display: 'inline-block', verticalAlign: 'middle', boxShadow: 'none' }}
+      size={20}
+      src={SpotifyLogo}
+    />
+    Add to library
+  </Button>
 }
 
 export default SaveSpotifyTracksButton
