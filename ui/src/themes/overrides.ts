@@ -3,12 +3,12 @@ const colors = {
     default: '#fefefe',
   },
   header: {
-    bg: '#FFB563',
-    text: '#C84630',
-    logo: '#69140E',
+    bg: '#BFC0C0',
+    text: '#4F5D75',
+    logo: '#2D3142',
   },
   accent: {
-    fg: '#4D5382',
+    fg: '#4F5D75',
   },
   lastfm: {
     fg: '#c8382f',
