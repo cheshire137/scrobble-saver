@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useRef } from 'react'
 import { ActionList, Box, Heading, Truncate } from '@primer/react'
 import SpotifyTrack from '../models/SpotifyTrack'
 import { TrackContainerActionListItem } from './TrackContainer'
@@ -15,10 +15,19 @@ interface Props {
 const SpotifyTrackDisplay = ({ track, selectable, ...props }: Props) => {
   const { selectedTrackIds, toggle: toggleSelected } = useContext(SpotifySelectedTracksContext)
   const { savedTrackIds } = useContext(SpotifySavedTracksContext)
+  const trackAndArtistRef = useRef<HTMLDivElement>(null)
+  const trackAndArtistSeparatorRef = useRef<HTMLSpanElement>(null)
+  const trackNameRef = useRef<HTMLHeadingElement>(null)
   const isTrackSaved = savedTrackIds.has(track.id)
   const isTrackSelected = selectedTrackIds.has(track.id)
   const albumImage = track.mediumAlbumImage()
   const artistNames = track.artistNames()
+  const trackAndArtistEl = trackAndArtistRef.current
+  const trackAndArtistSeparatorEl = trackAndArtistSeparatorRef.current
+  const trackNameEl = trackNameRef.current
+  const availableArtistWidth = trackAndArtistEl && trackAndArtistSeparatorEl && trackNameEl
+    ? trackAndArtistEl.clientWidth - trackNameEl.clientWidth - trackAndArtistSeparatorEl.clientWidth - 8
+    : undefined
 
   return <TrackContainerActionListItem
     disabled={isTrackSaved && selectable}
@@ -37,10 +46,14 @@ const SpotifyTrackDisplay = ({ track, selectable, ...props }: Props) => {
   >
     <ActionList.LeadingVisual sx={{ width: '80px', maxWidth: '80px' }}></ActionList.LeadingVisual>
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 2, flexWrap: 'wrap' }}>
-        <Heading as="h3" sx={{ fontSize: 2, mr: 1 }}>{track.name}</Heading>
+      <Box
+        ref={trackAndArtistRef}
+        sx={{ display: 'flex', alignItems: 'center', fontSize: 2, flexWrap: 'wrap', width: '100%' }}
+      >
+        <Heading ref={trackNameRef} as="h3" sx={{ fontSize: 2, mr: 1 }}>{track.name}</Heading>
         <Box sx={{ color: 'fg.muted' }}>
-          by <Truncate maxWidth={250} inline title={artistNames}>{artistNames}</Truncate>
+          <Box as="span" sx={{ display: 'inline-block', mr: 1 }} ref={trackAndArtistSeparatorRef}>by</Box>
+          <Truncate maxWidth={availableArtistWidth} inline title={artistNames}>{artistNames}</Truncate>
         </Box>
       </Box>
       <Box sx={{ fontSize: 1, color: 'fg.muted', mt: 1 }}>
