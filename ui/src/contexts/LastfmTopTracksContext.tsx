@@ -1,11 +1,11 @@
 import { createContext, PropsWithChildren, useCallback, useMemo, useState } from 'react'
 import useGetLastfmTopTracks from '../hooks/use-get-lastfm-top-tracks'
 import { Flash } from '@primer/react'
-import LastfmTopTracks from '../models/LastfmTopTracks'
+import LastfmTopTracksResults from '../models/LastfmTopTracksResults'
 import { defaultLastfmTopTrackPeriod } from '../models/LastfmTopTrackPeriod'
 
 export type LastfmTopTracksContextProps = {
-  results?: LastfmTopTracks
+  results?: LastfmTopTracksResults
   period?: string
   page?: number
   limit?: number
