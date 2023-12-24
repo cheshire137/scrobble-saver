@@ -7,6 +7,10 @@ class Api {
     return `http://localhost:${port}`
   }
 
+  static logoutUrl() {
+    return `${this.backendUrl()}/logout`
+  }
+
   static apiUrl() {
     return `${this.backendUrl()}/api`
   }

@@ -5,14 +5,13 @@ import { AuthContext } from '../contexts/AuthContext'
 import { PageContext } from '../contexts/PageContext'
 import { LovedTracksSource } from '../contexts/LastfmTrackSourceContext'
 import deepmerge from 'deepmerge'
+import Api from '../models/Api'
 
 const AppLayout = () => {
-  const env = import.meta.env
-  const backendPort = env.VITE_BACKEND_PORT || 8080
   const { pageTitle } = useContext(PageContext)
-  const { isSignedIntoLastfm, isSignedIntoSpotify, lastfmUsername, spotifyUserId } = useContext(AuthContext)
+  const { isSignedIntoLastfm, isSignedIntoSpotify } = useContext(AuthContext)
   const isFullySignedIn = isSignedIntoLastfm && isSignedIntoSpotify
-  const spotifyAuthPageUrl = useHref(`/lastfm/${lastfmUsername}/spotify/${spotifyUserId}`)
+  const spotifyAuthPageUrl = useHref('/spotify')
   const [searchParams] = useSearchParams()
   const lastfmSource = searchParams.get('lastfm_source')
   const isTopTracks = lastfmSource !== LovedTracksSource
@@ -42,7 +41,7 @@ const AppLayout = () => {
           </>}
         </Header.Item>
         {(isSignedIntoLastfm || isSignedIntoSpotify) && <Header.Item>
-          <Header.Link href={`http://localhost:${backendPort}/logout`}>Log out</Header.Link>
+          <Header.Link href={Api.logoutUrl()}>Log out</Header.Link>
         </Header.Item>}
       </Header>
     </PageLayout.Header>

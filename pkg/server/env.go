@@ -29,13 +29,14 @@ func (e *Env) RedirectToFrontendHandler(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	lastfmUsername, isSignedIntoLastfm := session.Values[lastfmUsernameKey].(string)
+	_, isSignedIntoLastfm := session.Values[lastfmUsernameKey].(string)
 	path := ""
 	if isSignedIntoLastfm {
-		path = fmt.Sprintf("/#/lastfm/%s", lastfmUsername)
-		spotifyUserId, isSignedIntoSpotify := session.Values[spotify.SpotifyUserIdSessionKey].(string)
+		_, isSignedIntoSpotify := session.Values[spotify.SpotifyUserIdSessionKey].(string)
 		if isSignedIntoSpotify {
-			path = fmt.Sprintf("%s/spotify/%s", path, spotifyUserId)
+			path = "/#/spotify"
+		} else {
+			path = "/#/lastfm"
 		}
 	}
 	frontendUrl := fmt.Sprintf("http://localhost:%d%s", e.config.FrontendPort, path)

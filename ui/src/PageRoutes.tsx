@@ -7,28 +7,22 @@ import SpotifyAuthPage from './components/SpotifyAuthPage'
 import { AuthContext } from './contexts/AuthContext'
 
 const PageRoutes = () => {
-  const { lastfmUsername, spotifyUserId, isSignedIntoLastfm, isSignedIntoSpotify } = useContext(AuthContext)
-  const lastfmPath = `/lastfm/${encodeURIComponent(lastfmUsername)}`
-  const lastfmSpotifyPath = `${lastfmPath}/spotify/${encodeURIComponent(spotifyUserId)}`
+  const { isSignedIntoLastfm, isSignedIntoSpotify } = useContext(AuthContext)
 
   const router = createHashRouter(createRoutesFromElements(
     <Route element={<AppLayout />}>
       <Route path="/" element={
         isSignedIntoLastfm ?
-          isSignedIntoSpotify ? <Navigate replace to={lastfmSpotifyPath} /> : <Navigate replace to={lastfmPath} />
+          isSignedIntoSpotify ? <Navigate replace to="/spotify" /> : <Navigate replace to="/lastfm" />
         : <LastfmLoginPage />
       } />
       <Route
-        path="/lastfm/:username"
-        element={isSignedIntoSpotify ? <Navigate replace to={lastfmSpotifyPath} /> : <LastfmAuthPage />}
+        path="/lastfm"
+        element={isSignedIntoSpotify ? <Navigate replace to="/spotify" /> : <LastfmAuthPage />}
       />
       <Route
-        path="/spotify/:id"
-        element={isSignedIntoLastfm ? <Navigate replace to={lastfmSpotifyPath} /> : <Navigate replace to="/" />}
-      />
-      <Route
-        path="/lastfm/:username/spotify/:id"
-        element={<SpotifyAuthPage />}
+        path="/spotify"
+        element={isSignedIntoLastfm ? <SpotifyAuthPage /> : <Navigate replace to="/" />}
       />
     </Route>
   ))

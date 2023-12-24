@@ -54,6 +54,5 @@ func (e *Env) LastfmAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/lastfm/%s", e.config.FrontendPort, lastfmUser.Name),
-		http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/lastfm", e.config.FrontendPort), http.StatusSeeOther)
 }

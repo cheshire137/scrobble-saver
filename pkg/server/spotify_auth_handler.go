@@ -76,6 +76,5 @@ func (e *Env) SpotifyAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/spotify/%s", e.config.FrontendPort, spotifyUser.Id),
-		http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("http://localhost:%d#/spotify", e.config.FrontendPort), http.StatusSeeOther)
 }
