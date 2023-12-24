@@ -2,22 +2,26 @@ import { createContext, PropsWithChildren, useCallback, useMemo, useState } from
 import SpotifyTrack from '../models/SpotifyTrack'
 
 export type SpotifyTracksContextProps = {
-  trackIdsByLastfmUrl: Record<string, string[]>
+  trackIdsByLastfmUrl: Map<string, Set<string>>
   tracks: SpotifyTrack[]
   addTracks(lastfmTrackUrl: string, tracks: SpotifyTrack[]): void
 }
 
 export const SpotifyTracksContext = createContext<SpotifyTracksContextProps>({
-  trackIdsByLastfmUrl: {},
+  trackIdsByLastfmUrl: new Map(),
   tracks: [],
   addTracks: () => {},
 })
 
 export const SpotifyTracksContextProvider = ({ children }: PropsWithChildren) => {
-  const [trackIdsByLastfmUrl, setTrackIdsByLastfmUrl] = useState<Record<string, string[]>>({})
+  const [trackIdsByLastfmUrl, setTrackIdsByLastfmUrl] = useState<Map<string, Set<string>>>(new Map())
   const [tracks, setTracks] = useState<SpotifyTrack[]>([])
   const addTracks = useCallback((lastfmTrackUrl: string, newTracks: SpotifyTrack[]) => {
-    setTrackIdsByLastfmUrl(t => ({ ...t, [lastfmTrackUrl]: newTracks.map(newTrack => newTrack.id) }))
+    setTrackIdsByLastfmUrl(t => {
+      const existingTrackIds = t.get(lastfmTrackUrl) ?? []
+      const newTrackIds = newTracks.map(newTrack => newTrack.id)
+      return new Map([...t, [lastfmTrackUrl, new Set([...existingTrackIds].concat(newTrackIds))]])
+    })
     setTracks(t => {
       const newTrackIds = newTracks.map(newTrack => newTrack.id)
       const existingTracks = t.filter(existingTrack => !newTrackIds.includes(existingTrack.id))

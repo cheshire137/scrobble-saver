@@ -24,8 +24,7 @@ const SpotifyTracks = () => {
   const { results: lastfmLovedTrackResults } = useContext(LastfmLovedTracksContext)
   const lastfmTrackResults = isLovedTracks ? lastfmLovedTrackResults : lastfmTopTrackResults
   const allLastfmTracksLookedUpOnSpotify = lastfmTrackResults && lastfmTrackResults.tracks.every(lastfmTrack =>
-    (spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []).length > 0 &&
-    spotifyTrackIdsByLastfmUrl[lastfmTrack.url].every(spotifyTrackId => spotifyTracks.some(track => track.id === spotifyTrackId))
+    spotifyTrackIdsByLastfmUrl.has(lastfmTrack.url)
   )
   const spotifyTrackIdsToCheck = allLastfmTracksLookedUpOnSpotify ? spotifyTracks.map(track => track.id) : []
   const {
@@ -58,12 +57,12 @@ const SpotifyTracks = () => {
     {allLastfmTracksLookedUpOnSpotify || preloadAll ? (
       <ActionList selectionVariant="multiple">
         {lastfmTrackResults.tracks.map(lastfmTrack => {
-          const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []
-          if (spotifyTrackIds.length < 1) {
+          const spotifyTrackIds = spotifyTrackIdsByLastfmUrl.get(lastfmTrack.url) ?? new Set()
+          if (spotifyTrackIds.size < 1) {
             return <SpotifyTrackSearch key={lastfmTrack.url} lastfmTrack={lastfmTrack} preload={preloadAll} />
           }
           return <Fragment key={lastfmTrack.url}>
-            {spotifyTrackIds.map(spotifyTrackId => {
+            {Array.from(spotifyTrackIds).map(spotifyTrackId => {
               const spotifyTrack = spotifyTracks.find(track => track.id === spotifyTrackId)
               return spotifyTrack ? <SpotifyTrackDisplay
                 key={spotifyTrack.id}
