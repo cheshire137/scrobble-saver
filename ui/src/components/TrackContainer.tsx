@@ -9,15 +9,19 @@ export const TrackContainerBox = styled(Box).attrs({
   display: flex;
   align-items: center;
   height: ${height};
-  border-bottom: 1px solid ${props => props.theme.colors.border.default};
   padding: ${props => props.theme.space[3]} ${props => props.theme.space[2]};
+  :not(:last-child) {
+    border-bottom: 1px solid ${props => props.theme.colors.border.default};
+  }
 `
 
 export const TrackContainerActionListItem = styled(ActionList.Item)`
   display: flex;
   align-items: center;
   height: ${height};
-  border-bottom: 1px solid ${props => props.theme.colors.border.default};
   padding: ${props => props.theme.space[3]} ${props => props.theme.space[2]};
   border-radius: 0;
+  :not(:last-child) {
+    border-bottom: 1px solid ${props => props.theme.colors.border.default};
+  }
 `
