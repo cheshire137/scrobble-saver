@@ -9,7 +9,7 @@ export const topTrackPeriods = [
   { value: '12month', label: 'Last year' },
 ]
 
-export const topTrackPeriodLabel = (period?: string): string => {
+export const topTrackPeriodLabel = (period?: string | null): string => {
   if (!period) return topTrackPeriodLabel(defaultLastfmTopTrackPeriod)
   return topTrackPeriods.find(p => p.value === period)?.label ?? period
 }

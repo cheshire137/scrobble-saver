@@ -1,5 +1,5 @@
-import LastfmArtist from "./LastfmArtist"
-import LastfmImage from "./LastfmImage"
+import LastfmArtist from './LastfmArtist'
+import LastfmImage from './LastfmImage'
 
 class LastfmTopTrack {
   name: string

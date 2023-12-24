@@ -2,6 +2,7 @@ import { createContext, PropsWithChildren, useCallback, useMemo, useState } from
 import useGetLastfmTopTracks from '../hooks/use-get-lastfm-top-tracks'
 import { Flash } from '@primer/react'
 import LastfmTopTracks from '../models/LastfmTopTracks'
+import { defaultLastfmTopTrackPeriod } from '../models/LastfmTopTrackPeriod'
 
 export type LastfmTopTracksContextProps = {
   results?: LastfmTopTracks
@@ -12,7 +13,7 @@ export type LastfmTopTracksContextProps = {
 }
 
 export const LastfmTopTracksContext = createContext<LastfmTopTracksContextProps>({
-  period: '6month',
+  period: defaultLastfmTopTrackPeriod,
   page: 1,
   limit: 20,
   update: () => {},
@@ -25,7 +26,7 @@ interface Props extends PropsWithChildren {
 }
 
 export const LastfmTopTracksContextProvider = ({ children, ...props }: Props) => {
-  const [period, setPeriod] = useState(props.period ?? '3month')
+  const [period, setPeriod] = useState(props.period ?? defaultLastfmTopTrackPeriod)
   const [page, setPage] = useState(props.page ?? 1)
   const [limit, setLimit] = useState(props.limit ?? 10)
   const update = useCallback((page?: number, period?: string, limit?: number) => {

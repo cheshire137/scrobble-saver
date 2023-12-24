@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react'
 import LastfmApi from '../models/LastfmApi'
 import LastfmTopTracks from '../models/LastfmTopTracks'
 import { LastfmTrackSourceContext } from '../contexts/LastfmTrackSourceContext'
+import { defaultLastfmTopTrackPeriod } from '../models/LastfmTopTrackPeriod'
 
 interface Results {
   results?: LastfmTopTracks;
@@ -12,7 +13,7 @@ interface Results {
 function useGetLastfmTopTracks(period?: string, page?: number, limit?: number): Results {
   const { isTopTracks } = useContext(LastfmTrackSourceContext)
   const [results, setResults] = useState<Results>({ fetching: isTopTracks })
-  period ||= '6month'
+  period ||= defaultLastfmTopTrackPeriod
   page ||= 1
   limit ||= 20
 
