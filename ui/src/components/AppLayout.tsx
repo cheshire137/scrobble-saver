@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Header, Heading, PageLayout, SxProp } from '@primer/react'
+import { Box, Header, Heading, PageLayout, Link, SxProp } from '@primer/react'
 import { Outlet, useHref, useSearchParams } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
 import { PageContext } from '../contexts/PageContext'
@@ -48,6 +48,11 @@ const AppLayout = () => {
     <PageLayout.Content width="full" sx={{ fontSize: 2, px: 5 }}>
       <Outlet />
     </PageLayout.Content>
+    <PageLayout.Footer sx={{ fontSize: 1, color: 'fg.muted' }} divider="line">
+      <Box sx={{ px: 5 }}>
+        <Link muted href="https://github.com/cheshire137/scrobble-saver" target="_blank">View source</Link>
+      </Box>
+    </PageLayout.Footer>
   </PageLayout>
 }
 
