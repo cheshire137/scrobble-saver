@@ -1,6 +1,6 @@
 import Api from './Api'
 import LastfmTopTracks from './LastfmTopTracks'
-import LastfmLovedTracks from './LastfmLovedTracks'
+import LastfmLovedTracksResults from './LastfmLovedTracksResults'
 
 class LastfmApi {
   public static async getTopTracks(period?: string, page?: number, limit?: number) {
@@ -16,8 +16,8 @@ class LastfmApi {
     const params = new URLSearchParams()
     if (page) params.append('page', page.toString())
     if (limit) params.append('limit', limit.toString())
-    const result = await Api.get(`/lastfm/loved-tracks?${params.toString()}`)
-    return new LastfmLovedTracks(result)
+    const data = await Api.get(`/lastfm/loved-tracks?${params.toString()}`)
+    return new LastfmLovedTracksResults(data)
   }
 }
 

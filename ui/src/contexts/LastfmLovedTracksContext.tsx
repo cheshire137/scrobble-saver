@@ -1,10 +1,10 @@
 import { createContext, PropsWithChildren, useCallback, useMemo, useState } from 'react'
 import useGetLastfmLovedTracks from '../hooks/use-get-lastfm-loved-tracks'
 import { Flash } from '@primer/react'
-import LastfmLovedTracks from '../models/LastfmLovedTracks'
+import LastfmLovedTracksResults from '../models/LastfmLovedTracksResults'
 
 export type LastfmLovedTracksContextProps = {
-  results?: LastfmLovedTracks
+  results?: LastfmLovedTracksResults
   page?: number
   limit?: number
   update: (page?: number, limit?: number) => void

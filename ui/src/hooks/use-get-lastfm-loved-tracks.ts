@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect } from 'react'
 import LastfmApi from '../models/LastfmApi'
-import LastfmLovedTracks from '../models/LastfmLovedTracks'
+import LastfmLovedTracksResults from '../models/LastfmLovedTracksResults'
 import { LastfmTrackSourceContext } from '../contexts/LastfmTrackSourceContext'
 
 interface Results {
-  results?: LastfmLovedTracks;
+  results?: LastfmLovedTracksResults;
   fetching: boolean;
   error?: string;
 }
