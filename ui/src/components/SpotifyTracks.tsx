@@ -5,13 +5,12 @@ import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
 import { LastfmLovedTracksContext } from '../contexts/LastfmLovedTracksContext'
 import { LastfmTrackSourceContext } from '../contexts/LastfmTrackSourceContext'
-import { ActionList, Avatar, Box, Button, Flash, Heading, Spinner } from '@primer/react'
+import { ActionList, Box, Button } from '@primer/react'
 import { SearchIcon } from '@primer/octicons-react'
 import SpotifyTrackDisplay from './SpotifyTrackDisplay'
-import SpotifyLogo from '../assets/Spotify_Icon_RGB_Green.png'
 import SpotifyTrackSearch from './SpotifyTrackSearch'
 import useCheckSpotifySavedTracks from '../hooks/use-check-spotify-saved-tracks'
-import SaveSpotifyTracksButton from './SaveSpotifyTracksButton'
+import SpotifyTracksHeader from './SpotifyTracksHeader'
 
 const SpotifyTracks = () => {
   const [hasUserSelectedAnyTracks, setHasUserSelectedAnyTracks] = useState(false)
@@ -41,19 +40,7 @@ const SpotifyTracks = () => {
   if (!lastfmTrackResults || lastfmTrackResults.tracks.length < 1) return null
 
   return <Box>
-    <Heading sx={{ mb: 2, color: 'spotify.fg', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <span>
-        <Avatar
-          sx={{ mr: 2, display: 'inline-block', verticalAlign: 'middle', boxShadow: 'none' }}
-          size={32}
-          src={SpotifyLogo}
-        />
-        Spotify tracks
-      </span>
-      {checkingSavedTracks && <Spinner sx={{ ml: 2 }} />}
-      {checkSavedTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{checkSavedTracksError}</Flash>}
-      <SaveSpotifyTracksButton />
-    </Heading>
+    <SpotifyTracksHeader checkSavedTracksError={checkSavedTracksError} checkingSavedTracks={checkingSavedTracks} />
     {allLastfmTracksLookedUpOnSpotify || preloadAll ? (
       <ActionList selectionVariant="multiple">
         {lastfmTrackResults.tracks.map(lastfmTrack => {
