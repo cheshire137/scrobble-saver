@@ -3,6 +3,8 @@ import { SpotifyTracksContext } from '../contexts/SpotifyTracksContext'
 import { SpotifySelectedTracksContext } from '../contexts/SpotifySelectedTracksContext'
 import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
+import { LastfmLovedTracksContext } from '../contexts/LastfmLovedTracksContext'
+import { LastfmTrackSourceContext } from '../contexts/LastfmTrackSourceContext'
 import { ActionList, Avatar, Box, Button, Flash, Heading, Spinner } from '@primer/react'
 import { SearchIcon } from '@primer/octicons-react'
 import SpotifyTrackDisplay from './SpotifyTrackDisplay'
@@ -17,8 +19,11 @@ const SpotifyTracks = () => {
   const { tracks: spotifyTracks, trackIdsByLastfmUrl: spotifyTrackIdsByLastfmUrl } = useContext(SpotifyTracksContext)
   const { notSavedTrackIds } = useContext(SpotifySavedTracksContext)
   const { selectedTrackIds, addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
+  const { isLovedTracks } = useContext(LastfmTrackSourceContext)
   const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
-  const allLastfmTracksLookedUpOnSpotify = lastfmTopTrackResults && lastfmTopTrackResults.tracks.every(lastfmTrack =>
+  const { results: lastfmLovedTrackResults } = useContext(LastfmLovedTracksContext)
+  const lastfmTrackResults = isLovedTracks ? lastfmLovedTrackResults : lastfmTopTrackResults
+  const allLastfmTracksLookedUpOnSpotify = lastfmTrackResults && lastfmTrackResults.tracks.every(lastfmTrack =>
     (spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []).length > 0 &&
     spotifyTrackIdsByLastfmUrl[lastfmTrack.url].every(spotifyTrackId => spotifyTracks.some(track => track.id === spotifyTrackId))
   )
@@ -38,7 +43,7 @@ const SpotifyTracks = () => {
     }
   }, [hasUserSelectedAnyTracks, checkingSavedTracks, checkSavedTracksError, addSelectedTrackIds, notSavedTrackIds])
 
-  if (!lastfmTopTrackResults || lastfmTopTrackResults.tracks.length < 1) return null
+  if (!lastfmTrackResults || lastfmTrackResults.tracks.length < 1) return null
 
   return <Box>
     <Heading sx={{ mb: 2, color: 'spotify.fg', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -59,7 +64,7 @@ const SpotifyTracks = () => {
     </Heading>
     {allLastfmTracksLookedUpOnSpotify || preloadAll ? (
       <ActionList selectionVariant="multiple">
-        {lastfmTopTrackResults.tracks.map(lastfmTrack => {
+        {lastfmTrackResults.tracks.map(lastfmTrack => {
           const spotifyTrackIds = spotifyTrackIdsByLastfmUrl[lastfmTrack.url] ?? []
           if (spotifyTrackIds.length < 1) {
             return <SpotifyTrackSearch key={lastfmTrack.url} lastfmTrack={lastfmTrack} preload={preloadAll} />
