@@ -7,7 +7,7 @@ interface Props {
 
 const SpotifySearchResultDisplay = ({ results: { tracks } }: Props) => {
   if (tracks.length < 1) {
-    return <Flash variant="warning">No Spotify tracks found</Flash>
+    return <Flash variant="warning">Track not found on Spotify</Flash>
   }
   return <Flash variant="success">Found track on Spotify</Flash>
 }
