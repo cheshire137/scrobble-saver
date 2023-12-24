@@ -8,7 +8,9 @@ interface Props {
 }
 
 const SpotifyTracksHeader = ({ checkingSavedTracks, checkSavedTracksError }: Props) => {
-  return <Heading sx={{ mb: 2, color: 'spotify.fg', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+  return <Heading
+    sx={{ mb: 2, color: 'spotify.fg', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+  >
     <span>
       <Avatar
         sx={{ mr: 2, display: 'inline-block', verticalAlign: 'middle', boxShadow: 'none' }}

@@ -19,9 +19,10 @@ const SpotifyTracks = () => {
   const { notSavedTrackIds } = useContext(SpotifySavedTracksContext)
   const { addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
   const { isLovedTracks } = useContext(LastfmTrackSourceContext)
-  const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
-  const { results: lastfmLovedTrackResults } = useContext(LastfmLovedTracksContext)
+  const { results: lastfmTopTrackResults, page: lastfmTopTracksPage } = useContext(LastfmTopTracksContext)
+  const { results: lastfmLovedTrackResults, page: lastfmLovedTracksPage } = useContext(LastfmLovedTracksContext)
   const lastfmTrackResults = isLovedTracks ? lastfmLovedTrackResults : lastfmTopTrackResults
+  const pageOfLastfmResults = isLovedTracks ? lastfmLovedTracksPage : lastfmTopTracksPage
   const allLastfmTracksLookedUpOnSpotify = lastfmTrackResults && lastfmTrackResults.tracks.every(lastfmTrack =>
     spotifyTrackIdsByLastfmUrl.has(lastfmTrack.url)
   )
@@ -36,6 +37,10 @@ const SpotifyTracks = () => {
       if (notSavedTrackIds.size > 0) addSelectedTrackIds(Array.from(notSavedTrackIds))
     }
   }, [hasUserSelectedAnyTracks, checkingSavedTracks, checkSavedTracksError, addSelectedTrackIds, notSavedTrackIds])
+
+  useEffect(() => {
+    setPreloadAll(false)
+  }, [pageOfLastfmResults])
 
   if (!lastfmTrackResults || lastfmTrackResults.tracks.length < 1) return null
 
