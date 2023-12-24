@@ -67,7 +67,7 @@ const SaveSpotifyTracksButton = () => {
       size={20}
       src={SpotifyLogo}
     />
-    Add to library
+    Add {notSavedSelectedTrackIds.length} to library
   </Button>
 }
 
