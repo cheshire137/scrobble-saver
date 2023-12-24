@@ -9,6 +9,7 @@ const colors = {
   },
   accent: {
     fg: '#4F5D75',
+    emphasis: '#4F5D75',
   },
   lastfm: {
     fg: '#c8382f',
