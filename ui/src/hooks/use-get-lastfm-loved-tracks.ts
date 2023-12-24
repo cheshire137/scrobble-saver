@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import LastfmApi from '../models/LastfmApi'
 import LastfmLovedTracks from '../models/LastfmLovedTracks'
+import { LastfmTrackSourceContext } from '../contexts/LastfmTrackSourceContext'
 
 interface Results {
   results?: LastfmLovedTracks;
@@ -9,7 +10,8 @@ interface Results {
 }
 
 function useGetLastfmLovedTracks(page?: number, limit?: number): Results {
-  const [results, setResults] = useState<Results>({ fetching: true })
+  const { isLovedTracks } = useContext(LastfmTrackSourceContext)
+  const [results, setResults] = useState<Results>({ fetching: isLovedTracks })
   page ||= 1
   limit ||= 20
 
@@ -24,8 +26,8 @@ function useGetLastfmLovedTracks(page?: number, limit?: number): Results {
       }
     }
 
-    fetchLastfmLovedTracks()
-  }, [page, limit])
+    if (isLovedTracks) fetchLastfmLovedTracks()
+  }, [isLovedTracks, page, limit])
 
   return results
 }
