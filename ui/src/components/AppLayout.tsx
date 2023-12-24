@@ -1,8 +1,10 @@
 import { useContext } from 'react'
-import { Header, Heading, PageLayout } from '@primer/react'
-import { Outlet, useHref } from 'react-router-dom'
+import { Header, Heading, PageLayout, SxProp } from '@primer/react'
+import { Outlet, useHref, useSearchParams } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
 import { PageContext } from '../contexts/PageContext'
+import { LovedTracksSource } from '../contexts/LastfmTrackSourceContext'
+import deepmerge from 'deepmerge'
 
 const AppLayout = () => {
   const env = import.meta.env
@@ -11,6 +13,13 @@ const AppLayout = () => {
   const { isSignedIntoLastfm, isSignedIntoSpotify, lastfmUsername, spotifyUserId } = useContext(AuthContext)
   const isFullySignedIn = isSignedIntoLastfm && isSignedIntoSpotify
   const spotifyAuthPageUrl = useHref(`/lastfm/${lastfmUsername}/spotify/${spotifyUserId}`)
+  const [searchParams] = useSearchParams()
+  const lastfmSource = searchParams.get('lastfm_source')
+  const isTopTracks = lastfmSource !== LovedTracksSource
+  const linkStyles: SxProp['sx'] = { ml: 3 }
+  const activeLinkStyles: SxProp['sx'] = { borderBottom: '1px solid' }
+  const topTracksLinkStyles = deepmerge(linkStyles, isTopTracks ? activeLinkStyles : {})
+  const lovedTracksLinkStyles = deepmerge(linkStyles, isTopTracks ? {} : activeLinkStyles)
 
   return <PageLayout containerWidth="full" padding="none">
     <PageLayout.Header>
@@ -24,10 +33,10 @@ const AppLayout = () => {
             sx={{ fontSize: 3, fontWeight: 'normal', ml: 3 }}
           >{pageTitle}</Heading>}
           {isFullySignedIn && <>
-            <Header.Link sx={{ ml: 3 }} href={`${spotifyAuthPageUrl}?lastfm_source=top`}>
+            <Header.Link sx={topTracksLinkStyles} href={spotifyAuthPageUrl}>
               Top tracks
             </Header.Link>
-            <Header.Link sx={{ ml: 3 }} href={`${spotifyAuthPageUrl}?lastfm_source=loved`}>
+            <Header.Link sx={lovedTracksLinkStyles} href={`${spotifyAuthPageUrl}?lastfm_source=${LovedTracksSource}`}>
               Loved tracks
             </Header.Link>
           </>}
