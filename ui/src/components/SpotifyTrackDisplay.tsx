@@ -36,11 +36,9 @@ const SpotifyTrackDisplay = ({ track, selectable, ...props }: Props) => {
   >
     <ActionList.LeadingVisual sx={{ width: '80px', maxWidth: '80px' }}></ActionList.LeadingVisual>
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 2 }}>
-        <Heading as="h3" sx={{ fontSize: 2 }}>{track.name}</Heading>
-        <Box sx={{ ml: 1, color: 'fg.muted' }}>
-          by {track.artists.map(artist => artist.name).join(', ')}
-        </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 2, flexWrap: 'wrap' }}>
+        <Heading as="h3" sx={{ fontSize: 2, mr: 1 }}>{track.name}</Heading>
+        <Box sx={{ color: 'fg.muted' }}>by {track.artists.map(artist => artist.name).join(', ')}</Box>
       </Box>
       <Box sx={{ fontSize: 1, color: 'fg.muted', mt: 1 }}>
         &ldquo;{track.album.name}&rdquo; / {track.album.releaseYear()}
