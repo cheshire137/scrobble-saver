@@ -49,7 +49,7 @@ const AppLayout = () => {
       <Outlet />
     </PageLayout.Content>
     <PageLayout.Footer sx={{ fontSize: 1, color: 'fg.muted' }} divider="line">
-      <Box sx={{ px: 5 }}>
+      <Box sx={{ px: 5, pb: 5 }}>
         <Link muted href="https://github.com/cheshire137/scrobble-saver" target="_blank">View source</Link>
       </Box>
     </PageLayout.Footer>
