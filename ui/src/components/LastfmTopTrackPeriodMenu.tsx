@@ -2,15 +2,7 @@ import { useContext, useState } from 'react'
 import { ActionList, ActionMenu } from '@primer/react'
 import { LastfmTopTracksContext } from '../contexts/LastfmTopTracksContext'
 import { useSearchParams } from 'react-router-dom'
-
-const topTrackPeriods = [
-  { value: 'overall', label: 'All time' },
-  { value: '7day', label: 'Last week' },
-  { value: '1month', label: 'Last month' },
-  { value: '3month', label: 'Last 3 months' },
-  { value: '6month', label: 'Last 6 months' },
-  { value: '12month', label: 'Last year' },
-]
+import { topTrackPeriods, topTrackPeriodLabel } from '../models/LastfmTopTrackPeriod'
 
 const LastfmTopTrackPeriodMenu = () => {
   const [open, setOpen] = useState(false)
@@ -19,7 +11,7 @@ const LastfmTopTrackPeriodMenu = () => {
 
   return <ActionMenu open={open} onOpenChange={setOpen}>
     <ActionMenu.Button variant="invisible" sx={{ color: 'lastfm.fg' }}>
-      Period: {topTrackPeriods.find(p => p.value === period)?.label ?? period}
+      Period: {topTrackPeriodLabel(period)}
     </ActionMenu.Button>
     <ActionMenu.Overlay width="auto">
       <ActionList selectionVariant="single">
