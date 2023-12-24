@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useMemo, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { SpotifyTracksContext } from '../contexts/SpotifyTracksContext'
 import { SpotifySelectedTracksContext } from '../contexts/SpotifySelectedTracksContext'
 import { SpotifySavedTracksContext } from '../contexts/SpotifySavedTracksContext'
@@ -18,7 +18,7 @@ const SpotifyTracks = () => {
   const [preloadAll, setPreloadAll] = useState(false)
   const { tracks: spotifyTracks, trackIdsByLastfmUrl: spotifyTrackIdsByLastfmUrl } = useContext(SpotifyTracksContext)
   const { notSavedTrackIds } = useContext(SpotifySavedTracksContext)
-  const { selectedTrackIds, addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
+  const { addSelectedTrackIds } = useContext(SpotifySelectedTracksContext)
   const { isLovedTracks } = useContext(LastfmTrackSourceContext)
   const { results: lastfmTopTrackResults } = useContext(LastfmTopTracksContext)
   const { results: lastfmLovedTrackResults } = useContext(LastfmLovedTracksContext)
@@ -32,10 +32,6 @@ const SpotifyTracks = () => {
     fetching: checkingSavedTracks,
     error: checkSavedTracksError
   } = useCheckSpotifySavedTracks(spotifyTrackIdsToCheck)
-  const notSavedUnselectedTrackIds = useMemo(
-    () => Array.from(notSavedTrackIds).filter(trackId => !selectedTrackIds.has(trackId)),
-    [notSavedTrackIds, selectedTrackIds],
-  )
 
   useEffect(() => {
     if (!hasUserSelectedAnyTracks && !checkingSavedTracks && !checkSavedTracksError) {
@@ -57,9 +53,6 @@ const SpotifyTracks = () => {
       </span>
       {checkingSavedTracks && <Spinner sx={{ ml: 2 }} />}
       {checkSavedTracksError && <Flash variant="danger" sx={{ ml: 2 }}>{checkSavedTracksError}</Flash>}
-      {notSavedUnselectedTrackIds.length > 0 && <Button
-        onClick={() => addSelectedTrackIds(notSavedUnselectedTrackIds)}
-      >Select all unsaved tracks</Button>}
       <SaveSpotifyTracksButton />
     </Heading>
     {allLastfmTracksLookedUpOnSpotify || preloadAll ? (
