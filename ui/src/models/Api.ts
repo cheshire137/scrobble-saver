@@ -1,10 +1,14 @@
 import UnauthorizedError from './UnauthorizedError'
 
 class Api {
-  static apiUrl() {
+  static backendUrl() {
     const env = import.meta.env
     const port = env.VITE_BACKEND_PORT || 8080
-    return `http://localhost:${port}/api`
+    return `http://localhost:${port}`
+  }
+
+  static apiUrl() {
+    return `${this.backendUrl()}/api`
   }
 
   public static async me() {
